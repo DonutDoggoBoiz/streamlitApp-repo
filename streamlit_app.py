@@ -53,10 +53,10 @@ if st.session_state['login_status'] == False:
         login_form.subheader('Login 📝')
         username = login_form.text_input('Username', placeholder='your username')
         password = login_form.text_input('Password', type='password', placeholder='your password')
-        col1, col2 = st.columns([3,1])
-        with col1:
+        col_1, col_2 = st.columns(2)
+        with col_1:
           login_button = login_form.form_submit_button('Login')
-        with col2:
+        with col_2:
           sign_up_button = login_form.form_submit_button('Sign up')
           
         if login_button:
