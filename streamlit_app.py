@@ -107,7 +107,7 @@ if st.session_state['login_status'] == False:
                   time.sleep(2)
                   rerun()
                 else: st.warning("Username already exists. Please enter a new username")
-            if back_to _login_button:
+            if back_to_login_button:
               rerun()
 
 else:
