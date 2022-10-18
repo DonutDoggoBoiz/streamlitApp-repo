@@ -260,13 +260,13 @@ def train_model():
   ### --- end of all episodes --- ###
 def train_result():
   record_num = np.array(action_history).shape[0]
-  np_acc_reward_history = np.reshape( np.array(acc_reward_history) , ( int(record_num/n_episodes) , int(n_episodes) ) )
-  np_account_balance_history = np.reshape( np.array(account_balance_history) , ( int(record_num/n_episodes) , int(n_episodes) ) )
+  np_acc_reward_history = np.reshape( np.array(acc_reward_history) , ( int(n_episodes) , int(record_num/n_episodes) ) )
+  np_account_balance_history = np.reshape( np.array(account_balance_history) , ( int(n_episodes) , int(record_num/n_episodes) ) )
   st.write('Reward History of last episode')
-  st.line_chart(np_acc_reward_history) #[-1]
-  train_date_col = df_price_train.reset_index()[window_size:len(df_price_train)-1]['Date']
-  reward_history_df = pd.DataFrame(np_acc_reward_history, index=train_date_col)
-  reward_history_df = reward_history_df.reset_index()
+  st.line_chart(np.transpose(np_acc_reward_history))
+  #train_date_col = df_price_train.reset_index()[window_size:len(df_price_train)-1]['Date']
+  #reward_history_df = pd.DataFrame(np_acc_reward_history, index=train_date_col)
+  #reward_history_df = reward_history_df.reset_index()
   #st.write('acc reward shape: {}'.format(np_acc_reward_history.shape) )
   #st.write('train date col len: {}'.format(len(train_date_col)) )
   #st.dataframe(reward_history_df)
@@ -287,16 +287,16 @@ def train_result():
                       #tooltip=['Date','Close','split'] ).interactive()
   #st.altair_chart(alt_chart, use_container_width=True)
   st.write('Account Balance History of last episode')
-  st.line_chart(np_account_balance_history) #[-1])
+  st.line_chart(np.transpose(np_account_balance_history))
 
   
   
 # --- reshape history data to array ---
 def reshape_history():
   record_num = np.array(action_history).shape[0]
-  np_acc_reward_history = np.reshape( np.array(acc_reward_history) , ( int(record_num/n_episodes) , int(n_episodes) ) )
-  np_action_history = np.reshape( np.array(action_history) , ( int(record_num/n_episodes) , int(n_episodes) ) )
-  np_account_balance_history = np.reshape( np.array(account_balance_history) , ( int(record_num/n_episodes) , int(n_episodes) ) )
+  np_acc_reward_history = np.reshape( np.array(acc_reward_history) , ( int(n_episodes) , int(record_num/n_episodes) ) )
+  np_action_history = np.reshape( np.array(action_history) , ( int(n_episodes) , int(record_num/n_episodes) ) )
+  np_account_balance_history = np.reshape( np.array(account_balance_history) , ( int(n_episodes) , int(record_num/n_episodes) ) )
   # --- print shape of history arrays ---
   print('np_acc_reward_history.shape: {}'.format(np_acc_reward_history.shape))
   print('np_action_history.shape: {}'.format(np_action_history.shape))
@@ -413,16 +413,16 @@ def test_model():
   ### --- end of all episodes --- ###
 def test_result():
   record_num = np.array(eval_action_history).shape[0]
-  np_eval_acc_reward_history = np.reshape( np.array(eval_acc_reward_history) , ( int(record_num/x_episodes) , int(x_episodes) ) )
-  np_eval_account_balance_history = np.reshape( np.array(eval_account_balance_history) , ( int(record_num/x_episodes) , int(x_episodes) ) )
+  np_eval_acc_reward_history = np.reshape( np.array(eval_acc_reward_history) , ( int(x_episodes) , int(record_num/x_episodes) ) )
+  np_eval_account_balance_history = np.reshape( np.array(eval_account_balance_history) , ( int(x_episodes) , int(record_num/x_episodes) ) )
   st.write('Reward History of testing episode')
-  st.line_chart(np_eval_acc_reward_history) #[-1])
+  st.line_chart(np.transpose(np_eval_acc_reward_history))
   #alt_reward_history = alt.Chart(df_price.reset_index()).mark_line().encode(x = alt.X('Date'), 
                       #y = alt.Y('Close', scale=alt.Scale(domain=[df_price['Close'].min()-10, df_price['Close'].max()+10]) ) ,
                       #color = 'split' ,
                       #tooltip=['Date','Close','split'] ).interactive()
   st.write('Account Balance History of testing episode')
-  st.line_chart(np_eval_account_balance_history) #[-1])
+  st.line_chart(np.transpose(np_eval_account_balance_history))
 
 def save_model():
   #save_path = "models/" + str(agent.model_file)
