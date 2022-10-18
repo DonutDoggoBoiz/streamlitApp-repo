@@ -38,10 +38,8 @@ def fetch_price_data():
   market_name = stock_df[stock_df['symbol']==stock_name]['market'].to_string(index=False)
   industry_name = stock_df[stock_df['symbol']==stock_name]['industry'].to_string(index=False)
   sector_name = stock_df[stock_df['symbol']==stock_name]['sector'].to_string(index=False)
-  st.write('{}'.format(company_name))
-  st.write('Market:  {}'.format(market_name))
-  st.write('Industry:  {}'.format(industry_name))
-  st.write('Sector:  {}'.format(sector_name))
+  st.write('{} --- Market:  {}'.format(company_name, market_name))
+  st.write('Industry:  {} Sector:  {}'.format(industry_name, sector_name))
   int_year = int(datetime.date.today().year)
   int_last_year = int(datetime.date.today().year) - 1
   int_month = int(datetime.date.today().month)
