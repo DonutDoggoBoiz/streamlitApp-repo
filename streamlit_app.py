@@ -67,10 +67,12 @@ def rerun():
  
   
 ### --- INTERFACE --- ###
-placeholder1 = st.empty()
-placeholder2 = st.empty()
+#placeholder1 = st.empty()
+#placeholder2 = st.empty()
 
 if st.session_state['login_status'] == False:
+    placeholder1 = st.empty()
+    placeholder2 = st.empty()
     ### --- SIDEBAR --- ###
     #login_button_side = st.sidebar.button('Login')
     #register_button_side = st.sidebar.button('Register')
@@ -142,7 +144,9 @@ else:
     reset_pass_button_side = st.sidebar.button('Reset Password')
     
     placeholder_1 = st.empty()
-    
+    with placeholder_1.container():
+        st.write('### Welcome, {}'.format(st.session_state['username']))
+        
     ### --- MAIN TAB BUTTON --- ###
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -152,21 +156,16 @@ else:
     with col3:
       advice_b = st.button('Generate Advice', key='gen_advice_tab')
     
-    placeholder_2 = st.empty()
-    
-    with placeholder_1.container():
-        st.write('### Welcome, {}'.format(st.session_state['username']))
+    placeholder_2 = st.empty()    
         
     if user_manage_b or st.session_state['user_manage_b_status']:
       st.session_state['user_manage_b_status'] = True
       st.session_state['model_b_status'] = False
       st.session_state['advice_b_status'] = False
       placeholder_2.empty()
-      #with placeholder_2.container():
-        #st.write('### User can manage there account HERE')
-        #st.write('eg. change name, reset password, etc.')
-      placeholder_2.container().st.write('### User can manage there account HERE')
-      placeholder_2.container().st.write('eg. change name, reset password, etc.')
+      with placeholder_2.container():
+        st.write('### User can manage there account HERE')
+        st.write('eg. change name, reset password, etc.')
         
     if advice_b or st.session_state['advice_b_status']:
       st.session_state['user_manage_b_status'] = False
