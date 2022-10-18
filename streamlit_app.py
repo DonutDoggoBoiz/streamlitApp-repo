@@ -6,7 +6,7 @@ import time
 
 from functions import fetch_price_data, observe_price, split_dataset2, set_parameters
 from functions import set_train_episodes, train_model, train_result, test_model, test_result
-from functions import save_model
+from func.generateAdvice import generate_advice
 
 from repo_pages.'08_generate_advice.py' import generate_advice
 
@@ -143,7 +143,7 @@ else:
         st.write('### User can manage there account HERE')
     if advice_b:
       with placeholder2.container():
-        st.write('
+        generate_advice()
       
     if model_b or st.session_state['col3_b_status']:  
       st.session_state['col3_b_status'] = True
