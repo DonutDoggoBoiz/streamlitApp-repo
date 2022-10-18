@@ -27,6 +27,11 @@ if 'show_register_form' not in st.session_state:
   ### --- COL 3 --- ###
 if 'model_b_status' not in st.session_state:
   st.session_state['model_b_status'] = False
+if 'advice_b_status' not in st.session_state:
+  st.session_state['advice_b_status'] = False
+if 'user_manage_b_status' not in st.session_state:
+  st.session_state['user_manage_b_status'] = False
+  
 if 'observe_button_status' not in st.session_state:
   st.session_state['observe_button_status'] = False
 if 'split_button_status' not in st.session_state:
@@ -43,6 +48,15 @@ def login_func():
 def logout_func():
   st.session_state['login_status'] = False
   st.session_state['username'] = None
+  #reset_session_state
+  st.session_state['show_register_form'] = False
+  st.session_state['model_b_status'] = False
+  st.session_state['advice_b_status'] = False
+  st.session_state['user_manage_b_status'] = False
+  st.session_state['observe_button_status'] = False
+  st.session_state['split_button_status'] = False
+  st.session_state['train_button_status'] = False
+  st.session_state['test_button_status'] = False
   
 def rerun():
   st.experimental_rerun()
@@ -138,18 +152,26 @@ else:
     with placeholder1.container():
         st.write('### Welcome, {}'.format(st.session_state['username']))
         
-    if user_manage_b:
+    if user_manage_b or st.session_state['user_manage_b_status']:
+      st.session_state['user_manage_b_status'] = True
+      st.session_state['model_b_status'] = False
+      st.session_state['advice_b_status'] = False
       placeholder2.empty()
       with placeholder2.container():
         st.write('### User can manage there account HERE')
         
-    if advice_b:
+    if advice_b or st.session_state['advice_b_status']:
+      st.session_state['user_manage_b_status'] = False
+      st.session_state['model_b_status'] = False
+      st.session_state['advice_b_status'] = True
       placeholder2.empty()
       with placeholder2.container():
         generate_advice()
       
     if model_b or st.session_state['model_b_status']:  
+      st.session_state['user_manage_b_status'] = False
       st.session_state['model_b_status'] = True
+      st.session_state['advice_b_status'] = False
       placeholder2.empty()
       with placeholder2.container():
         ### ------------ INTERFACE ------------ ###
