@@ -57,12 +57,7 @@ if st.session_state['login_status'] == False or login_button_side:
         login_form.subheader('Login 📝')
         username = login_form.text_input('Username', placeholder='your username')
         password = login_form.text_input('Password', type='password', placeholder='your password')
-        col_1, col_2 = login_form.st.columns(2)
-        with col_1:
-          login_button = login_form.form_submit_button('Login')
-        with col_2:
-          sign_up_button = login_form.form_submit_button('Sign up')
-          
+        login_button = login_form.form_submit_button('Login')
         if login_button:
             if len(username) <= 0:
               st.warning("Please enter a username")
