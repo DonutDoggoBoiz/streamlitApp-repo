@@ -64,6 +64,7 @@ def logout_func():
   
 def rerun():
   st.experimental_rerun()
+ 
   
 ### --- INTERFACE --- ###
 placeholder1 = st.empty()
@@ -140,7 +141,7 @@ else:
     logout_button_side = st.sidebar.button('Logout', on_click=logout_func)
     reset_pass_button_side = st.sidebar.button('Reset Password')
     
-    placeholder1 = st.empty()
+    placeholder_1 = st.empty()
     
     ### --- MAIN TAB BUTTON --- ###
     col1, col2, col3 = st.columns(3)
@@ -151,7 +152,7 @@ else:
     with col3:
       advice_b = st.button('Generate Advice', key='gen_advice_tab')
     
-    placeholder2 = st.empty()
+    placeholder_2 = st.empty()
     
     with placeholder1.container():
         st.write('### Welcome, {}'.format(st.session_state['username']))
@@ -160,8 +161,8 @@ else:
       st.session_state['user_manage_b_status'] = True
       st.session_state['model_b_status'] = False
       st.session_state['advice_b_status'] = False
-      placeholder2.empty()
-      with placeholder2.container():
+      placeholder_2.empty()
+      with placeholder_2.container():
         st.write('### User can manage there account HERE')
         st.write('eg. change name, reset password, etc.')
         
@@ -169,10 +170,9 @@ else:
       st.session_state['user_manage_b_status'] = False
       st.session_state['model_b_status'] = False
       st.session_state['advice_b_status'] = True
-      placeholder2.empty()
-      with placeholder2.container():
-          st.markdown("### Generate Advice 📈 000")
-          #st.sidebar.markdown("# Generate Advice 📈")
+      placeholder_2.empty()
+      with placeholder_2.container():
+          st.markdown("### Generate Advice 📈 ..")
           selected_model = st.selectbox('Choose your model',
                                         options=['BBL_01', 'BBL_02', 'PTT_07'])
           generate_advice_button = st.button('Generate Advice')
@@ -202,12 +202,11 @@ else:
               st.error('#### SELL at current price of {}'.format(last_price) )
       
     if model_b or st.session_state['model_b_status']:
-      placeholder2.empty()
       st.session_state['user_manage_b_status'] = False
       st.session_state['model_b_status'] = True
       st.session_state['advice_b_status'] = False
-      #placeholder2.empty()
-      with placeholder2.container():
+      placeholder_2.empty()
+      with placeholder_2.container():
         ### ------------ INTERFACE ------------ ###
         tab_list = ["Select Data 📈", "Set Parameters 💡", "Train Model 🚀", "Test Model 🧪", "Save Model 💾", "PENDING"]
         select_data_tab, set_para_tab, train_tab, test_tab, save_tab, pending_tab = st.tabs(tab_list)
