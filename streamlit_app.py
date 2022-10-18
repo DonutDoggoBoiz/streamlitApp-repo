@@ -21,6 +21,8 @@ if 'login_status' not in st.session_state:
   st.session_state['login_status'] = False
 if 'username' not in st.session_state:
   st.session_state['username'] = None
+if 'show_register_form' not in st.session_state:
+  st.session_state['show_register_form'] = False
   ### --- COL 3 --- ###
 if 'col3_b_status' not in st.session_state:
   st.session_state['col3_b_status'] = False
@@ -81,7 +83,8 @@ if st.session_state['login_status'] == False:
                   #st.sidebar.write('Welcome, {}'.format(st.session_state['username']))
                   #st.sidebar.button('Logout', on_click=logout_func)
                   #st.sidebar.button('Reset Password')
-    if register_button_side:
+    if register_button_side or st.session_state['show_register_form']:
+      st.session_state['show_register_form'] = True
       with placeholder.container():
         register_form = st.form('Register')
         register_form.subheader('Register 📝')
@@ -98,9 +101,11 @@ if st.session_state['login_status'] == False:
               user_db.put({'username':new_username, 'password':new_password})
               st.success("Register Successful!")
               time.sleep(2)
+              st.session_state['show_register_form'] = False
               rerun()
             else: st.warning("Username already exists. Please enter a new username")
     if login_button_side:
+      st.session_state['show_register_form'] = False
       rerun()
 
 else:
