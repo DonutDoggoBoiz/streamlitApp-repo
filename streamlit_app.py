@@ -8,6 +8,8 @@ from functions import fetch_price_data, observe_price, split_dataset2, set_param
 from functions import set_train_episodes, train_model, train_result, test_model, test_result
 from functions import save_model
 
+from repo_pages.08_generate_advice import generate_advice
+
 ### --- DATABASE CONNECTION --- ###
 deta = Deta(st.secrets["deta_key"])
 user_db = deta.Base("user_db")
@@ -24,8 +26,8 @@ if 'username' not in st.session_state:
 if 'show_register_form' not in st.session_state:
   st.session_state['show_register_form'] = False
   ### --- COL 3 --- ###
-if 'col3_b_status' not in st.session_state:
-  st.session_state['col3_b_status'] = False
+if 'model_b_status' not in st.session_state:
+  st.session_state['model_b_status'] = False
 if 'observe_button_status' not in st.session_state:
   st.session_state['observe_button_status'] = False
 if 'split_button_status' not in st.session_state:
@@ -121,21 +123,29 @@ else:
     logout_button_side = st.sidebar.button('Logout', on_click=logout_func)
     reset_pass_button_side = st.sidebar.button('Reset Password')
     
+    placeholder1 = st.empty()
+    
     ### --- MAIN --- ###
     col1, col2, col3 = st.columns(3)
     with col1:
-      col1_b = st.button('col 1')
+      user_manage_b = st.button('User Management')
     with col2:
-      col2_b = st.button('col 2')
+      model_b = st.button('Trading Model')
     with col3:
-      col3_b = st.button('col 3 GO')
+      advice_b = st.button('Generate Advice')
     
     placeholder2 = st.empty()
     
-    with placeholder.container():
+    with placeholder1.container():
         st.write('### Welcome, {}'.format(st.session_state['username']))
+    if user_manage_b:
+      with placeholder2.container():
+        st.write('### User can manage there account HERE')
+    if advice_b:
+      with placeholder2.container():
+        st.write('
       
-    if col3_b or st.session_state['col3_b_status']:  
+    if model_b or st.session_state['col3_b_status']:  
       st.session_state['col3_b_status'] = True
       with placeholder2.container():
         ### ------------ INTERFACE ------------ ###
