@@ -144,8 +144,8 @@ else:
       with placeholder2.container():
         generate_advice()
       
-    if model_b or st.session_state['col3_b_status']:  
-      st.session_state['col3_b_status'] = True
+    if model_b or st.session_state['model_b_status']:  
+      st.session_state['model_b_status'] = True
       with placeholder2.container():
         ### ------------ INTERFACE ------------ ###
         tab_list = ["Select Data 📈", "Set Parameters 💡", "Train Model 🚀", "Test Model 🧪", "Save Model 💾", "PENDING"]
