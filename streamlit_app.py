@@ -3,6 +3,10 @@ import streamlit as st
 import pandas as pd
 from deta import Deta
 import time
+import datetime
+import yfinance as yf
+import altair as alt
+import numpy as np
 
 from functions import fetch_price_data, observe_price, split_dataset2, set_parameters
 from functions import set_train_episodes, train_model, train_result, test_model, test_result
