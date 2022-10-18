@@ -47,13 +47,20 @@ def rerun():
   st.experimental_rerun()
   
 ### --- INTERFACE --- ###
-placeholder = st.empty()
+placeholder1 = st.empty()
+placeholder2 = st.empty()
 
 if st.session_state['login_status'] == False:
     ### --- SIDEBAR --- ###
-    login_button_side = st.sidebar.button('Login')
-    register_button_side = st.sidebar.button('Register')
-    with placeholder.container():
+    #login_button_side = st.sidebar.button('Login')
+    #register_button_side = st.sidebar.button('Register')
+    with placeholder1.container():
+      ph1_col1, ph1_col2 = st.columns(2)
+      with ph1_col1:
+        login_button_ph1 = st.button('Login')
+      with ph1_col2:
+        register_button_ph1 = st.button('Register')
+    with placeholder2.container():
         login_form = st.form('Login')
         login_form.subheader('Login 📝')
         username = login_form.text_input('Username', placeholder='your username')
@@ -83,9 +90,9 @@ if st.session_state['login_status'] == False:
                   #st.sidebar.write('Welcome, {}'.format(st.session_state['username']))
                   #st.sidebar.button('Logout', on_click=logout_func)
                   #st.sidebar.button('Reset Password')
-    if register_button_side or st.session_state['show_register_form']:
+    if register_button_ph1 or st.session_state['show_register_form']:
       st.session_state['show_register_form'] = True
-      with placeholder.container():
+      with placeholder2.container():
         register_form = st.form('Register')
         register_form.subheader('Register 📝')
         new_username = register_form.text_input('Username', placeholder='your username')
@@ -104,7 +111,7 @@ if st.session_state['login_status'] == False:
               st.session_state['show_register_form'] = False
               rerun()
             else: st.warning("Username already exists. Please enter a new username")
-    if login_button_side:
+    if login_button_ph1:
       st.session_state['show_register_form'] = False
       rerun()
 
@@ -130,9 +137,7 @@ else:
       
     if col3_b or st.session_state['col3_b_status']:  
       st.session_state['col3_b_status'] = True
-      placeholder.text('proceed')
       with placeholder2.container():
-        st.write('proceed 22')
         ### ------------ INTERFACE ------------ ###
         tab_list = ["Select Data 📈", "Set Parameters 💡", "Train Model 🚀", "Test Model 🧪", "Save Model 💾", "PENDING"]
         select_data_tab, set_para_tab, train_tab, test_tab, save_tab, pending_tab = st.tabs(tab_list)
