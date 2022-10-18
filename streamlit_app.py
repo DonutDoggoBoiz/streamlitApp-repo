@@ -72,9 +72,9 @@ if st.session_state['login_status'] == False:
     with placeholder1.container():
       ph1_col1, ph1_col2 = st.columns(2)
       with ph1_col1:
-        login_button_ph1 = st.button('Login')
+        login_button_ph1 = st.button('Sign in')
       with ph1_col2:
-        register_button_ph1 = st.button('Register')
+        register_button_ph1 = st.button('Sign up')
     with placeholder2.container():
         login_form = st.form('Login')
         login_form.subheader('Login 📝')
