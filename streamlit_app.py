@@ -131,7 +131,7 @@ else:
     with col2:
       model_b = st.button('Trading Model')
     with col3:
-      advice_b = st.button('Generate Advice')
+      advice_b = st.button('Generate Advice', key='gen_advice_tab')
     
     placeholder2 = st.empty()
     
