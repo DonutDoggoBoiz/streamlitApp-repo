@@ -52,6 +52,9 @@ login_button_side = st.sidebar.button('Login')
 register_button_side = st.sidebar.button('Register')
 
 if st.session_state['login_status'] == False or login_button_side:
+    ### --- SIDEBAR --- ###
+    login_button_side = st.sidebar.button('Login')
+    register_button_side = st.sidebar.button('Register')
     with placeholder.container():
         login_form = st.form('Login')
         login_form.subheader('Login 📝')
@@ -82,25 +85,27 @@ if st.session_state['login_status'] == False or login_button_side:
                   #st.sidebar.write('Welcome, {}'.format(st.session_state['username']))
                   #st.sidebar.button('Logout', on_click=logout_func)
                   #st.sidebar.button('Reset Password')
-elif register_button_side:
-  with placeholder.container():
-    register_form = st.form('Register')
-    register_form.subheader('Register 📝')
-    new_username = register_form.text_input('Username', placeholder='your username')
-    new_password = register_form.text_input('Password', type='password', placeholder='your password')
-    register_button = register_form.form_submit_button('Register')
-    if register_button:
-      if len(new_username) <= 0:
-        st.warning("Please enter a username")
-      elif len(new_password) <= 0:
-        st.warning("Please enter your password")
-      elif len(new_username) > 0 and len(new_password) > 0:
-        if new_username not in user_list:
-          user_db.put({'username':new_username, 'password':new_password})
-          st.success("Register Successful!")
-          time.sleep(2)
-          rerun()
-        else: st.warning("Username already exists. Please enter a new username")
+    if register_button_side:
+      with placeholder.container():
+        register_form = st.form('Register')
+        register_form.subheader('Register 📝')
+        new_username = register_form.text_input('Username', placeholder='your username')
+        new_password = register_form.text_input('Password', type='password', placeholder='your password')
+        register_button = register_form.form_submit_button('Register')
+        if register_button:
+          if len(new_username) <= 0:
+            st.warning("Please enter a username")
+          elif len(new_password) <= 0:
+            st.warning("Please enter your password")
+          elif len(new_username) > 0 and len(new_password) > 0:
+            if new_username not in user_list:
+              user_db.put({'username':new_username, 'password':new_password})
+              st.success("Register Successful!")
+              time.sleep(2)
+              rerun()
+            else: st.warning("Username already exists. Please enter a new username")
+    if login_button_side:
+      rerun()
 
 else:
     st.sidebar.write('Welcome, {}'.format(st.session_state['username']))
