@@ -8,7 +8,7 @@ from functions import fetch_price_data, observe_price, split_dataset2, set_param
 from functions import set_train_episodes, train_model, train_result, test_model, test_result
 from functions import save_model
 
-from repo_pages.08_generate_advice import generate_advice
+from repo_pages.'08_generate_advice.py' import generate_advice
 
 ### --- DATABASE CONNECTION --- ###
 deta = Deta(st.secrets["deta_key"])
