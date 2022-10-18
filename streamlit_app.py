@@ -152,12 +152,12 @@ else:
     with col1:
       user_manage_b = st.button('User Management')
     with col2:
-      model_b = st.button('Trading Model', on_click=rerun)
+      model_b = st.button('Trading Model')
     with col3:
       advice_b = st.button('Generate Advice', key='gen_advice_tab')
     
-    placeholder_2 = st.empty()    
-        
+    placeholder_2 = st.empty()
+    placeholder_3 = st.empty()
     if user_manage_b or st.session_state['user_manage_b_status']:
       st.session_state['user_manage_b_status'] = True
       st.session_state['model_b_status'] = False
@@ -207,7 +207,7 @@ else:
       st.session_state['model_b_status'] = True
       st.session_state['advice_b_status'] = False
       placeholder_2.empty()
-      with placeholder_2.container():
+      with placeholder_3.container():
         tab_list = ["Select Data 📈", "Set Parameters 💡", "Train Model 🚀", "Test Model 🧪", "Save Model 💾", "PENDING"]
         select_data_tab, set_para_tab, train_tab, test_tab, save_tab, pending_tab = st.tabs(tab_list)
         with select_data_tab:
