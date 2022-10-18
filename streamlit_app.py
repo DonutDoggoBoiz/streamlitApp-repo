@@ -47,10 +47,6 @@ def rerun():
 ### --- INTERFACE --- ###
 placeholder = st.empty()
 
-### --- SIDEBAR --- ###
-login_button_side = st.sidebar.button('Login')
-register_button_side = st.sidebar.button('Register')
-
 if st.session_state['login_status'] == False or login_button_side:
     ### --- SIDEBAR --- ###
     login_button_side = st.sidebar.button('Login')
