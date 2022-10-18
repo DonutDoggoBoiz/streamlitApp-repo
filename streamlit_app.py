@@ -142,7 +142,7 @@ else:
     
     placeholder1 = st.empty()
     
-    ### --- MAIN --- ###
+    ### --- MAIN TAB BUTTON --- ###
     col1, col2, col3 = st.columns(3)
     with col1:
       user_manage_b = st.button('User Management')
@@ -202,10 +202,11 @@ else:
               st.error('#### SELL at current price of {}'.format(last_price) )
       
     if model_b or st.session_state['model_b_status']:
+      placeholder2.empty()
       st.session_state['user_manage_b_status'] = False
       st.session_state['model_b_status'] = True
       st.session_state['advice_b_status'] = False
-      placeholder2.empty()
+      #placeholder2.empty()
       with placeholder2.container():
         ### ------------ INTERFACE ------------ ###
         tab_list = ["Select Data 📈", "Set Parameters 💡", "Train Model 🚀", "Test Model 🧪", "Save Model 💾", "PENDING"]
