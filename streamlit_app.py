@@ -154,7 +154,7 @@ else:
     
     placeholder_2 = st.empty()
     
-    with placeholder1.container():
+    with placeholder_1.container():
         st.write('### Welcome, {}'.format(st.session_state['username']))
         
     if user_manage_b or st.session_state['user_manage_b_status']:
@@ -162,9 +162,11 @@ else:
       st.session_state['model_b_status'] = False
       st.session_state['advice_b_status'] = False
       placeholder_2.empty()
-      with placeholder_2.container():
-        st.write('### User can manage there account HERE')
-        st.write('eg. change name, reset password, etc.')
+      #with placeholder_2.container():
+        #st.write('### User can manage there account HERE')
+        #st.write('eg. change name, reset password, etc.')
+      placeholder_2.container().st.write('### User can manage there account HERE')
+      placeholder_2.container().st.write('eg. change name, reset password, etc.')
         
     if advice_b or st.session_state['advice_b_status']:
       st.session_state['user_manage_b_status'] = False
