@@ -137,15 +137,20 @@ else:
     
     with placeholder1.container():
         st.write('### Welcome, {}'.format(st.session_state['username']))
+        
     if user_manage_b:
+      placeholder2.empty()
       with placeholder2.container():
         st.write('### User can manage there account HERE')
+        
     if advice_b:
+      placeholder2.empty()
       with placeholder2.container():
         generate_advice()
       
     if model_b or st.session_state['model_b_status']:  
       st.session_state['model_b_status'] = True
+      placeholder2.empty()
       with placeholder2.container():
         ### ------------ INTERFACE ------------ ###
         tab_list = ["Select Data 📈", "Set Parameters 💡", "Train Model 🚀", "Test Model 🧪", "Save Model 💾", "PENDING"]
