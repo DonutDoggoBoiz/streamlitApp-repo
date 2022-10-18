@@ -201,11 +201,10 @@ else:
             else:
               st.error('#### SELL at current price of {}'.format(last_price) )
       
-    if model_b or st.session_state['model_b_status']:  
+    if model_b or st.session_state['model_b_status']:
       st.session_state['user_manage_b_status'] = False
       st.session_state['model_b_status'] = True
       st.session_state['advice_b_status'] = False
-      #rerun()
       placeholder2.empty()
       with placeholder2.container():
         ### ------------ INTERFACE ------------ ###
