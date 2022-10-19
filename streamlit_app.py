@@ -260,9 +260,9 @@ else:
 
         with save_tab:
             st.header("Save your model")
-            show_model_list_checkbox = st.checkbox('Show model list')
-            if show_model_list_checkbox:
-              st.write(model_df)
+            #show_model_list_checkbox = st.checkbox('Show model list')
+            #if show_model_list_checkbox:
+              #st.write(model_df)
             save_button = st.button("Save 💾")
             if save_button:
                 save_model()
