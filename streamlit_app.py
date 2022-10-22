@@ -95,10 +95,11 @@ if st.session_state['login_status'] == False:
               st.warning("Please enter your password")
             elif len(username) > 0 and len(password) > 0:
               if username not in user_list:
-                st.warning('User not found. Please check your username')
+                #st.warning('User not found. Please check your username')
+                st.error("Username or Password is incorrect. Please try again")
               else: 
                 if user_frame.loc[user_frame['username'] == username,'password'].values != password:
-                  st.error("Password incorrect. Please try again")
+                  st.error("Username or Password is incorrect. Please try again")
                 else:
                   st.success("Login Successful!")
                   st.session_state['username'] = username
