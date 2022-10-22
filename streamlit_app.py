@@ -28,7 +28,7 @@ if 'username' not in st.session_state:
   st.session_state['username'] = None
 if 'show_register_form' not in st.session_state:
   st.session_state['show_register_form'] = False
-  ### --- COL 3 --- ###
+  ### --- NAV BUTTON STATUS --- ###
 if 'model_b_status' not in st.session_state:
   st.session_state['model_b_status'] = False
 if 'advice_b_status' not in st.session_state:
@@ -77,10 +77,10 @@ if st.session_state['login_status'] == False:
     #login_button_side = st.sidebar.button('Login')
     #register_button_side = st.sidebar.button('Register')
     with placeholder1.container():
-      ph1_col1, ph1_col2 = st.columns(2)
+      ph1_col1, _, _, _, _, _, _, ph1_col8 = st.columns(8)
       with ph1_col1:
         login_button_ph1 = st.button('Sign in')
-      with ph1_col2:
+      with ph1_col8:
         register_button_ph1 = st.button('Sign up')
     with placeholder2.container():
         login_form = st.form('Login')
@@ -104,7 +104,7 @@ if st.session_state['login_status'] == False:
                   st.success("Login Successful!")
                   st.session_state['username'] = username
                   login_func()
-                  time.sleep(2)
+                  time.sleep(4)
                   rerun()
                   #with placeholder.container():
                     #st.write('#### Welcome, {}'.format(st.session_state['username']))
@@ -130,8 +130,8 @@ if st.session_state['login_status'] == False:
             if new_username not in user_list:
               user_db.put({'username':new_username, 'password':new_password})
               st.success("Register Successful!")
-              time.sleep(2)
               st.session_state['show_register_form'] = False
+              time.sleep(4)
               rerun()
             else: st.warning("Username already exists. Please enter a new username")
     if login_button_ph1:
