@@ -29,9 +29,9 @@ if 'username' not in st.session_state:
 if 'show_register_form' not in st.session_state:
   st.session_state['show_register_form'] = False
   ### --- NAV BUTTON STATUS --- ###
-if 'sign_in_b_disable' not is st.session_state:
+if 'sign_in_b_disable' not in st.session_state:
   st.session_state['sign_in_b_disable'] = True
-if 'sign_up_b_disable' not is st.session_state:
+if 'sign_up_b_disable' not in st.session_state:
   st.session_state['sign_up_b_disable'] = False
 
 if 'model_b_status' not in st.session_state:
