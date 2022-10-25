@@ -204,13 +204,14 @@ else:
                               y = alt.Y('Close', scale=alt.Scale(domain=[df_price['Close'].min()-10, df_price['Close'].max()+10]) ) ,
                               tooltip=['Date','Close'])
                       .interactive() )
+            st.write('#### Model performance compared to actual trading data in the past year')
             st.altair_chart(c, use_container_width=True)
             rand_num = np.random.randn()
             st.write('Model recommend: ')
             if rand_num > 0:
-              st.success('#### BUY at current price of {}'.format(last_price) )
+              st.success('#### BUY at current price of {} THB per share'.format(last_price) )
             else:
-              st.error('#### SELL at current price of {}'.format(last_price) )
+              st.error('#### SELL at current price of {} THB per share'.format(last_price) )
       
     if model_b or model_side_b or st.session_state['model_b_status']:
       st.session_state['user_manage_b_status'] = False
@@ -243,6 +244,8 @@ else:
 
         with train_tab:
             st.header("Train your model with train set 🚀")
+            st.write('Select Model: ---')
+            st.write('Model report: ---')
             col1 , col2 = st.columns(2)
             with col1:
                 set_train_episodes()
@@ -265,12 +268,16 @@ else:
                 test_model()
                 if st.session_state['test_button_status']:
                   test_result()
+                  st.write('test report: ---')
+                  st.write('parameters: ---')
+                  st.write('train_episodes: ---')
 
         with save_tab:
             st.header("Save your model")
             #show_model_list_checkbox = st.checkbox('Show model list')
             #if show_model_list_checkbox:
               #st.write(model_df)
+            st.write('Model Report: ---')
             save_button = st.button("Save 💾")
             if save_button:
                 save_model()
