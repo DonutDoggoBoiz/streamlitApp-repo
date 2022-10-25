@@ -64,7 +64,7 @@ def observe_price():
           .encode(x = alt.X('Date') ,
                   y = alt.Y('Close', title='Price', scale=alt.Scale(domain=[df_price['Close'].min()-10, df_price['Close'].max()+10]) ) ,
                   tooltip=[alt.Tooltip('Date', title='Date'), 
-                           alt.Tooltip('Close', title='Price')
+                           alt.Tooltip('Close', title='Price (THB)')
                           ]
                  )
           .interactive()
@@ -95,7 +95,7 @@ def split_dataset2():
                       y = alt.Y('Close',title='Price', scale=alt.Scale(domain=[df_price['Close'].min()-10, df_price['Close'].max()+10]) ) ,
                       color = 'split' ,
                       tooltip=[alt.Tooltip('Date', title='Date'), 
-                            alt.Tooltip('Close', title='Price'),
+                            alt.Tooltip('Close', title='Price (THB)'),
                             alt.Tooltip('split', title='Dataset')
                           ] 
                         ).interactive()
