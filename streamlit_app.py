@@ -183,7 +183,7 @@ else:
       st.session_state['advice_b_status'] = True
       placeholder_2.empty()
       with placeholder_2.container():
-          st.markdown("### Generate Advice 📈 ..")
+          st.markdown("### Generate Investment Advice 📈")
           selected_model = st.selectbox('Choose your model',
                                         options=['BBL_01', 'BBL_02', 'PTT_07'])
           generate_advice_button = st.button('Generate Advice')
