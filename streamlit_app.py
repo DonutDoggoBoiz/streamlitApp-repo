@@ -207,7 +207,7 @@ else:
             st.write('#### Model performance compared to actual trading data in the past year')
             st.altair_chart(c, use_container_width=True)
             rand_num = np.random.randn()
-            st.write('Model recommend: ')
+            st.write('Model advice: ')
             if rand_num > 0:
               st.success('#### BUY at current price of {} THB per share'.format(last_price) )
             else:
