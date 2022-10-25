@@ -67,6 +67,10 @@ def logout_func():
   st.session_state['train_button_status'] = False
   st.session_state['test_button_status'] = False
 
+def dis_login_button():
+  st.session_state['sign_in_b_disable'] = True
+  st.session_state['sign_up_b_disable'] = False
+
 def dis_regis_button():
   st.session_state['sign_in_b_disable'] = False
   st.session_state['sign_up_b_disable'] = True
@@ -85,7 +89,7 @@ if st.session_state['login_status'] == False:
     with placeholder1.container():
       ph1_col1, _, ph1_col3 = st.columns([1,5,1])
       with ph1_col1:
-        login_button_ph1 = st.button('Sign in', disabled=st.session_state['sign_in_b_disable'])
+        login_button_ph1 = st.button('Sign in', disabled=st.session_state['sign_in_b_disable'], on_click=dis_login_button)
       with ph1_col3:
         register_button_ph1 = st.button('Sign up', disabled=st.session_state['sign_up_b_disable'], on_click=dis_regis_button)
     with placeholder2.container():
@@ -142,8 +146,6 @@ if st.session_state['login_status'] == False:
               rerun()
             else: st.warning("Username already exists. Please enter a new username")
     if login_button_ph1:
-      st.session_state['sign_in_b_disable'] = True
-      st.session_state['sign_up_b_disable'] = False
       st.session_state['show_register_form'] = False
       rerun()
 
