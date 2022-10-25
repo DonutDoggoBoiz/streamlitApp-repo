@@ -77,10 +77,10 @@ def observe_price():
   split_point = st.slider('Select the split point between Train set and Test set:', 0, int(df_length), int(df_length/2))
   train_size_pct = (split_point/df_length)*100
   test_size_pct = 100-train_size_pct
-  st.write('Dataset will be split into {} records ({.2f}%) as training set and {} records ({.2f}%) as test set'.format(split_point, 
+  st.write('Dataset will be split into {} records ({:.2f}%) as training set and {} records ({:.2f}%) as test set'.format(split_point, 
                                                                                                                        train_size_pct,
                                                                                                                        df_length-split_point,
-                                                                                                                      test_size_pct) )
+                                                                                                                       test_size_pct) )
   #st.write('train set will be considered as {:.2f}% of dataset while the other {:.2f}% is test set'.format(train_size_pct,test_size_pct) )
   #st.write('the training set is {:.2f}% of the dataset while the test set is {:.2f}%'.format(train_size_pct,test_size_pct) )
   #return split_point
