@@ -406,7 +406,7 @@ def test_model():
           # print ("-----------------------------------------")
           #print ("Total Reward: {:.2f} , Account_Balance: {:2f}".format(acc_reward, account_balance) )
           #print ("-----------------------------------------")
-          st.write("---Episode {} of {} done...".format(i+1, x_episodes) )
+          #st.write("---Episode {} of {} done...".format(i+1, x_episodes) )
           st.write("---Total Reward: {:.2f} | Account_Balance: {:.2f}".format(acc_reward, account_balance) )
         ### --- end of 1 episode --- ###
 
