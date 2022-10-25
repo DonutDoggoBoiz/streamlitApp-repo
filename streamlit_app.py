@@ -153,7 +153,7 @@ else:
         st.write('### Welcome, {}'.format(st.session_state['username']))
         
     ### --- MAIN TAB BUTTON --- ###
-    col1, _, col2, _, col3, _, col4 = st.columns([1,1,2,1,2,1,2)
+    col1, _, col2, _, col3, _, col4 = st.columns([1,1,2,1,2,1,2])
     with col1:
       st.write('### MENU:')                                          
     with col2:
