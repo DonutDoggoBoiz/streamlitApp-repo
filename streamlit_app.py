@@ -173,7 +173,7 @@ else:
       with placeholder_2.container():
         st.write('### User can manage there account HERE')
         st.write('eg. change name, reset password, etc.')
-        reset_pass_button = st.sidebar.button('Reset Password')                                        
+        reset_pass_button = st.button('Reset Password')                                        
         
     if advice_b or advice_side_b or st.session_state['advice_b_status']:
       st.session_state['user_manage_b_status'] = False
