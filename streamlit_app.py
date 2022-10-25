@@ -70,6 +70,7 @@ def logout_func():
 def dis_login_button():
   st.session_state['sign_in_b_disable'] = True
   st.session_state['sign_up_b_disable'] = False
+  st.session_state['show_register_form'] = False
 
 def dis_regis_button():
   st.session_state['sign_in_b_disable'] = False
@@ -79,10 +80,7 @@ def rerun():
   st.experimental_rerun()
  
   
-### --- INTERFACE --- ###
-#placeholder1 = st.empty()
-#placeholder2 = st.empty()
-
+### --- NOT LOGGED IN --- ###
 if st.session_state['login_status'] == False:
     placeholder1 = st.empty()
     placeholder2 = st.empty()
@@ -116,15 +114,8 @@ if st.session_state['login_status'] == False:
                   login_func()
                   time.sleep(4)
                   rerun()
-                  #with placeholder.container():
-                    #st.write('#### Welcome, {}'.format(st.session_state['username']))
-                    #st.button("Let's start!")
-                  ### --- SIDEBAR --- ###
-                  #st.sidebar.write('Welcome, {}'.format(st.session_state['username']))
-                  #st.sidebar.button('Logout', on_click=logout_func)
-                  #st.sidebar.button('Reset Password')
+   
     if register_button_ph1 or st.session_state['show_register_form']:
-      st.session_state['sign_in_b_disable'] = False
       st.session_state['show_register_form'] = True
       with placeholder2.container():
         register_form = st.form('Register')
@@ -146,17 +137,17 @@ if st.session_state['login_status'] == False:
               rerun()
             else: st.warning("Username already exists. Please enter a new username")
     if login_button_ph1:
-      st.session_state['show_register_form'] = False
-      rerun()
-
+      #st.session_state['show_register_form'] = False
+      #rerun()
+      
+### --- LOGGED IN --- ###
 else:
     st.sidebar.write('Welcome, {}'.format(st.session_state['username']))
     ### --- SIDEBAR --- ###
     logout_button_side = st.sidebar.button('Logout', on_click=logout_func)
-    #reset_pass_button_side = st.sidebar.button('Reset Password')
     st.sidebar.write('Menu:')
-    user_manage_side_b = st.sidebar.button('User Management', key='user_manage_side')
-    model_side_b = st.sidebar.button('Trading Model', key='model_side_b')
+    user_manage_side_b = st.sidebar.button('Manage Account', key='user_manage_side')
+    model_side_b = st.sidebar.button('Develop Model', key='model_side_b')
     advice_side_b = st.sidebar.button('Generate Advice', key='advice_side_b')
     
     placeholder_1 = st.empty()
@@ -168,9 +159,9 @@ else:
     with col1:
       st.write('##### MENU:')                                          
     with col2:
-      user_manage_b = st.button('User Management')
+      user_manage_b = st.button('Manage Account')
     with col3:
-      model_b = st.button('Trading Model')
+      model_b = st.button('Develop Model')
     with col4:
       advice_b = st.button('Generate Advice', key='gen_advice_tab')
     
@@ -230,7 +221,7 @@ else:
         tab_list = ["Select Data 📈", "Set Parameters 💡", "Train Model 🚀", "Test Model 🧪", "Save Model 💾", "PENDING"]
         select_data_tab, set_para_tab, train_tab, test_tab, save_tab, pending_tab = st.tabs(tab_list)
         with select_data_tab:
-            st.header("Select stock and price range 📈")
+            st.header("Select stock and time period 📈")
             fetch_price_data()
             #observe_button = st.checkbox('View Dataset 🔍')
             observe_button = st.button('View Dataset 🔍')
