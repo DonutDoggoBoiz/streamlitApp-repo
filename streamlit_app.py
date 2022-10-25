@@ -68,6 +68,7 @@ def logout_func():
   st.session_state['test_button_status'] = False
 
 def dis_regis_button():
+  st.session_state['sign_in_b_disable'] = False
   st.session_state['sign_up_b_disable'] = True
   
 def rerun():
