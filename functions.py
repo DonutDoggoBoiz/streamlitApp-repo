@@ -112,36 +112,41 @@ def split_dataset2():
 def set_parameters():
   global agent_name, agent_gamma, agent_epsilon, agent_epsilon_dec, agent_epsilon_end, agent_lr, initial_balance, trading_size_pct, commission_fee_pct
   st.write("##### Model parameters")
-  agent_name = st.text_input("Model name: ", "model_01")
-  agent_gamma = st.slider("Gamma: ", 0.00, 1.00, 0.90)
-  agent_epsilon = st.slider("Starting epsilon (random walk probability): ", 0.00, 1.00, 1.00)
-  agent_epsilon_dec = st.select_slider("Epsilon decline rate (random walk probability decline): ",
-                                       options=[0.001,0.002,0.005,0.010], value=0.001)
-  agent_epsilon_end = st.slider("Minimum epsilon: ", 0.01, 0.10, 0.01)
-  agent_lr = st.select_slider("Learning rate: ", options=[0.001, 0.002, 0.005, 0.010], value=0.001)
+  with st.form('set parameter form'):
+    agent_name = st.text_input("Model name: ", "model_01")
+    agent_gamma = st.slider("Gamma: ", 0.00, 1.00, 0.90)
+    agent_epsilon = st.slider("Starting epsilon (random walk probability): ", 0.00, 1.00, 1.00)
+    agent_epsilon_dec = st.select_slider("Epsilon decline rate (random walk probability decline): ",
+                                         options=[0.001,0.002,0.005,0.010], value=0.001)
+    agent_epsilon_end = st.slider("Minimum epsilon: ", 0.01, 0.10, 0.01)
+    agent_lr = st.select_slider("Learning rate: ", options=[0.001, 0.002, 0.005, 0.010], value=0.001)
 
-  st.write("##### Trading parameters")
-  initial_balance = st.number_input("Initial account balance (THB):", min_value=0, step=1000, value=1000000)
-  trading_size_pct = st.slider("Trading size as a percentage of initial account balance (%):", 0, 100, 10)
-  trade_size = initial_balance * trading_size_pct / 100
-  st.write('{}% of initial investment is {:,.0f} THB'.format(trading_size_pct, trade_size))
-  commission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, value=0.157, format='%1.3f')
+    st.write("##### Trading parameters")
+    initial_balance = st.number_input("Initial account balance (THB):", min_value=0, step=1000, value=1000000)
+    trading_size_pct = st.slider("Trading size as a percentage of initial account balance (%):", 0, 100, 10)
+    trade_size = initial_balance * trading_size_pct / 100
+    st.write('{}% of initial investment is {:,.0f} THB'.format(trading_size_pct, trade_size))
+    commission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, value=0.157, format='%1.3f')
+    
+    set_param_button = st.form_submit_button("Set Parameters")
+    if set_param_button:
+      st.success('Set parameters successful!  Please proceed to "Train Model" tab')
 
-  set_param_button = st.button("Set Parameters")
-  if set_param_button:
-          st.write("Your model is successfully created with these parameters...")
-          st.write("##### Model parameters")
-          st.write("Model name: {}".format(agent_name) )
-          st.write("Gamma: {}".format(agent_gamma) )
-          st.write("Starting epsilon: {}".format(agent_epsilon) )
-          st.write("Epsilon decline rate: {}".format(agent_epsilon_dec) )
-          st.write("Minimum epsilon: {}".format(agent_epsilon_end) )
-          st.write("Learning rate: {}".format(agent_lr) )
+  #set_param_button = st.button("Set Parameters")
+  #if set_param_button:
+   #       st.write("Your model is successfully created with these parameters...")
+    #      st.write("##### Model parameters")
+     #     st.write("Model name: {}".format(agent_name) )
+      #    st.write("Gamma: {}".format(agent_gamma) )
+       #   st.write("Starting epsilon: {}".format(agent_epsilon) )
+        #  st.write("Epsilon decline rate: {}".format(agent_epsilon_dec) )
+         # st.write("Minimum epsilon: {}".format(agent_epsilon_end) )
+          #st.write("Learning rate: {}".format(agent_lr) )
 
-          st.write("##### Trading parameters")
-          st.write("Initial account balance:      {} ฿".format(initial_balance) )
-          st.write("Trading size:                 {}%".format(trading_size_pct) )
-          st.write("Commission fee:               {}%".format(commission_fee_pct) )
+          #st.write("##### Trading parameters")
+          #st.write("Initial account balance:      {} ฿".format(initial_balance) )
+          #st.write("Trading size:                 {}%".format(trading_size_pct) )
+          #st.write("Commission fee:               {}%".format(commission_fee_pct) )
 
 ### ------ TRAINING MODULE ------ ###
 def set_train_episodes():
