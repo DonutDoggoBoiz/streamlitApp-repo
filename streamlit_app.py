@@ -155,7 +155,7 @@ else:
     ### --- MAIN TAB BUTTON --- ###
     col1, _, col2, _, col3, _, col4 = st.columns([1,1,2,1,2,1,2])
     with col1:
-      st.write('### MENU:')                                          
+      st.write('##### MENU:')                                          
     with col2:
       user_manage_b = st.button('User Management')
     with col3:
