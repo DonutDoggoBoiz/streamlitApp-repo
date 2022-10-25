@@ -66,6 +66,9 @@ def logout_func():
   st.session_state['split_button_status'] = False
   st.session_state['train_button_status'] = False
   st.session_state['test_button_status'] = False
+
+def dis_regis_button():
+  st.session_state['sign_up_b_disable'] = True
   
 def rerun():
   st.experimental_rerun()
@@ -78,15 +81,12 @@ def rerun():
 if st.session_state['login_status'] == False:
     placeholder1 = st.empty()
     placeholder2 = st.empty()
-    ### --- SIDEBAR --- ###
-    #login_button_side = st.sidebar.button('Login')
-    #register_button_side = st.sidebar.button('Register')
     with placeholder1.container():
       ph1_col1, _, ph1_col3 = st.columns([1,5,1])
       with ph1_col1:
         login_button_ph1 = st.button('Sign in', disabled=st.session_state['sign_in_b_disable'])
       with ph1_col3:
-        register_button_ph1 = st.button('Sign up', disabled=st.session_state['sign_up_b_disable'])
+        register_button_ph1 = st.button('Sign up', disabled=st.session_state['sign_up_b_disable'], on_click=dis_regis_button)
     with placeholder2.container():
         login_form = st.form('Login')
         login_form.subheader('Login 📝')
@@ -120,7 +120,6 @@ if st.session_state['login_status'] == False:
                   #st.sidebar.button('Reset Password')
     if register_button_ph1 or st.session_state['show_register_form']:
       st.session_state['sign_in_b_disable'] = False
-      st.session_state['sign_up_b_disable'] = True
       st.session_state['show_register_form'] = True
       with placeholder2.container():
         register_form = st.form('Register')
@@ -256,7 +255,6 @@ else:
             with col2:
                 st.write('  ')
                 st.write('  ')
-                #train_button = st.checkbox("Start Training 🏃")
                 train_button = st.button("Start Training 🏃")
             if train_button: #or st.session_state['train_button_status']:
               st.session_state['train_button_status'] = True
@@ -266,7 +264,6 @@ else:
 
         with test_tab:
             st.header("Test your model on test set 🧪")
-            #test_button = st.checkbox("Start Testing 🏹")
             test_button = st.button("Start Testing 🏹")
             if test_button:
                 st.session_state['test_button_status'] = True
