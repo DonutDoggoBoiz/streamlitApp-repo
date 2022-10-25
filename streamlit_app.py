@@ -77,7 +77,7 @@ if st.session_state['login_status'] == False:
     #login_button_side = st.sidebar.button('Login')
     #register_button_side = st.sidebar.button('Register')
     with placeholder1.container():
-      ph1_col1, _, ph1_col3 = st.columns([1,4,1])
+      ph1_col1, _, ph1_col3 = st.columns([1,5,1])
       with ph1_col1:
         login_button_ph1 = st.button('Sign in')
       with ph1_col3:
