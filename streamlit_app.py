@@ -29,6 +29,11 @@ if 'username' not in st.session_state:
 if 'show_register_form' not in st.session_state:
   st.session_state['show_register_form'] = False
   ### --- NAV BUTTON STATUS --- ###
+if 'sign_in_b_disable' not is st.session_state:
+  st.session_state['sign_in_b_disable'] = True
+if 'sign_up_b_disable' not is st.session_state:
+  st.session_state['sign_up_b_disable'] = False
+
 if 'model_b_status' not in st.session_state:
   st.session_state['model_b_status'] = False
 if 'advice_b_status' not in st.session_state:
@@ -79,9 +84,9 @@ if st.session_state['login_status'] == False:
     with placeholder1.container():
       ph1_col1, _, ph1_col3 = st.columns([1,5,1])
       with ph1_col1:
-        login_button_ph1 = st.button('Sign in')
+        login_button_ph1 = st.button('Sign in', disabled=st.session_state['sign_in_b_disable'])
       with ph1_col3:
-        register_button_ph1 = st.button('Sign up')
+        register_button_ph1 = st.button('Sign up', disabled=st.session_state['sign_up_b_disable'])
     with placeholder2.container():
         login_form = st.form('Login')
         login_form.subheader('Login 📝')
@@ -114,6 +119,8 @@ if st.session_state['login_status'] == False:
                   #st.sidebar.button('Logout', on_click=logout_func)
                   #st.sidebar.button('Reset Password')
     if register_button_ph1 or st.session_state['show_register_form']:
+      st.session_state['sign_in_b_disable'] = False
+      st.session_state['sign_up_b_disable'] = True
       st.session_state['show_register_form'] = True
       with placeholder2.container():
         register_form = st.form('Register')
@@ -135,6 +142,8 @@ if st.session_state['login_status'] == False:
               rerun()
             else: st.warning("Username already exists. Please enter a new username")
     if login_button_ph1:
+      st.session_state['sign_in_b_disable'] = True
+      st.session_state['sign_up_b_disable'] = False
       st.session_state['show_register_form'] = False
       rerun()
 
