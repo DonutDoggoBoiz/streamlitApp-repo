@@ -62,7 +62,7 @@ def observe_price():
                 )
           .mark_line()
           .encode(x = alt.X('Date') ,
-                  y = alt.Y('Close', title='Price', scale=alt.Scale(domain=[df_price['Close'].min()-10, df_price['Close'].max()+10]) ) ,
+                  y = alt.Y('Close', title='Price (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-10, df_price['Close'].max()+10]) ) ,
                   tooltip=[alt.Tooltip('Date', title='Date'), 
                            alt.Tooltip('Close', title='Price (THB)')
                           ]
@@ -92,7 +92,7 @@ def split_dataset2():
   train_prices = df_price_train['Close'].to_numpy()
   test_prices = df_price_test['Close'].to_numpy()
   alt_split = alt.Chart(df_price.reset_index()).mark_line().encode(x = alt.X('Date'), 
-                      y = alt.Y('Close',title='Price', scale=alt.Scale(domain=[df_price['Close'].min()-10, df_price['Close'].max()+10]) ) ,
+                      y = alt.Y('Close',title='Price (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-10, df_price['Close'].max()+10]) ) ,
                       color = 'split' ,
                       tooltip=[alt.Tooltip('Date', title='Date'), 
                             alt.Tooltip('Close', title='Price (THB)'),
@@ -107,9 +107,6 @@ def split_dataset2():
 ### ------ MACHINE LEARNING MODULE ------ ###
 ## --- parameters setting --- ##
 def set_parameters():
-# st.title('Create DQN Trading Model 💡')
-# st.sidebar.markdown('## Create Model 💡')
-  #st.write("#### Set these following parameters for your trading model")
   global agent_name, agent_gamma, agent_epsilon, agent_epsilon_dec, agent_epsilon_end, agent_lr, initial_balance, trading_size_pct, commission_fee_pct
   st.write("##### Model parameters")
   agent_name = st.text_input("Model name: ", "model_01")
@@ -246,9 +243,6 @@ def train_model():
         account_balance_history.append(account_balance)
 
         if done: 
-          # print ("-----------------------------------------")
-          #print ("Total Reward: {:.2f} , Account_Balance: {:2f}".format(acc_reward, account_balance) )
-          #print ("-----------------------------------------")
           st.write("---Episode {} of {} done...".format(i+1, n_episodes) )
           st.write("---Total Reward: {:.2f} | Account_Balance: {:.2f}".format(acc_reward, account_balance) )
         ### --- end of 1 episode --- ###
@@ -339,7 +333,7 @@ def test_model():
   for i in range(x_episodes):
       ### --- start episode --- ###
       #print ("---------- Episode " + str(i+1) + " / " + str(x_episodes) + ' ----------' )
-      st.write("--- Episode " + str(i+1) + " / " + str(x_episodes) + ' ---' )
+      #st.write("--- Episode " + str(i+1) + " / " + str(x_episodes) + ' ---' )
 
       # slider window
       start_tick = window_size
