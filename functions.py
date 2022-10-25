@@ -62,7 +62,7 @@ def observe_price():
                 )
           .mark_line()
           .encode(x = alt.X('Date') ,
-                  y = alt.Y('Close', title='Price (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-10, df_price['Close'].max()+10]) ) ,
+                  y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-10, df_price['Close'].max()+10]) ) ,
                   tooltip=[alt.Tooltip('Date', title='Date'), 
                            alt.Tooltip('Close', title='Price (THB)')
                           ]
@@ -92,7 +92,7 @@ def split_dataset2():
   train_prices = df_price_train['Close'].to_numpy()
   test_prices = df_price_test['Close'].to_numpy()
   alt_split = alt.Chart(df_price.reset_index()).mark_line().encode(x = alt.X('Date'), 
-                      y = alt.Y('Close',title='Price (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-10, df_price['Close'].max()+10]) ) ,
+                      y = alt.Y('Close',title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-10, df_price['Close'].max()+10]) ) ,
                       color = 'split' ,
                       tooltip=[alt.Tooltip('Date', title='Date'), 
                             alt.Tooltip('Close', title='Price (THB)'),
