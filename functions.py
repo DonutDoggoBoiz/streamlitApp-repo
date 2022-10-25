@@ -111,8 +111,8 @@ def split_dataset2():
 ## --- parameters setting --- ##
 def set_parameters():
   global agent_name, agent_gamma, agent_epsilon, agent_epsilon_dec, agent_epsilon_end, agent_lr, initial_balance, trading_size_pct, commission_fee_pct
-  st.write("##### Model parameters")
   with st.form('set parameter form'):
+    st.write("##### Model parameters")
     agent_name = st.text_input("Model name: ", "model_01")
     agent_gamma = st.slider("Gamma: ", 0.00, 1.00, 0.90)
     agent_epsilon = st.slider("Starting epsilon (random walk probability): ", 0.00, 1.00, 1.00)
