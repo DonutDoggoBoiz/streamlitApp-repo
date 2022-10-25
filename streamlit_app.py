@@ -142,24 +142,30 @@ else:
     st.sidebar.write('Welcome, {}'.format(st.session_state['username']))
     ### --- SIDEBAR --- ###
     logout_button_side = st.sidebar.button('Logout', on_click=logout_func)
-    reset_pass_button_side = st.sidebar.button('Reset Password')
+    #reset_pass_button_side = st.sidebar.button('Reset Password')
+    st.sidebar.write('Menu:')
+    user_manage_side_b = st.sidebar.button('User Management', key='user_manage_side')
+    model_side_b = st.sidebar.button('Trading Model', key='model_side_b')
+    advice_side_b = st.sidebar.button('Generate Advice', key='advice_side_b')
     
     placeholder_1 = st.empty()
     with placeholder_1.container():
         st.write('### Welcome, {}'.format(st.session_state['username']))
         
     ### --- MAIN TAB BUTTON --- ###
-    col1, col2, col3 = st.columns(3)
+    col1, _, col2, _, col3, _, col4 = st.columns([1,1,2,1,2,1,2)
     with col1:
-      user_manage_b = st.button('User Management')
+      st.write('### MENU:')                                          
     with col2:
-      model_b = st.button('Trading Model')
+      user_manage_b = st.button('User Management')
     with col3:
+      model_b = st.button('Trading Model')
+    with col4:
       advice_b = st.button('Generate Advice', key='gen_advice_tab')
     
     placeholder_2 = st.empty()
     placeholder_3 = st.empty()
-    if user_manage_b or st.session_state['user_manage_b_status']:
+    if user_manage_b or user_manage_side_b or st.session_state['user_manage_b_status']:
       st.session_state['user_manage_b_status'] = True
       st.session_state['model_b_status'] = False
       st.session_state['advice_b_status'] = False
@@ -167,8 +173,9 @@ else:
       with placeholder_2.container():
         st.write('### User can manage there account HERE')
         st.write('eg. change name, reset password, etc.')
+        reset_pass_button = st.sidebar.button('Reset Password')                                        
         
-    if advice_b or st.session_state['advice_b_status']:
+    if advice_b or advice_side_b or st.session_state['advice_b_status']:
       st.session_state['user_manage_b_status'] = False
       st.session_state['model_b_status'] = False
       st.session_state['advice_b_status'] = True
@@ -203,7 +210,7 @@ else:
             else:
               st.error('#### SELL at current price of {}'.format(last_price) )
       
-    if model_b or st.session_state['model_b_status']:
+    if model_b or model_side_b or st.session_state['model_b_status']:
       st.session_state['user_manage_b_status'] = False
       st.session_state['model_b_status'] = True
       st.session_state['advice_b_status'] = False
