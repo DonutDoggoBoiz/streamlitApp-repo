@@ -137,8 +137,8 @@ if st.session_state['login_status'] == False:
               rerun()
             else: st.warning("Username already exists. Please enter a new username")
     if login_button_ph1:
-      #st.session_state['show_register_form'] = False
-      #rerun()
+      st.session_state['show_register_form'] = False
+      rerun()
       
 ### --- LOGGED IN --- ###
 else:
