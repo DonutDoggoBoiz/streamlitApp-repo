@@ -249,7 +249,7 @@ else:
 
         with set_para_tab:
             st.header("Set parameters for your trading model 💡")
-                        set_parameters()
+            set_parameters()
 
         with train_tab:
             st.header("Train your model with train set 🚀")
