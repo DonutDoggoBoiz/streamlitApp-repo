@@ -299,9 +299,8 @@ else:
             #show_model_list_checkbox = st.checkbox('Show model list')
             #if show_model_list_checkbox:
               #st.write(model_df)
-            st.write('Model Report: ---')
             with st.container():
-              st.write('#### Model Information')
+              st.write('Model Information:')
               st.write("##### Model Parameters")
               st.write("Model name: {}".format(to_train_model) )
               st.write("Gamma: {}".format(0.99) )
