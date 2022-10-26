@@ -176,6 +176,11 @@ else:
       placeholder_2.empty()
       with placeholder_2.container():
         st.write('#### Account Management')
+        with st.form('edit_profile'):
+          st.write('##### Edit Profile')
+          new_name = st.text_input('Name', placeholder='Anthony')
+          new_email = st.text_input('Email', placeholder='anthony123@somewhere.com')
+          edit_profile_button = st.form_submit_button('Edit Profile')
         with st.form('change_password'):
           st.write('##### Change Password')
           old_password = st.text_input('Old Password', type='password', placeholder='your old password')
