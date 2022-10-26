@@ -167,16 +167,22 @@ else:
     
     placeholder_2 = st.empty()
     placeholder_3 = st.empty()
+    
+    ### --- MANAGE ACCOUNT MENU --- ###
     if user_manage_b or user_manage_side_b or st.session_state['user_manage_b_status']:
       st.session_state['user_manage_b_status'] = True
       st.session_state['model_b_status'] = False
       st.session_state['advice_b_status'] = False
       placeholder_2.empty()
       with placeholder_2.container():
-        st.write('### User can manage there account HERE')
-        st.write('eg. change name, reset password, etc.')
-        reset_pass_button = st.button('Reset Password')                                        
-        
+        st.write('#### Account Management')
+        with st.form('change_password'):
+          st.write('##### Change Password')
+          old_password = st.text_input('Old Password', type='password', placeholder='your old password')
+          new_password = st.text_input('New Password', type='password', placeholder='your new password')
+          change_pass_button = st.form_submit_button('Change Password')
+          
+    ### --- GENERATE ADVICE MENU --- ###
     if advice_b or advice_side_b or st.session_state['advice_b_status']:
       st.session_state['user_manage_b_status'] = False
       st.session_state['model_b_status'] = False
@@ -212,7 +218,8 @@ else:
               st.success('#### BUY at current price of {} THB per share'.format(last_price) )
             else:
               st.error('#### SELL at current price of {} THB per share'.format(last_price) )
-      
+    
+    ### --- DEVELOP MODEL MENU --- ###
     if model_b or model_side_b or st.session_state['model_b_status']:
       st.session_state['user_manage_b_status'] = False
       st.session_state['model_b_status'] = True
