@@ -249,9 +249,21 @@ else:
 
         with set_para_tab:
             st.header("Set parameters for your trading model 💡")
-            #set_param_button = st.checkbox("Set Parameters")
-            #if set_param_button:
-              #set_parameters()
+            to_train_model = st.selectbox('Choose your model', options=['BBL_01', 'BBL_02', 'PTT_07'])
+            with st.expander('Model Information'):
+              st.write("##### Model Parameters")
+              st.write("Model name: {}".format(to_train_model) )
+              st.write("Gamma: {}".format(0.99) )
+              st.write("Starting epsilon: {:.2f}".format(1.00) )
+              st.write("Epsilon decline rate: {:.4f}".format(0.005) )
+              st.write("Minimum epsilon: {:.2f}".format(0.01) )
+              st.write("Learning rate: {:.4f}".format(0.001) )
+              st.write('  ')
+              st.write("##### Trading Parameters")
+              st.write("Initial account balance:  {:,} ฿".format(1500000) )
+              st.write("Trading size (%):  {}%".format(10) )
+              st.write("Trading size (THB):  {:,}'.format(150000) )
+              st.write("Commission fee:  {:.3f}%".format(0.157) )
             set_parameters()
 
         with train_tab:
