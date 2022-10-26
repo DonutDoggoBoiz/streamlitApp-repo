@@ -325,7 +325,7 @@ else:
             if save_button:
                 #save_model()
                 time.sleep(2)
-                st.success("Your model is saved successfully")
+                st.success('Your model is saved successfully. Proceed to "Generate Advice" menu to use your model')
 
         with pending_tab:
             st.header("PENDING adjustment...")
