@@ -254,7 +254,7 @@ else:
 
         with train_tab:
             st.header("Train your model with train set 🚀")
-            to_train_model = st.selectbox('Choose your model', options=['BBL_01', 'BBL_02', 'PTT_07'])
+            to_train_model = st.selectbox('Choose your model to train:', options=['BBL_01', 'BBL_02', 'PTT_07'])
             with st.expander('Model Information'):
               st.write("##### Model Parameters")
               st.write("Model name: {}".format(to_train_model) )
