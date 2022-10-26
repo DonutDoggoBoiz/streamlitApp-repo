@@ -262,7 +262,7 @@ else:
               st.write("##### Trading Parameters")
               st.write("Initial account balance:  {:,} ฿".format(1500000) )
               st.write("Trading size (%):  {}%".format(10) )
-              st.write("Trading size (THB):  {:,}'.format(150000) )
+              st.write("Trading size (THB):  {:,}".format(150000) )
               st.write("Commission fee:  {:.3f}%".format(0.157) )
             set_parameters()
 
