@@ -214,9 +214,9 @@ else:
             for i in range(len(df_price)):
               rand_num = np.random.randn()
               if rand_num >= 0:
-                pos_list.append('buy)
+                pos_list.append('buy')
               else:
-                pos_list.append('sell)
+                pos_list.append('sell')
                 
             expos_list = []
             for i in range(len(df_price)):
