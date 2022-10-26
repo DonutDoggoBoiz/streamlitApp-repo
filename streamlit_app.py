@@ -249,6 +249,10 @@ else:
 
         with set_para_tab:
             st.header("Set parameters for your trading model 💡")
+                        set_parameters()
+
+        with train_tab:
+            st.header("Train your model with train set 🚀")
             to_train_model = st.selectbox('Choose your model', options=['BBL_01', 'BBL_02', 'PTT_07'])
             with st.expander('Model Information'):
               st.write("##### Model Parameters")
@@ -264,12 +268,6 @@ else:
               st.write("Trading size (%):  {}%".format(10) )
               st.write("Trading size (THB):  {:,}".format(150000) )
               st.write("Commission fee:  {:.3f}%".format(0.157) )
-            set_parameters()
-
-        with train_tab:
-            st.header("Train your model with train set 🚀")
-            st.write('Select Model: ---')
-            st.write('Model report: ---')
             col1 , col2 = st.columns(2)
             with col1:
                 set_train_episodes()
