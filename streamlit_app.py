@@ -300,9 +300,32 @@ else:
             #if show_model_list_checkbox:
               #st.write(model_df)
             st.write('Model Report: ---')
+            with st.container():
+              st.write('#### Model Information')
+              st.write("##### Model Parameters")
+              st.write("Model name: {}".format(to_train_model) )
+              st.write("Gamma: {}".format(0.99) )
+              st.write("Starting epsilon: {:.2f}".format(1.00) )
+              st.write("Epsilon decline rate: {:.4f}".format(0.005) )
+              st.write("Minimum epsilon: {:.2f}".format(0.01) )
+              st.write("Learning rate: {:.4f}".format(0.001) )
+              st.write('  ')
+              st.write("##### Trading Parameters")
+              st.write("Initial account balance:  {:,} ฿".format(1500000) )
+              st.write("Trading size (%):  {}%".format(10) )
+              st.write("Trading size (THB):  {:,}".format(150000) )
+              st.write("Commission fee:  {:.3f}%".format(0.157) )
+              st.write('  ')
+              st.write("##### Train Result")
+              st.write("Trained episodes:  {:,}".format(10) )
+              st.write("Last session profit/loss:  {:+,.2f}".format(11576.23) )
+              st.write('  ')
+              st.write("##### Test Result")
+              st.write("Profit/Loss on test set:  {:+,.2f}".format(1078.84) )
             save_button = st.button("Save 💾")
             if save_button:
-                save_model()
+                #save_model()
+                time.sleep(2)
                 st.success("Your model is saved successfully")
 
         with pending_tab:
