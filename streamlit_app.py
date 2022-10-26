@@ -247,7 +247,7 @@ else:
             st.write('#### Model performance compared to actual trading data in the past year')
             st.altair_chart(c_line, use_container_width=True)
             st.altair_chart(c_point, use_container_width=True)
-            st.altair_chart(c_all, use_container_width=True)
+            #st.altair_chart(c_all, use_container_width=True)
             
             rand_num = np.random.randn()
             st.write('Model advice: ')
