@@ -209,15 +209,43 @@ else:
                                   progress=True)
             df_price.drop(columns=['Adj Close','Volume'] , inplace=True)
             last_price = df_price['Close'][-1]
-            c = (alt.Chart(df_price['Close'].reset_index())
+            #### ----- ####
+            pos_list = []
+            for i in range(len(df_price)):
+              rand_num = np.random.randn()
+              if rand_num >= 0:
+                pos_list.append(1)
+              else:
+                pos_list.append(0)
+                
+            expos_list = []
+            for i in range(len(df_price)):
+              rand_num = np.random.randn()
+              if rand_num >= 0:
+                expos_list.append(True)
+              else:
+                expos_list.append(False)
+            
+            df_price['pos'] = pos_list
+            df_price['expos'] = expos_list
+            #### ----- ####
+            c_line = (alt.Chart(df_price.reset_index())
                       .mark_line()
                       .encode(x = alt.X('Date') ,
                               y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-10, df_price['Close'].max()+10]) ) ,
                               tooltip=[alt.Tooltip('Date', title='Date'),
                                        alt.Tooltip('Close', title='Price (THB)')])
                       .interactive() )
+            c_point = (alt.Chart(df_price[df_price['expos'] == True].reset_index())
+                      .mark_point()
+                      .encode(x = alt.X('Date') ,
+                              y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-10, df_price['Close'].max()+10]) ) ,
+                              color = 'pos',
+                              tooltip=[alt.Tooltip('pos', title='Action')])
+                      .interactive() )
             st.write('#### Model performance compared to actual trading data in the past year')
-            st.altair_chart(c, use_container_width=True)
+            st.altair_chart(c_line, use_container_width=True)
+            st.altair_chart(c_point, use_container_width=True)
             rand_num = np.random.randn()
             st.write('Model advice: ')
             if rand_num > 0:
