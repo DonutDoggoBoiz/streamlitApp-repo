@@ -120,6 +120,7 @@ if st.session_state['login_status'] == False:
       with placeholder2.container():
         register_form = st.form('Register')
         register_form.subheader('Register 📝')
+        new_name = register_form.text_input('Name', placehoder='eg. Warren Buffet')
         new_username = register_form.text_input('Username', placeholder='your username')
         new_password = register_form.text_input('Password', type='password', placeholder='your password')
         register_button = register_form.form_submit_button('Register')
