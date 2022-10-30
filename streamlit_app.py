@@ -235,6 +235,13 @@ else:
               y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-10, df_price['Close'].max()+10])),
                               tooltip=[alt.Tooltip('Date', title='Date'),
                                        alt.Tooltip('Close', title='Price (THB)')] )
+            
+            base2 = alt.Chart(df_price[df_price['expos'] == True].reset_index()).encode(
+              x = alt.X('Date') ,
+              y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-10, df_price['Close'].max()+10])),
+                              color = 'pos',
+                              tooltip=[alt.Tooltip('pos', title='Action')]) )
+                  
             c_line = (alt.Chart(df_price.reset_index())
                       .mark_line()
                       .encode(x = alt.X('Date') ,
@@ -254,7 +261,8 @@ else:
             #st.altair_chart(c_line, use_container_width=True)
             #st.altair_chart(c_point, use_container_width=True)
             #st.altair_chart((base.mark_line() + base.mark_point()).resolve_scale(y='independent'))
-            st.altair_chart( (base.mark_line() + base.mark_point()) )
+            st.altair_chart( (base.mark_line() + base.mark_point()), use_container_width=True)
+            st.altair_chart( (base1.mark_line() + base2.mark_circle()), use_container_width=True)
             #st.altair_chart(c_all, use_container_width=True)
             
             rand_num = np.random.randn()
