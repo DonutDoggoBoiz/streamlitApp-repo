@@ -262,8 +262,8 @@ else:
             #st.altair_chart(c_point, use_container_width=True)
             #st.altair_chart((base.mark_line() + base.mark_point()).resolve_scale(y='independent'))
             st.altair_chart( (base.mark_line() + base.mark_circle()), use_container_width=True)
-            st.altair_chart( (base.mark_line() + base.mark_circle().transform_filter(
-              alt.FieldEqualPredicate(field='expos', equal=True)), use_container_width=True)
+            bundle = (base.mark_line() + base.mark_circle().transform_filter(alt.FieldEqualPredicate(field='expos', equal=True)))
+            st.altair_chart(bundle, use_container_width=True)
             #st.altair_chart(c_all, use_container_width=True)
             
             rand_num = np.random.randn()
