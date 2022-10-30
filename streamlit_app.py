@@ -201,7 +201,8 @@ else:
           generate_advice_button = st.button('Generate Advice')
           if generate_advice_button:
             stock_name = 'BBL'
-            start_date = datetime.date(datetime.date.today().year-1, datetime.date.today().month, datetime.date.today().day )
+            #start_date = datetime.date(datetime.date.today().year-1, datetime.date.today().month, datetime.date.today().day )
+            start_date = datetime.date(datetime.date.today().year, datetime.date.today().month-6, datetime.date.today().day )
             end_date = datetime.date.today()
             stock_code = stock_name + '.BK'
             df_price = yf.download(stock_code,
