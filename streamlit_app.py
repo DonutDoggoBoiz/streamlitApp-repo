@@ -236,7 +236,7 @@ else:
                               tooltip=[alt.Tooltip('Date', title='Date'),
                                        alt.Tooltip('Close', title='Price (THB)')] )
             
-            base2 = alt.Chart(df_price[df_price['expos'] == True].reset_index()).encode(
+            base2 = alt.Chart(df_price.reset_index()).encode(
               x = alt.X('Date') ,
               y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-10, df_price['Close'].max()+10])),
                               color = 'pos',
@@ -262,8 +262,10 @@ else:
             #st.altair_chart(c_point, use_container_width=True)
             #st.altair_chart((base.mark_line() + base.mark_point()).resolve_scale(y='independent'))
             st.altair_chart( (base.mark_line() + base.mark_circle()), use_container_width=True)
-            bundle = (base.mark_line() + base.mark_circle().transform_filter(alt.FieldEqualPredicate(field='expos', equal=True)))
-            st.altair_chart(bundle, use_container_width=True)
+            #bundle = (base.mark_line() + base.mark_circle().transform_filter(alt.FieldEqualPredicate(field='expos', equal=True)))
+            #st.altair_chart(bundle, use_container_width=True)
+            bundle2 = (base.mark_line() + base2.mark_circle().transform_filter(alt.FieldEqualPredicate(field='expos', equal=True)))
+            st.altair_chart(bundle2, use_container_width=True)
             #st.altair_chart(c_all, use_container_width=True)
             
             rand_num = np.random.randn()
