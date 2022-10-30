@@ -240,7 +240,7 @@ else:
               x = alt.X('Date') ,
               y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-10, df_price['Close'].max()+10])),
                               color = 'pos',
-                              tooltip=[alt.Tooltip('pos', title='Action')]) )
+                              tooltip=[alt.Tooltip('pos', title='Action')] )
                   
             c_line = (alt.Chart(df_price.reset_index())
                       .mark_line()
