@@ -253,7 +253,8 @@ else:
             st.write('#### Model performance compared to actual trading data in the past year')
             #st.altair_chart(c_line, use_container_width=True)
             #st.altair_chart(c_point, use_container_width=True)
-            st.altair_chart((base.mark_line() + base.mark_point()).resolve_scale(y='independent'))
+            #st.altair_chart((base.mark_line() + base.mark_point()).resolve_scale(y='independent'))
+            st.altair_chart( (base.mark_line() + base.mark_point()) )
             #st.altair_chart(c_all, use_container_width=True)
             
             rand_num = np.random.randn()
