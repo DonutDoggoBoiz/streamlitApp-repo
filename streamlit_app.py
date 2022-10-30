@@ -215,9 +215,9 @@ else:
             for i in range(len(df_price)):
               rand_num = np.random.randn()
               if rand_num >= 0:
-                pos_list.append('buy')
+                pos_list.append('Buy')
               else:
-                pos_list.append('sell')
+                pos_list.append('Sell')
                 
             expos_list = []
             for i in range(len(df_price)):
@@ -239,7 +239,7 @@ else:
             base2 = alt.Chart(df_price.reset_index()).encode(
               x = alt.X('Date') ,
               y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-10, df_price['Close'].max()+10])),
-                              color = 'pos',
+                              color = alt.condition( alt.datum.pos == 'Buy', alt.value("green"), alt.value("red")),
                               tooltip=[alt.Tooltip('pos', title='Action')] )
                   
             c_line = (alt.Chart(df_price.reset_index())
