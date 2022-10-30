@@ -230,6 +230,11 @@ else:
             df_price['pos'] = pos_list
             df_price['expos'] = expos_list
             #### ----- ####
+            base = alt.Chart(df_price.reset_index()).encode(
+              x = alt.X('Date'),
+              y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-10, df_price['Close'].max()+10])),
+                              tooltip=[alt.Tooltip('Date', title='Date'),
+                                       alt.Tooltip('Close', title='Price (THB)')] )
             c_line = (alt.Chart(df_price.reset_index())
                       .mark_line()
                       .encode(x = alt.X('Date') ,
@@ -246,8 +251,9 @@ else:
                       .interactive() )
             c_all = alt.layer(c_line, c_point)
             st.write('#### Model performance compared to actual trading data in the past year')
-            st.altair_chart(c_line, use_container_width=True)
-            st.altair_chart(c_point, use_container_width=True)
+            #st.altair_chart(c_line, use_container_width=True)
+            #st.altair_chart(c_point, use_container_width=True)
+            st.altair_chart((base.mark_line() + base.mark_point()).resolve_scale(y='independent'))
             #st.altair_chart(c_all, use_container_width=True)
             
             rand_num = np.random.randn()
