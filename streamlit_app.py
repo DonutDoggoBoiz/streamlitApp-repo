@@ -240,7 +240,8 @@ else:
             base2 = alt.Chart(df_price.reset_index()).encode(
               x = alt.X('Date') ,
               y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-5, df_price['Close'].max()+5])),
-                              color = alt.condition( alt.datum.pos == 'Buy', alt.value("green"), alt.value("red")),
+                              #color = alt.condition( alt.datum.pos == 'Buy', alt.value("green"), alt.value("red")),
+                              color = alt.Color((alt.condition(alt.datum.pos=='Buy',alt.value("green"),alt.value("red"))), legend=alt.Legend(title="Model Advice")),
                               tooltip=[alt.Tooltip('pos', title='Action')] )
                   
             c_line = (alt.Chart(df_price.reset_index())
