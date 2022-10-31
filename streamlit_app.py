@@ -234,12 +234,12 @@ else:
             base = alt.Chart(df_price.reset_index()).encode(
               x = alt.X('Date'),
               y = alt.Y('Close', title='Price  (THB)', 
-                        scale=alt.Scale(domain=[df_price['Close'].min()-5, df_price['Close'].max()+5])),
+                        scale=alt.Scale(domain=[df_price['Close'].min()-2, df_price['Close'].max()+2])),
               tooltip=[alt.Tooltip('Date', title='Date'),alt.Tooltip('Close', title='Price (THB)')] )
             
             base2 = alt.Chart(df_price.reset_index()).encode(
               x = alt.X('Date') ,
-              y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-5, df_price['Close'].max()+5])),
+              y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-2, df_price['Close'].max()+2])),
                               color = alt.Color('pos', 
                                                 scale=alt.Scale(domain=['Buy','Sell'],range=['green','red']),
                                                legend=alt.Legend(title="Model Advice")),
@@ -271,7 +271,7 @@ else:
             #st.altair_chart(bundle, use_container_width=True) .add_selection(alt.selection_interval(bind='scales'))
             bundle2 = (base.mark_line() + base2.mark_circle().transform_filter(alt.FieldEqualPredicate(field='expos', equal=True)))
             layer1 = base.mark_line()
-            layer2 = base2.mark_circle().transform_filter(alt.FieldEqualPredicate(field='expos', equal=True))
+            layer2 = base2.mark_circle(size=50).transform_filter(alt.FieldEqualPredicate(field='expos', equal=True))
             bundle3 = alt.layer(layer1,layer2).configure_axis(labelFontSize=16,titleFontSize=18)
             st.altair_chart(bundle3, use_container_width=True)
             #st.altair_chart(c_all, use_container_width=True)
