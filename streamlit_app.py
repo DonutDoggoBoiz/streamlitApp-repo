@@ -231,11 +231,11 @@ else:
             df_price['pos'] = pos_list
             df_price['expos'] = expos_list
             #### ----- ####
-            base = alt.Chart(df_price.reset_index()).properties(width=600, height=600).encode(
+            base = alt.Chart(df_price.reset_index()).configure_axis(labelFontSize=20,titleFontSize=20).encode(
               x = alt.X('Date'),
               y = alt.Y('Close', title='Price  (THB)', 
                         scale=alt.Scale(domain=[df_price['Close'].min()-5, df_price['Close'].max()+5])),
-                        tooltip=[alt.Tooltip('Date', title='Date'),alt.Tooltip('Close', title='Price (THB)')] )
+              tooltip=[alt.Tooltip('Date', title='Date'),alt.Tooltip('Close', title='Price (THB)')] )
             
             base2 = alt.Chart(df_price.reset_index()).encode(
               x = alt.X('Date') ,
