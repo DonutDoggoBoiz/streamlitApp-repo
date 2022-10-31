@@ -263,7 +263,7 @@ else:
             #st.altair_chart(c_line, use_container_width=True)
             #st.altair_chart(c_point, use_container_width=True)
             #st.altair_chart((base.mark_line() + base.mark_point()).resolve_scale(y='independent'))
-            st.altair_chart( (base.mark_line() + base.mark_circle()), use_container_width=True)
+            st.altair_chart( (base.mark_line().properties(width='container') + base.mark_circle()), use_container_width=True)
             #bundle = (base.mark_line() + base.mark_circle().transform_filter(alt.FieldEqualPredicate(field='expos', equal=True)))
             #st.altair_chart(bundle, use_container_width=True) .add_selection(alt.selection_interval(bind='scales'))
             bundle2 = (base.mark_line() + base2.mark_circle().transform_filter(alt.FieldEqualPredicate(field='expos', equal=True)))
