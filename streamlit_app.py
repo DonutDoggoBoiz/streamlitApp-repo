@@ -276,12 +276,13 @@ else:
             st.altair_chart(bundle3, use_container_width=True)
             #st.altair_chart(c_all, use_container_width=True)
             
-            rand_num = np.random.randn()
+            #rand_num = np.random.randn()
             st.write('Model advice: ')
-            if rand_num > 0:
-              st.success('#### BUY at current price of {} THB per share'.format(last_price) )
+            #if rand_num > 0:
+            if pos_list[-1] == 'Buy':
+              st.success('#### BUY {} at current price of {} THB per share'.format('BBL',last_price) )
             else:
-              st.error('#### SELL at current price of {} THB per share'.format(last_price) )
+              st.error('#### SELL {} at current price of {} THB per share'.format('BBL',last_price) )
     
     ### --- DEVELOP MODEL MENU --- ###
     if model_b or model_side_b or st.session_state['model_b_status']:
