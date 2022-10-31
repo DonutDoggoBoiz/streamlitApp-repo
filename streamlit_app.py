@@ -241,7 +241,7 @@ else:
               x = alt.X('Date') ,
               y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-5, df_price['Close'].max()+5])),
                               #color = alt.condition( alt.datum.pos == 'Buy', alt.value("green"), alt.value("red")),
-                              color = alt.Color((alt.condition(alt.datum.pos=='Buy',alt.value("green"),alt.value("red"))), legend=alt.Legend(title="Model Advice")),
+                              color = alt.Color('pos', scale=alt.Scale(domain=['Buy','Sell'], range=['green','red'])),
                               tooltip=[alt.Tooltip('pos', title='Action')] )
                   
             c_line = (alt.Chart(df_price.reset_index())
@@ -266,7 +266,7 @@ else:
             st.altair_chart( (base.mark_line() + base.mark_circle()), use_container_width=True)
             #bundle = (base.mark_line() + base.mark_circle().transform_filter(alt.FieldEqualPredicate(field='expos', equal=True)))
             #st.altair_chart(bundle, use_container_width=True) .add_selection(alt.selection_interval(bind='scales'))
-            bundle2 = (base.mark_line() + base2.mark_circle().interactive().transform_filter(alt.FieldEqualPredicate(field='expos', equal=True)))
+            bundle2 = (base.mark_line() + base2.mark_circle().transform_filter(alt.FieldEqualPredicate(field='expos', equal=True)))
             st.altair_chart(bundle2, use_container_width=True)
             #st.altair_chart(c_all, use_container_width=True)
             
