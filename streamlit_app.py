@@ -202,7 +202,7 @@ else:
           if generate_advice_button:
             stock_name = 'BBL'
             #start_date = datetime.date(datetime.date.today().year-1, datetime.date.today().month, datetime.date.today().day )
-            start_date = datetime.date(datetime.date.today().year, datetime.date.today().month-6, datetime.date.today().day )
+            start_date = ( datetime.date.today() - datetime.timedelta(days=180) )
             end_date = datetime.date.today()
             stock_code = stock_name + '.BK'
             df_price = yf.download(stock_code,
@@ -233,13 +233,13 @@ else:
             #### ----- ####
             base = alt.Chart(df_price.reset_index()).encode(
               x = alt.X('Date'),
-              y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-10, df_price['Close'].max()+10])),
+              y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-5, df_price['Close'].max()+5])),
                               tooltip=[alt.Tooltip('Date', title='Date'),
                                        alt.Tooltip('Close', title='Price (THB)')] )
             
             base2 = alt.Chart(df_price.reset_index()).encode(
               x = alt.X('Date') ,
-              y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-10, df_price['Close'].max()+10])),
+              y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-5, df_price['Close'].max()5])),
                               color = alt.condition( alt.datum.pos == 'Buy', alt.value("green"), alt.value("red")),
                               tooltip=[alt.Tooltip('pos', title='Action')] )
                   
