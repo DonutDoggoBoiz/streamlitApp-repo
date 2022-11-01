@@ -297,8 +297,10 @@ else:
       st.session_state['advice_b_status'] = False
       placeholder_2.empty()
       with placeholder_3.container():
-        tab_list = ["Select Data 📈", "Set Parameters 💡", "Train Model 🚀", "Test Model 🧪", "Save Model 💾",] #"PENDING"]
-        select_data_tab, set_para_tab, train_tab, test_tab, save_tab, pending_tab = st.tabs(tab_list)
+        #tab_list = ["Select Data 📈", "Set Parameters 💡", "Train Model 🚀", "Test Model 🧪", "Save Model 💾","PENDING"]
+        #select_data_tab, set_para_tab, train_tab, test_tab, save_tab, pending_tab = st.tabs(tab_list)
+        tab_list = ["Select Data 📈", "Set Parameters 💡", "Train Model 🚀", "Test Model 🧪", "Save Model 💾"]
+        select_data_tab, set_para_tab, train_tab, test_tab, save_tab = st.tabs(tab_list)
         with select_data_tab:
             st.header("Select stock and time period 📈")
             fetch_price_data()
