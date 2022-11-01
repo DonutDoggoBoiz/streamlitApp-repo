@@ -162,7 +162,7 @@ else:
     #col1, _, col2, _, col3, _, col4, _, col5, _ = st.columns([1,1,7,1,7,1,7,1,7,1])
     with menuholder.container():
       #col1, _, col2, col3, col4, col5= st.columns([1,1,4,4,4,4])
-      col1, col2, col3, col4, col5= st.columns([1,4,4,4,4], gap='medium)
+      col1, col2, col3, col4, col5= st.columns([1,4,4,4,4], gap='medium')
       with col1:
         st.write('##### MENU:')                                          
       with col2:
