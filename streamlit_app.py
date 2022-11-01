@@ -157,17 +157,17 @@ else:
         st.write('### Welcome, {}'.format(st.session_state['username']))
         
     ### --- MAIN TAB BUTTON --- ###
-    col1, _, col2, _, col3, _, col4, _, col5 = st.columns([1,0.5,3,0.5,3,0.5,3,0.5,3])
+    col1, _, col2, _, col3, _, col4, _, col5 = st.columns([1,0.2,3,0.2,3,0.2,3,0.2,3])
     with col1:
       st.write('##### MENU:')                                          
     with col2:
       user_manage_b = st.button('Manage Account')
     with col3:
-      model_b = st.button('Develop Model')
-    with col4:
-      advice_b = st.button('Generate Advice', key='gen_advice_tab')
-    with col5:
       model_manage_b = st.button('Manage Model')
+    with col4:
+      model_b = st.button('Develop Model')
+    with col5:
+      advice_b = st.button('Generate Advice', key='gen_advice_tab')
     
     placeholder_2 = st.empty()
     placeholder_3 = st.empty()
