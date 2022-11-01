@@ -297,7 +297,7 @@ else:
       st.session_state['advice_b_status'] = False
       placeholder_2.empty()
       with placeholder_3.container():
-        tab_list = ["Select Data 📈", "Set Parameters 💡", "Train Model 🚀", "Test Model 🧪", "Save Model 💾", "PENDING"]
+        tab_list = ["Select Data 📈", "Set Parameters 💡", "Train Model 🚀", "Test Model 🧪", "Save Model 💾",] #"PENDING"]
         select_data_tab, set_para_tab, train_tab, test_tab, save_tab, pending_tab = st.tabs(tab_list)
         with select_data_tab:
             st.header("Select stock and time period 📈")
@@ -393,17 +393,17 @@ else:
                 time.sleep(2)
                 st.success('Your model is saved successfully. Proceed to "Generate Advice" menu to use your model')
 
-        with pending_tab:
-            st.header("PENDING adjustment...")
-            st.success("select data ---- DONE")
-            st.warning("parameter -- adjust interface and input choice")
-            st.warning("parameter -- add info to each input")
-            st.success("train model -- add input field for n_episodes ---- DONE")
-            st.warning("train / test model -- better result visualization")
-            st.warning("save model -- integrate to cloud infrastructure")
-            st.warning("generate advice -- add load_model function")
-            st.warning("generate advice -- compulsory stock quote")
-            st.warning("generate advice -- formally written buy/sell advice")
-            st.error("overall -- user database and management system")
-            st.error("overall -- stock quote database")
-            st.error("overall -- set up cloud infrastructure")
+        #with pending_tab:
+         #   st.header("PENDING adjustment...")
+          #  st.success("select data ---- DONE")
+           # st.warning("parameter -- adjust interface and input choice")
+            #st.warning("parameter -- add info to each input")
+            #st.success("train model -- add input field for n_episodes ---- DONE")
+            #st.warning("train / test model -- better result visualization")
+            #st.warning("save model -- integrate to cloud infrastructure")
+            #st.warning("generate advice -- add load_model function")
+            #st.warning("generate advice -- compulsory stock quote")
+            #st.warning("generate advice -- formally written buy/sell advice")
+            #st.error("overall -- user database and management system")
+            #st.error("overall -- stock quote database")
+            #st.error("overall -- set up cloud infrastructure")
