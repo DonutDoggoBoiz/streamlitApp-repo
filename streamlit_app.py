@@ -158,7 +158,7 @@ else:
         
     ### --- MAIN TAB BUTTON --- ###
     #col1, _, col2, _, col3, _, col4, _, col5, _ = st.columns([1,1,7,1,7,1,7,1,7,1])
-    col1, col2, col3, col4, col5= st.columns([1,7,7,7,7])
+    col1, col2, col3, col4, col5= st.columns([2,2,2,2,2])
     with col1:
       st.write('##### MENU:')                                          
     with col2:
