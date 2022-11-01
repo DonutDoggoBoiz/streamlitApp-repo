@@ -161,9 +161,9 @@ else:
     ### --- MAIN TAB BUTTON --- ###
     #col1, _, col2, _, col3, _, col4, _, col5, _ = st.columns([1,1,7,1,7,1,7,1,7,1])
     with menuholder.container():
-      col1, col2, col3, col4, col5= st.columns([1,3,3,3,3])
+      col1, col2, col3, col4, col5= st.columns([1,4,4,4,4])
       with col1:
-        st.write('##### MENU:')                                          
+        st.write('###### MENU:')                                          
       with col2:
         user_manage_b = st.button('Manage Account')
       with col3:
