@@ -148,6 +148,7 @@ else:
     logout_button_side = st.sidebar.button('Logout', on_click=logout_func)
     st.sidebar.write('Menu:')
     user_manage_side_b = st.sidebar.button('Manage Account', key='user_manage_side')
+    manage_model_side_b = st.sidebar.button('Manage Model', key='model_manage_side')
     model_side_b = st.sidebar.button('Develop Model', key='model_side_b')
     advice_side_b = st.sidebar.button('Generate Advice', key='advice_side_b')
     
@@ -156,7 +157,7 @@ else:
         st.write('### Welcome, {}'.format(st.session_state['username']))
         
     ### --- MAIN TAB BUTTON --- ###
-    col1, _, col2, _, col3, _, col4, _ = st.columns([1,0.5,3,0.5,3,0.5,3,0.5])
+    col1, _, col2, _, col3, _, col4, _, col5 = st.columns([1,0.5,3,0.5,3,0.5,3,0.5,3])
     with col1:
       st.write('##### MENU:')                                          
     with col2:
@@ -165,6 +166,8 @@ else:
       model_b = st.button('Develop Model')
     with col4:
       advice_b = st.button('Generate Advice', key='gen_advice_tab')
+    with col5:
+      model_manage_b = st.button('Manage Model')
     
     placeholder_2 = st.empty()
     placeholder_3 = st.empty()
