@@ -152,14 +152,13 @@ else:
     model_side_b = st.sidebar.button('Develop Model', key='model_side_b')
     advice_side_b = st.sidebar.button('Generate Advice', key='advice_side_b')
     
+    ### --- WELCOME NOTE --- ###
     placeholder_1 = st.empty()
     with placeholder_1.container():
         st.write('### Welcome, {}'.format(st.session_state['username']))
     
+     ### --- MAIN TAB BUTTON --- ###
     menuholder = st.empty()
-        
-    ### --- MAIN TAB BUTTON --- ###
-    #col1, _, col2, _, col3, _, col4, _, col5, _ = st.columns([1,1,7,1,7,1,7,1,7,1])
     with menuholder.container():
       col1, _, col2, col3, col4, col5= st.columns([1,1,4,4,4,4])
       with col1:
@@ -183,12 +182,12 @@ else:
       st.session_state['advice_b_status'] = False
       placeholder_2.empty()
       with placeholder_2.container():
-        st.write('#### Account Management')
-        with st.form('edit_profile'):
-          st.write('##### Edit Profile')
-          new_name = st.text_input('Name', placeholder='Anthony')
-          new_email = st.text_input('Email', placeholder='anthony123@somewhere.com')
-          edit_profile_button = st.form_submit_button('Edit Profile')
+        #st.write('#### Account Management')
+        #with st.form('edit_profile'):
+          #st.write('##### Edit Profile')
+          #new_name = st.text_input('Name', placeholder='Anthony')
+          #new_email = st.text_input('Email', placeholder='anthony123@somewhere.com')
+          #edit_profile_button = st.form_submit_button('Edit Profile')
         with st.form('change_password'):
           st.write('##### Change Password')
           old_password = st.text_input('Old Password', type='password', placeholder='your old password')
