@@ -193,6 +193,8 @@ else:
       st.session_state['model_b_status'] = False
       st.session_state['advice_b_status'] = False
       placeholder_2.empty()
+      placeholder_3.empty()
+      placeholder_4.empty()
       with placeholder_2.container():
         with st.form('change_password'):
           st.write('##### Change Password')
@@ -207,6 +209,8 @@ else:
       st.session_state['model_b_status'] = False
       st.session_state['advice_b_status'] = False
       placeholder_2.empty()
+      placeholder_3.empty()
+      placeholder_4.empty()
       with placeholder_2.container():
         st.write('#### Model Management')
 ########
@@ -274,6 +278,8 @@ else:
       st.session_state['model_b_status'] = False
       st.session_state['advice_b_status'] = True
       placeholder_2.empty()
+      placeholder_3.empty()
+      placeholder_4.empty()
       with placeholder_2.container():
           st.markdown("### Generate Investment Advice 📈")
           selected_model = st.selectbox('Choose your model',
@@ -371,6 +377,8 @@ else:
       st.session_state['model_b_status'] = True
       st.session_state['advice_b_status'] = False
       placeholder_2.empty()
+      placeholder_3.empty()
+      placeholder_4.empty()
       with placeholder_3.container():
         #tab_list = ["Select Data 📈", "Set Parameters 💡", "Train Model 🚀", "Test Model 🧪", "Save Model 💾","PENDING"]
         #select_data_tab, set_para_tab, train_tab, test_tab, save_tab, pending_tab = st.tabs(tab_list)
