@@ -246,26 +246,28 @@ else:
             st.session_state['edit_mod_button_status'] = True
             placeholder_4.empty()
             with placeholder_4.container():
-              with st.form('edit parameter form'):
-                st.write("##### Model parameters")
-                new_agent_name = st.text_input("Model name: ", "model_01")
-                new_agent_gamma = st.slider("Gamma: ", 0.00, 1.00, 0.90)
-                new_agent_epsilon = st.slider("Starting epsilon (random walk probability): ", 0.00, 1.00, 1.00)
-                new_agent_epsilon_dec = st.select_slider("Epsilon decline rate (random walk probability decline): ",
-                                                     options=[0.001,0.002,0.005,0.010], value=0.001)
-                new_agent_epsilon_end = st.slider("Minimum epsilon: ", 0.01, 0.10, 0.01)
-                new_agent_lr = st.select_slider("Learning rate: ", options=[0.001, 0.002, 0.005, 0.010], value=0.001)
+              edit_form_col1, _ = st.columns([2,1])
+              with edit_form_col1:
+                with st.form('edit parameter form'):
+                  st.write("##### Model parameters")
+                  new_agent_name = st.text_input("Model name: ", "model_01")
+                  new_agent_gamma = st.slider("Gamma: ", 0.00, 1.00, 0.90)
+                  new_agent_epsilon = st.slider("Starting epsilon (random walk probability): ", 0.00, 1.00, 1.00)
+                  new_agent_epsilon_dec = st.select_slider("Epsilon decline rate (random walk probability decline): ",
+                                                       options=[0.001,0.002,0.005,0.010], value=0.001)
+                  new_agent_epsilon_end = st.slider("Minimum epsilon: ", 0.01, 0.10, 0.01)
+                  new_agent_lr = st.select_slider("Learning rate: ", options=[0.001, 0.002, 0.005, 0.010], value=0.001)
 
-                st.write("##### Trading parameters")
-                new_initial_balance = st.number_input("Initial account balance (THB):", min_value=0, step=1000, value=1000000)
-                new_trading_size_pct = st.slider("Trading size as a percentage of initial account balance (%):", 0, 100, 10)
-                new_trade_size = initial_balance * trading_size_pct / 100
-                #st.write('{}% of initial investment is {:,.0f} THB'.format(trading_size_pct, trade_size))
-                new_commission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, value=0.157, format='%1.3f')
-                edit_param_button = st.form_submit_button("Edit")
-                if edit_param_button:
-                  st.session_state['edit_mod_button_status'] = False
-                  st.success('Edit parameters successful!')
+                  st.write("##### Trading parameters")
+                  new_initial_balance = st.number_input("Initial account balance (THB):", min_value=0, step=1000, value=1000000)
+                  new_trading_size_pct = st.slider("Trading size as a percentage of initial account balance (%):", 0, 100, 10)
+                  new_trade_size = initial_balance * trading_size_pct / 100
+                  #st.write('{}% of initial investment is {:,.0f} THB'.format(trading_size_pct, trade_size))
+                  new_commission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, value=0.157, format='%1.3f')
+                  edit_param_button = st.form_submit_button("Edit")
+                  if edit_param_button:
+                    st.session_state['edit_mod_button_status'] = False
+                    st.success('Edit parameters successful!')
                   
           ### --- delete button --- ###
           if del_mod_button or st.session_state['del_mod_button_status']:
