@@ -7,6 +7,7 @@ import datetime
 import yfinance as yf
 import altair as alt
 import numpy as np
+from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 
 from functions import fetch_price_data, observe_price, split_dataset2, set_parameters
 from functions import set_train_episodes, train_model, train_result, test_model, test_result
@@ -28,19 +29,20 @@ if 'username' not in st.session_state:
   st.session_state['username'] = None
 if 'show_register_form' not in st.session_state:
   st.session_state['show_register_form'] = False
+  
   ### --- NAV BUTTON STATUS --- ###
 if 'sign_in_b_disable' not in st.session_state:
   st.session_state['sign_in_b_disable'] = True
 if 'sign_up_b_disable' not in st.session_state:
   st.session_state['sign_up_b_disable'] = False
 
+if 'model_manage_b_status' not in st.session_state:
+  st.session_state['model_manage_b_status'] = False  
+if 'del_mod_button_status' not in st.session_state:
+  st.session_state['del_mod_button_status'] = False
+  
 if 'model_b_status' not in st.session_state:
   st.session_state['model_b_status'] = False
-if 'advice_b_status' not in st.session_state:
-  st.session_state['advice_b_status'] = False
-if 'user_manage_b_status' not in st.session_state:
-  st.session_state['user_manage_b_status'] = False
-  
 if 'observe_button_status' not in st.session_state:
   st.session_state['observe_button_status'] = False
 if 'split_button_status' not in st.session_state:
@@ -49,8 +51,15 @@ if 'train_button_status' not in st.session_state:
   st.session_state['train_button_status'] = False
 if 'test_button_status' not in st.session_state:
   st.session_state['test_button_status'] = False
-
   
+if 'advice_b_status' not in st.session_state:
+  st.session_state['advice_b_status'] = False
+  
+if 'user_manage_b_status' not in st.session_state:
+  st.session_state['user_manage_b_status'] = False
+### --- ^^ SESSION STATE --- ###
+
+### -------------------- ###
 def login_func():
   st.session_state['login_status'] = True
 
@@ -78,7 +87,7 @@ def dis_regis_button():
   
 def rerun():
   st.experimental_rerun()
- 
+### -------------------- ###
   
 ### --- NOT LOGGED IN --- ###
 if st.session_state['login_status'] == False:
@@ -114,7 +123,8 @@ if st.session_state['login_status'] == False:
                   login_func()
                   time.sleep(4)
                   rerun()
-   
+                  
+    ### --- SIGN UP BUTTON --- ###
     if register_button_ph1 or st.session_state['show_register_form']:
       st.session_state['show_register_form'] = True
       with placeholder2.container():
@@ -174,28 +184,92 @@ else:
     
     placeholder_2 = st.empty()
     placeholder_3 = st.empty()
+    placeholder_4 = st.empty()
     
     ### --- MANAGE ACCOUNT MENU --- ###
     if user_manage_b or user_manage_side_b or st.session_state['user_manage_b_status']:
       st.session_state['user_manage_b_status'] = True
+      st.session_state['model_manage_b_status'] = False
       st.session_state['model_b_status'] = False
       st.session_state['advice_b_status'] = False
       placeholder_2.empty()
       with placeholder_2.container():
-        #st.write('#### Account Management')
-        #with st.form('edit_profile'):
-          #st.write('##### Edit Profile')
-          #new_name = st.text_input('Name', placeholder='Anthony')
-          #new_email = st.text_input('Email', placeholder='anthony123@somewhere.com')
-          #edit_profile_button = st.form_submit_button('Edit Profile')
         with st.form('change_password'):
           st.write('##### Change Password')
           old_password = st.text_input('Old Password', type='password', placeholder='your old password')
           new_password = st.text_input('New Password', type='password', placeholder='your new password')
           change_pass_button = st.form_submit_button('Change Password')
           
+    ### --- MANAGE MODEL MENU --- ###
+    if model_manage_b or manage_model_side_b or st.session_state['model_manage_b_status']:
+      st.session_state['model_manage_b_status'] = True
+      st.session_state['user_manage_b_status'] = False
+      st.session_state['model_b_status'] = False
+      st.session_state['advice_b_status'] = False
+      placeholder_2.empty()
+      with placeholder_2.container():
+        st.write('#### Model Management')
+########
+        datamodel_dict = {'model_name': ['bbl_01','bbl_02','ppt_05','scg_111','mint_01'],
+             'gamma': [0.90,0.80,0.85,0.75,0.95],
+             'learning_rate': [0.001,0.002,0.005,0.04,0.099],
+             'initial_balance': [1000000,1200000,1980000,2550000,3390000],
+             'trading_size': [0.10,0.25,0.15,0.30,0.50] }
+        datamodel_df = pd.DataFrame(datamodel_dict)
+
+########
+        gb = GridOptionsBuilder.from_dataframe(datamodel_df)
+        gb.configure_selection('single', use_checkbox=True, pre_selected_rows=[0])
+        gridoptions = gb.build()
+        grid_response = AgGrid(datamodel_df,
+                               fit_columns_on_grid_load=True,
+                               gridOptions=gridoptions)
+        grp_data = grid_response['data']
+        selected_row = grid_response['selected_rows'] 
+
+        with placeholder_3.container():
+          ph2col1, ph2col2, _ = st.columns([1,1,4])
+          with ph2col1:
+            edit_mod_button = st.button('Edit')
+          with ph2col2:
+            del_mod_button = st.button('Delete')
+    
+          if del_mod_button or st.session_state['del_mod_button_status']:
+            st.session_state['del_mod_button_status'] = True
+            with placeholder_3.container():
+              with st.form('del_make_sure'):
+                st.write('Are you sure?')
+                make_sure_radio = st.radio('Please confirm your choice:', 
+                                           options=('No', 'Yes') )
+                confirm_button = st.form_submit_button('Confirm')
+                if confirm_button:
+                  if make_sure_radio == 'Yes':
+                    st.session_state['del_mod_button_status'] = False
+                    st.error('Model {} has been successfully deleted'.format(selected_row[0]['model_name']))
+                    time.sleep(3)
+                    st.experimental_rerun()
+                  elif make_sure_radio == 'No':
+                    st.session_state['del_mod_button_status'] = False
+                    placeholder_3.empty()
+########
+        try:
+          placeholder_4.empty()
+          with placeholder.container():
+            with st.expander('More model information:'):
+                st.write('Name : {}'.format(selected_row[0]['model_name']))
+                st.write('Gamma : {:.2f}'.format(selected_row[0]['gamma']))
+                st.write('Learning Rate : {:.3f}'.format(selected_row[0]['learning_rate']))
+                st.write('Initial Balance : {:,} THB'.format(selected_row[0]['initial_balance']))
+                st.write('Trading Size : {:.2f}%'.format(selected_row[0]['trading_size']*100))
+        except:
+          with placeholder.container():
+            st.success('Loading...')
+    
+    ####### ---------------------- #######
+    
     ### --- GENERATE ADVICE MENU --- ###
     if advice_b or advice_side_b or st.session_state['advice_b_status']:
+      st.session_state['model_manage_b_status'] = False
       st.session_state['user_manage_b_status'] = False
       st.session_state['model_b_status'] = False
       st.session_state['advice_b_status'] = True
@@ -292,6 +366,7 @@ else:
     
     ### --- DEVELOP MODEL MENU --- ###
     if model_b or model_side_b or st.session_state['model_b_status']:
+      st.session_state['model_manage_b_status'] = False
       st.session_state['user_manage_b_status'] = False
       st.session_state['model_b_status'] = True
       st.session_state['advice_b_status'] = False
