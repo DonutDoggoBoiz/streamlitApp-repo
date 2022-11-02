@@ -262,7 +262,7 @@ else:
                 st.write('Initial Balance : {:,} THB'.format(selected_row[0]['initial_balance']))
                 st.write('Trading Size : {:.2f}%'.format(selected_row[0]['trading_size']*100))
         except:
-          with placeholder.container():
+          with placeholder_4.container():
             st.success('Loading...')
     
     ####### ---------------------- #######
