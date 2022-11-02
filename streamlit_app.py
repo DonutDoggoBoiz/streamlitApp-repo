@@ -41,7 +41,7 @@ if 'model_manage_b_status' not in st.session_state:
 if 'del_mod_button_status' not in st.session_state:
   st.session_state['del_mod_button_status'] = False
 if 'edit_mod_button_status' not in st.session_state:
-  st.session._state['edit_mod_button_status'] = False
+  st.session_state['edit_mod_button_status'] = False
   
 if 'model_b_status' not in st.session_state:
   st.session_state['model_b_status'] = False
