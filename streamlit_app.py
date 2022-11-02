@@ -254,7 +254,7 @@ else:
 ########
         try:
           placeholder_4.empty()
-          with placeholder.container():
+          with placeholder_4.container():
             with st.expander('More model information:'):
                 st.write('Name : {}'.format(selected_row[0]['model_name']))
                 st.write('Gamma : {:.2f}'.format(selected_row[0]['gamma']))
