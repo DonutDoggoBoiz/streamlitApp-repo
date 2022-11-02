@@ -232,7 +232,7 @@ else:
         selected_row = grid_response['selected_rows'] 
 
         with placeholder_3.container():
-          ph2col1, ph2col2, _ = st.columns([1,1,4])
+          ph2col1, ph2col2, _ = st.columns([1,1,6])
           with ph2col1:
             edit_mod_button = st.button('Edit')
           with ph2col2:
