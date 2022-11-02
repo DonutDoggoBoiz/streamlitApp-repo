@@ -234,7 +234,7 @@ else:
         grp_data = grid_response['data']
         selected_row = grid_response['selected_rows'] 
 
-        with placeholder_3.container():
+        with placeholder_4.container():
           ph2col1, ph2col2, _ = st.columns([1,1,6])
           with ph2col1:
             edit_mod_button = st.button('Edit')
@@ -243,9 +243,7 @@ else:
           ### --- edit button --- ###
           if edit_mod_button: #or st.session_state['edit_mod_button_status']:
             #st.session_state['edit_mod_button_status'] = True
-            placeholder_3.empty()
-            with placeholder_3.container():
-              with st.empty().container():
+            with placeholder_4.container():
                 edit_form_col1, _ = st.columns([2,1])
                 with edit_form_col1:
                   with st.form('edit parameter form'):
@@ -288,8 +286,8 @@ else:
                     #placeholder_3.empty()
 ########
         try:
-          placeholder_4.empty()
-          with placeholder_4.container():
+          placeholder_3.empty()
+          with placeholder_3.container():
             with st.expander('More model information:'):
                 st.write('Name : {}'.format(selected_row[0]['model_name']))
                 st.write('Gamma : {:.2f}'.format(selected_row[0]['gamma']))
@@ -297,7 +295,7 @@ else:
                 st.write('Initial Balance : {:,} THB'.format(selected_row[0]['initial_balance']))
                 st.write('Trading Size : {:.2f}%'.format(selected_row[0]['trading_size']*100))
         except:
-          with placeholder_4.container():
+          with placeholder_3.container():
             st.success('Loading...')
     
     ####### ---------------------- #######
