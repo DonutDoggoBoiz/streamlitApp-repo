@@ -211,7 +211,7 @@ else:
       st.session_state['model_b_status'] = False
       st.session_state['advice_b_status'] = False
       #######
-      #st.session._state['edit_mod_button_status'] = False
+      #st.session_state['edit_mod_button_status'] = False
       placeholder_2.empty()
       placeholder_3.empty()
       placeholder_4.empty()
@@ -242,8 +242,8 @@ else:
           with ph2col2:
             del_mod_button = st.button('Delete')
           ### --- edit button --- ###
-          if edit_mod_button or st.session._state['edit_mod_button_status']:
-            st.session._state['edit_mod_button_status'] = True
+          if edit_mod_button or st.session_state['edit_mod_button_status']:
+            st.session_state['edit_mod_button_status'] = True
             placeholder_4.empty()
             with placeholder_4.container():
               with st.form('edit parameter form'):
@@ -264,7 +264,7 @@ else:
                 new_commission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, value=0.157, format='%1.3f')
                 edit_param_button = st.form_submit_button("Edit")
                 if edit_param_button:
-                  st.session._state['edit_mod_button_status'] = False
+                  st.session_state['edit_mod_button_status'] = False
                   st.success('Edit parameters successful!')
                   
           ### --- delete button --- ###
