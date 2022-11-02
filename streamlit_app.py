@@ -283,7 +283,8 @@ else:
                     st.experimental_rerun()
                   elif make_sure_radio == 'No':
                     st.session_state['del_mod_button_status'] = False
-                    placeholder_3.empty()
+                    st.experimental_rerun()
+                    #placeholder_3.empty()
 ########
         try:
           placeholder_4.empty()
