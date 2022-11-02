@@ -241,8 +241,8 @@ else:
           with ph2col2:
             del_mod_button = st.button('Delete')
           ### --- edit button --- ###
-          if edit_mod_button or st.session_state['edit_mod_button_status']:
-            st.session_state['edit_mod_button_status'] = True
+          if edit_mod_button: #or st.session_state['edit_mod_button_status']:
+            #st.session_state['edit_mod_button_status'] = True
             placeholder_4.empty()
             with placeholder_4.container():
               edit_form_col1, _ = st.columns([2,1])
