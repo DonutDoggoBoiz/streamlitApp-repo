@@ -261,13 +261,13 @@ else:
                   st.write("##### Trading parameters")
                   new_initial_balance = st.number_input("Initial account balance (THB):", min_value=0, step=1000, value=1000000)
                   new_trading_size_pct = st.slider("Trading size as a percentage of initial account balance (%):", 0, 100, 10)
-                  new_trade_size = initial_balance * trading_size_pct / 100
-                  #st.write('{}% of initial investment is {:,.0f} THB'.format(trading_size_pct, trade_size))
                   new_commission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, value=0.157, format='%1.3f')
                   edit_param_button = st.form_submit_button("Edit")
                   if edit_param_button:
-                    st.session_state['edit_mod_button_status'] = False
+                    #st.session_state['edit_mod_button_status'] = False
                     st.success('Edit parameters successful!')
+                    time.sleep(3)
+                    st.experimental_rerun()
                   
           ### --- delete button --- ###
           if del_mod_button or st.session_state['del_mod_button_status']:
