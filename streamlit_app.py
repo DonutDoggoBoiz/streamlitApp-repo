@@ -268,7 +268,7 @@ else:
           ### --- delete button --- ###
           if del_mod_button or st.session_state['del_mod_button_status']:
             st.session_state['del_mod_button_status'] = True
-            with placeholder_3.container():
+            with placeholder_4.container():
               with st.form('del_make_sure'):
                 st.write('Are you sure?')
                 make_sure_radio = st.radio('Please confirm your choice:', 
