@@ -211,7 +211,6 @@ else:
       st.session_state['model_b_status'] = False
       st.session_state['advice_b_status'] = False
       #######
-      #st.session_state['edit_mod_button_status'] = False
       placeholder_2.empty()
       placeholder_3.empty()
       placeholder_4.empty()
@@ -257,14 +256,12 @@ else:
                                                        options=[0.001,0.002,0.005,0.010], value=0.001)
                   new_agent_epsilon_end = st.slider("Minimum epsilon: ", 0.01, 0.10, 0.01)
                   new_agent_lr = st.select_slider("Learning rate: ", options=[0.001, 0.002, 0.005, 0.010], value=0.001)
-
                   st.write("##### Trading parameters")
                   new_initial_balance = st.number_input("Initial account balance (THB):", min_value=0, step=1000, value=1000000)
                   new_trading_size_pct = st.slider("Trading size as a percentage of initial account balance (%):", 0, 100, 10)
                   new_commission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, value=0.157, format='%1.3f')
                   edit_param_button = st.form_submit_button("Edit")
                   if edit_param_button:
-                    #st.session_state['edit_mod_button_status'] = False
                     st.success('Edit parameters successful!')
                     time.sleep(3)
                     st.experimental_rerun()
