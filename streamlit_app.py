@@ -243,7 +243,7 @@ else:
           ### --- edit button --- ###
           if edit_mod_button: #or st.session_state['edit_mod_button_status']:
             #st.session_state['edit_mod_button_status'] = True
-            #placeholder_4.empty()
+            placeholder_3.empty()
             with placeholder_3.container():
               with st.empty().container():
                 edit_form_col1, _ = st.columns([2,1])
