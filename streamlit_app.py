@@ -454,7 +454,7 @@ else:
             ##### ---------- #####
             select_data_menu_holder = st.empty()
             with select_data_menu_holder.container():
-              col_observe_b, col_split_data_b, _ = st.columns([1,1,5])
+              col_observe_b, col_split_data_b, _ = st.columns([1,1,4])
               with col_observe_b:
                 observe_button = st.button('View Dataset 🔍')
               with col_split_data_b:
