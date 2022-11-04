@@ -517,10 +517,10 @@ else:
             st.header("Set parameters for your trading model 💡")
             #set_parameters()
             with st.form('set parameter form'):
-              col1_set_para, _ = st.columns([5,1])
+              _, col1_set_para, _ = st.columns([1,4,1])
               with col1_set_para:
                 st.write("##### Model parameters")
-                agent_name = st.text_input("Model name: ", placeholder="model_01")
+                agent_name = st.text_input("Model name: ", placeholder="eg. model_01")
                 agent_gamma = st.slider("Gamma: ", 0.00, 1.00, 0.90)
                 agent_epsilon = st.slider("Starting epsilon (random walk probability): ", 0.00, 1.00, 1.00)
                 agent_epsilon_dec = st.select_slider("Epsilon decline rate (random walk probability decline):",
