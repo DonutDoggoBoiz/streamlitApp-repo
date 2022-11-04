@@ -126,7 +126,8 @@ if st.session_state['login_status'] == False:
                 else:
                   st.success("Login Successful!")
                   st.session_state['username'] = username
-                  st.session_state['name'] = user_frame.loc[user_frame['username'] == username,'name'].values
+                  st.session_state['name'] = str(user_frame.loc[user_frame['username'] == username,'name'].values)
+                  #st.session_state['name'] = name_list.iloc[user_list[username].index]
                   login_func()
                   time.sleep(4)
                   rerun()
