@@ -576,7 +576,7 @@ else:
               st.write("Model name: {}".format(to_train_model) )
               st.write("Gamma: {:.2f}".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'gamma'])) )
               st.write("Starting epsilon: {:.2f}".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'epsilon_start'])) )
-              st.write("Epsilon decline rate: {:.4f}".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'epsilon_dec'])) )
+              st.write("Epsilon decline rate: {:.4f}".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'epsilon_decline'])) )
               st.write("Minimum epsilon: {:.2f}".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'epsilon_min'])) )
               st.write("Learning rate: {:.4f}".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'learning_rate'])) )
               st.write('  ')
