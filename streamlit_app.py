@@ -464,20 +464,20 @@ else:
                 st.write('This dataset contains {} days of historical prices'.format(df_length))
                 
               if observe_button or st.session_state['observe_button_status']:
-              st.session_state['observe_button_status'] = True
+                st.session_state['observe_button_status'] = True
               #observe_price()
-              alt_price_range = (alt.Chart(df_price['Close'].reset_index()).mark_line().encode(
-                x = alt.X('Date'),
-                y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-2, df_price['Close'].max()+2]) ),
-                tooltip=[alt.Tooltip('Date', title='Date'), alt.Tooltip('Close', title='Price (THB)')]
-              ).interactive().configure_axis(labelFontSize=16,titleFontSize=18))
+                alt_price_range = (alt.Chart(df_price['Close'].reset_index()).mark_line().encode(
+                  x = alt.X('Date'),
+                  y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-2, df_price['Close'].max()+2]) ),
+                  tooltip=[alt.Tooltip('Date', title='Date'), alt.Tooltip('Close', title='Price (THB)')]
+                ).interactive().configure_axis(labelFontSize=16,titleFontSize=18))
                 with select_data_chart_holder.container():
                   st.altair_chart(alt_price_range, use_container_width=True)
                 #st.write('This dataset contains {} days of historical prices'.format(df_length))
                 with st.form('split_slider'):
                     split_point = st.slider('##### Select the split point between Train set and Test set:', 0, int(df_length), int(df_length/2))
                     split_button = st.form_submit_button("Split dataset ✂️")
-                    #split_button = st.button("Split dataset ✂️")
+                      #split_button = st.button("Split dataset ✂️")
               #train_size_pct = (split_point/df_length)*100
               #test_size_pct = 100-train_size_pct
               #st.write('Dataset will be split into {} records ({:.2f}%) as training set and {} records ({:.2f}%) as test set'.format(split_point, 
