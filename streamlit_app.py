@@ -455,7 +455,7 @@ else:
             select_data_menu_holder = st.empty()
             select_data_chart_holder = st.empty()
             split_data_chart_holder = st.empty()
-            success_box_holder = st.empty()
+            #success_box_holder = st.empty()
             #select_data_slider_holder = st.empty()
             with select_data_menu_holder.container():
               col_observe_b, col_describe = st.columns([1,3])
@@ -502,7 +502,9 @@ else:
                     x = alt.X('Date'),
                     y = alt.Y('Close',title='Price  (THB)', 
                               scale=alt.Scale(domain=[df_price['Close'].min()-2, df_price['Close'].max()+2])),
-                    color = 'split',
+                    color = alt.Color('split',
+                                      scale=alt.Scale(domain=['Train set','Test set'],range=['blue','orange']),
+                                      legend=alt.Legend(title="Dataset")),
                     tooltip=[alt.Tooltip('Date', title='Date'), 
                              alt.Tooltip('Close', title='Price (THB)'), 
                              alt.Tooltip('split', title='Dataset')]).interactive().configure_axis(labelFontSize=16,titleFontSize=18))
@@ -511,8 +513,6 @@ else:
                     st.altair_chart(alt_split, use_container_width=True)
                     st.write('Dataset will be split into {} records ({:.2f}%) as training set and {} records ({:.2f}%) as test set'.format(
                       split_point,train_size_pct,df_length-split_point,test_size_pct) )
-                if split_button:
-                  with success_box_holder.container():
                     st.success('Your Datasets are ready! Please proceed to "Set Parameters" tab')
                   ####### --------- #######
 
