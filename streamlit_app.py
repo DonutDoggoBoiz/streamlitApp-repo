@@ -439,7 +439,7 @@ else:
             market_name = stock_df[stock_df['symbol']==stock_name]['market'].to_string(index=False)
             industry_name = stock_df[stock_df['symbol']==stock_name]['industry'].to_string(index=False)
             sector_name = stock_df[stock_df['symbol']==stock_name]['sector'].to_string(index=False)
-            with st.expander('Company Information'):
+            with st.expander('Company Information', expanded=True):
               #st.write('{} --- Market: {} --- Industry:  {} --- Sector:  {}'.format(company_name, market_name, industry_name, sector_name))
               st.write('{}'.format(company_name))
               st.write('Market: {}'.format(market_name))
