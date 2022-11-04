@@ -558,6 +558,8 @@ else:
                                         'commission_fee_pct': commission_fee_pct
                                        }
                     model_db.put(model_param_dict)
+                    model_options = model_frame['model_name']
+                    time.sleep(2)
                     st.success('Set parameters successful!  Please proceed to "Train Model" tab')
                     ####### -------- #######
 
@@ -569,8 +571,8 @@ else:
             with st.expander('Model Information'):
               st.write("##### Model Parameters")
               st.write("Model name: {}".format(to_train_model) )
-              st.write("Gamma: {}".format(
-                model_frame.loc[model_frame['model_name']==to_train_model,'gamma'].to_string(index=False)) )
+              st.write("Gamma: {:.2f}".format(
+                model_frame.loc[model_frame['model_name']==to_train_model,'gamma'].values) )
               st.write("Starting epsilon: {:.2f}".format(1.00) )
               st.write("Epsilon decline rate: {:.4f}".format(0.005) )
               st.write("Minimum epsilon: {:.2f}".format(0.01) )
