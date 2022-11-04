@@ -540,6 +540,7 @@ else:
                                'stock_quote':stock_name,
                                'start_date':start_date,
                                'end_date':end_date,
+                               'split_point':split_point,
                                'episode_trained':0,
                                'trained_result':0,
                                'test_result':0,
