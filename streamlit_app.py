@@ -562,7 +562,6 @@ else:
                                         'commission_fee_pct': commission_fee_pct
                                        }
                     model_db.put(model_param_dict)
-                    time.sleep(2)
                     update_model_frame()
                     st.success('Set parameters successful!  Please proceed to "Train Model" tab')
                     ####### -------- #######
@@ -576,16 +575,19 @@ else:
               st.write("##### Model Parameters")
               st.write("Model name: {}".format(to_train_model) )
               st.write("Gamma: {:.2f}".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'gamma'])) )
-              st.write("Starting epsilon: {:.2f}".format(1.00) )
-              st.write("Epsilon decline rate: {:.4f}".format(0.005) )
-              st.write("Minimum epsilon: {:.2f}".format(0.01) )
-              st.write("Learning rate: {:.4f}".format(0.001) )
+              st.write("Starting epsilon: {:.2f}".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'epsilon_start'])) )
+              st.write("Epsilon decline rate: {:.4f}".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'epsilon_dec'])) )
+              st.write("Minimum epsilon: {:.2f}".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'epsilon_min'])) )
+              st.write("Learning rate: {:.4f}".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'learning_rate'])) )
               st.write('  ')
               st.write("##### Trading Parameters")
-              st.write("Initial account balance:  {:,} ฿".format(1500000) )
-              st.write("Trading size (%):  {}%".format(10) )
-              st.write("Trading size (THB):  {:,}".format(150000) )
-              st.write("Commission fee:  {:.3f}%".format(0.157) )
+              st.write("Initial account balance:  {:,} ฿".format(int(model_frame.loc[model_frame['model_name']==to_train_model,'initial_balance'])) )
+              st.write("Trading size (%):  {}%".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'trading_size_pct'])) )
+              info_initial_bal = int(model_frame.loc[model_frame['model_name']==to_train_model,'initial_balance'])
+              info_trade_size_pct = float(model_frame.loc[model_frame['model_name']==to_train_model,'trading_size_pct'])
+              info_trade_size_nom = info_initial_bal * info_trade_size_pct
+              st.write("Trading size (THB):  {:,}".format(info_trade_size_nom) )
+              st.write("Commission fee:  {:.3f}%".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'commission_fee'])) )
             col1 , col2 = st.columns(2)
             with col1:
                 set_train_episodes()
