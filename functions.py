@@ -33,7 +33,6 @@ model_df = pd.DataFrame(model_list)
 #### ------ PRICE FETCHING MODULE ------ ###
 def fetch_price_data():
   global stock_name, df_price, df_length
-  #stock_name = st.selectbox('Select your Stock', ('BBL', 'PTT', 'ADVANC','KBANK') )
   stock_name = st.selectbox('Select your Stock', options=stock_list, index=86)
   company_name = stock_df[stock_df['symbol']==stock_name]['company_name'].to_string(index=False)
   market_name = stock_df[stock_df['symbol']==stock_name]['market'].to_string(index=False)
@@ -44,10 +43,10 @@ def fetch_price_data():
   int_last_year = int(datetime.date.today().year) - 1
   int_month = int(datetime.date.today().month)
   int_day = int(datetime.date.today().day)
-  #start_date = st.date_input("Select start date: ", datetime.date(2021, 9, 20))
-  #end_date = st.date_input("Select end date: ", datetime.date(2022, 9, 20))
-  start_date = st.date_input("Select start date: ", datetime.date( int_last_year, int_month, int_day) )
-  end_date = st.date_input("Select end date: ", datetime.date( int_year, int_month, int_day) )
+  #start_date = st.date_input("Select start date: ", datetime.date( int_last_year, int_month, int_day) )
+  #end_date = st.date_input("Select end date: ", datetime.date( int_year, int_month, int_day) )
+  start_date = st.date_input("Select start date: ", (datetime.date.today()-datetime.timedelta(days=365)) )
+  end_date = st.date_input("Select end date: ", datetime.date.today() )
   stock_code = stock_name + '.BK'
   df_price = yf.download(stock_code,
                         start=start_date,
