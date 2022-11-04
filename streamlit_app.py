@@ -95,6 +95,10 @@ def dis_login_button():
 def dis_regis_button():
   st.session_state['sign_in_b_disable'] = False
   st.session_state['sign_up_b_disable'] = True
+
+def update_model_frame():
+  global model_frame
+  model_frame = pd.DataFrame(model_db.fetch().items)
   
 def rerun():
   st.experimental_rerun()
@@ -558,8 +562,8 @@ else:
                                         'commission_fee_pct': commission_fee_pct
                                        }
                     model_db.put(model_param_dict)
-                    model_options = model_frame['model_name']
                     time.sleep(2)
+                    update_model_frame()
                     st.success('Set parameters successful!  Please proceed to "Train Model" tab')
                     ####### -------- #######
 
