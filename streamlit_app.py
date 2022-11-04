@@ -522,7 +522,7 @@ else:
             st.header("Set parameters for your trading model 💡")
             #set_parameters()
             with st.form('set parameter form'):
-              _, col1_set_para, _ = st.columns([1,4,1])
+              _, col1_set_para, _ = st.columns([1,5,1])
               with col1_set_para:
                 st.write("##### Model parameters")
                 agent_name = st.text_input("Model name: ", max_chars=32, placeholder="eg. model_01")
