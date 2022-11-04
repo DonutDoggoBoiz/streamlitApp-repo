@@ -22,7 +22,7 @@ model_db = deta.Base("model_db")
 user_frame = pd.DataFrame(user_db.fetch().items)
 user_list = user_frame['username'].values.tolist()
 password_list = user_frame['password'].values.tolist()
-name_list = user_frame['name'].values.tolist()
+#name_list = user_frame['name'].values.tolist()
 
 ### --- SESSION STATE --- ###
 if 'login_status' not in st.session_state:
