@@ -453,9 +453,7 @@ else:
                 tooltip=[alt.Tooltip('Date', title='Date'), alt.Tooltip('Close', title='Price (THB)')]
               ).interactive())
               st.altair_chart(c, use_container_width=True)
-
-              st.write('This dataset contains {} days of historical prices'.format(df_length)
-
+              st.write('This dataset contains {} days of historical prices'.format(df_length))
               split_point = st.slider('Select the split point between Train set and Test set:', 0, int(df_length), int(df_length/2))
               train_size_pct = (split_point/df_length)*100
               test_size_pct = 100-train_size_pct
