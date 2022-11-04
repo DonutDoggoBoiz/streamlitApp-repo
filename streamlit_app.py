@@ -474,9 +474,9 @@ else:
                 with select_data_chart_holder.container():
                   st.altair_chart(alt_price_range, use_container_width=True)
                 #st.write('This dataset contains {} days of historical prices'.format(df_length))
-                with st.form('split_slider'):
-                    split_point = st.slider('##### Select the split point between Train set and Test set:', 0, int(df_length), int(df_length/2))
-                    split_button = st.form_submit_button("Split dataset ✂️")
+                  with st.form('split_slider'):
+                      split_point = st.slider('##### Select the split point between Train set and Test set:', 0, int(df_length), int(df_length/2))
+                      split_button = st.form_submit_button("Split dataset ✂️")
                       #split_button = st.button("Split dataset ✂️")
               #train_size_pct = (split_point/df_length)*100
               #test_size_pct = 100-train_size_pct
