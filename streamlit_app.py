@@ -587,7 +587,7 @@ else:
               info_trade_size_pct = float(model_frame.loc[model_frame['model_name']==to_train_model,'trading_size_pct'])
               info_trade_size_nom = info_initial_bal * info_trade_size_pct
               st.write("Trading size (THB):  {:,}".format(info_trade_size_nom) )
-              st.write("Commission fee:  {:.3f}%".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'commission_fee'])) )
+              st.write("Commission fee:  {:.3f}%".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'commission_fee_pct'])) )
             col1 , col2 = st.columns(2)
             with col1:
                 set_train_episodes()
