@@ -565,12 +565,11 @@ else:
         with train_tab:
             st.header("Train your model with train set 🚀")
             model_options = model_frame['model_name']
-            st.write('type of model_options: {}'.format(type(model_options)))
-            to_train_model = st.selectbox('Choose your model to train:', options=['BBL_01', 'BBL_02', 'PTT_07'])
+            to_train_model = st.selectbox('Choose your model to train:', options=model_options)
             with st.expander('Model Information'):
               st.write("##### Model Parameters")
               st.write("Model name: {}".format(to_train_model) )
-              st.write("Gamma: {}".format(0.99) )
+              st.write("Gamma: {}".format(model_frame[model_frame['model_name']=to_train_model,'gamma']) )
               st.write("Starting epsilon: {:.2f}".format(1.00) )
               st.write("Epsilon decline rate: {:.4f}".format(0.005) )
               st.write("Minimum epsilon: {:.2f}".format(0.01) )
