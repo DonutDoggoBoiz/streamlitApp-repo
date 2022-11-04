@@ -454,6 +454,7 @@ else:
             ##### ---------- #####
             select_data_menu_holder = st.empty()
             select_data_chart_holder = st.empty()
+            split_data_chart_holder = st.empty()
             #select_data_slider_holder = st.empty()
             with select_data_menu_holder.container():
               col_observe_b, col_split_data_b, col_describe = st.columns([1,1,2])
@@ -467,18 +468,19 @@ else:
               with col_describe:
                 st.write('This dataset contains {} days of historical prices'.format(df_length))
               #observe_price()
-              c = (alt.Chart(df_price['Close'].reset_index()).mark_line().encode(
+              alt_price_range = (alt.Chart(df_price['Close'].reset_index()).mark_line().encode(
                 x = alt.X('Date'),
                 y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-2, df_price['Close'].max()+2]) ),
                 tooltip=[alt.Tooltip('Date', title='Date'), alt.Tooltip('Close', title='Price (THB)')]
-              ).interactive())
+              ).interactive().configure_axis(labelFontSize=16,titleFontSize=18))
               if st.session_state['split_button_status'] == False:
                 with select_data_chart_holder.container():
-                  st.altair_chart(c, use_container_width=True)
+                  st.altair_chart(alt_price_range, use_container_width=True)
               #st.write('This dataset contains {} days of historical prices'.format(df_length))
-              with st.form('split_slider'):
-                split_point = st.slider('Select the split point between Train set and Test set:', 0, int(df_length), int(df_length/2))
-                split_button = st.form_submit_button("Split dataset ✂️")
+              #with st.form('split_slider'):
+                  split_point = st.slider('##### Select the split point between Train set and Test set:', 0, int(df_length), int(df_length/2))
+                  #split_button = st.form_submit_button("Split dataset ✂️") --- form submit
+                  split_button = st.button("Split dataset ✂️")
               #train_size_pct = (split_point/df_length)*100
               #test_size_pct = 100-train_size_pct
               #st.write('Dataset will be split into {} records ({:.2f}%) as training set and {} records ({:.2f}%) as test set'.format(split_point, 
@@ -499,16 +501,16 @@ else:
                 df_price_test = df_price[split_point:]
                 train_prices = df_price_train['Close'].to_numpy()
                 test_prices = df_price_test['Close'].to_numpy()
-                alt_split = alt.Chart(df_price.reset_index()).mark_line().encode(
+                alt_split = (alt.Chart(df_price.reset_index()).mark_line().encode(
                   x = alt.X('Date'),
                   y = alt.Y('Close',title='Price  (THB)', 
                             scale=alt.Scale(domain=[df_price['Close'].min()-2, df_price['Close'].max()+2])),
                   color = 'split',
                   tooltip=[alt.Tooltip('Date', title='Date'), 
                            alt.Tooltip('Close', title='Price (THB)'), 
-                           alt.Tooltip('split', title='Dataset')]).interactive()
+                           alt.Tooltip('split', title='Dataset')]).interactive().configure_axis(labelFontSize=16,titleFontSize=18))
                 #st.write("Splited dataset")
-                with select_data_chart_holder.container():
+                with split_data_chart_holder.container():
                   st.altair_chart(alt_split, use_container_width=True)
                   st.write('Dataset will be split into {} records ({:.2f}%) as training set and {} records ({:.2f}%) as test set'.format(
                     split_point,train_size_pct,df_length-split_point,test_size_pct) )
