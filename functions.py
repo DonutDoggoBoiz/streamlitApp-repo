@@ -17,6 +17,7 @@ stock_df = pd.DataFrame(stock_db.fetch().items)
 stock_list = stock_df['symbol'].sort_values(ascending=True)
 #stock_list_sorted = stock_list.sort()
 
+model_db = deta.Base("model_db")
 # ---------------------------- #
 # DEMO username
 username = 'admin99'
@@ -81,9 +82,6 @@ def observe_price():
                                                                                                                        train_size_pct,
                                                                                                                        df_length-split_point,
                                                                                                                        test_size_pct) )
-  #st.write('train set will be considered as {:.2f}% of dataset while the other {:.2f}% is test set'.format(train_size_pct,test_size_pct) )
-  #st.write('the training set is {:.2f}% of the dataset while the test set is {:.2f}%'.format(train_size_pct,test_size_pct) )
-  #return split_point
   
 def split_dataset2():
   global df_price_train, df_price_test, train_prices, test_prices
@@ -130,6 +128,18 @@ def set_parameters():
     
     set_param_button = st.form_submit_button("Set Parameters")
     if set_param_button:
+      model_db.put({'username':st.session_state['username'],
+                   'model_name':agent_name,
+                   'episode_trained':0,
+                   'gamma':agent_gamma,
+                   'epsilon':agent_epsilon,
+                   'epsilon_dec':agent_epsilon_dec,
+                   'epsilon_end':agent_epsilon_end,
+                   'learning_rate':agent_lr,
+                   'initial_balance':initial_balance,
+                   'trading_size_pct':trading_size_pct,
+                   'commission_fee_pct':commission_fee_pct}
+                  )
       st.success('Set parameters successful!  Please proceed to "Train Model" tab')
 
   #set_param_button = st.button("Set Parameters")
