@@ -537,7 +537,12 @@ else:
                 if set_param_button:
                   model_db.put({'username':st.session_state['username'],
                                'model_name':agent_name,
+                               'stock_quote':stock_name,
+                               'start_date':start_date,
+                               'end_date':end_date,
                                'episode_trained':0,
+                               'trained_result':0,
+                               'test_result':0,
                                'gamma':agent_gamma,
                                'epsilon_start':agent_epsilon,
                                'epsilon_decline':agent_epsilon_dec,
