@@ -19,8 +19,6 @@ stock_list = stock_df['symbol'].sort_values(ascending=True)
 
 model_db = deta.Base("model_db")
 # ---------------------------- #
-# DEMO username
-username = 'admin99'
 
 ### ------------ MODEL DATABASE ------------ ###
 model_list = []
