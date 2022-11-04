@@ -518,8 +518,44 @@ else:
 
         with set_para_tab:
             st.header("Set parameters for your trading model 💡")
-            set_parameters()
+            #set_parameters()
+            col1_set_para, _ = st.columns([4,1])
+            with col1_set_para:
+              with st.form('set parameter form'):
+                st.write("##### Model parameters")
+                agent_name = st.text_input("Model name: ", "model_01")
+                agent_gamma = st.slider("Gamma: ", 0.00, 1.00, 0.90)
+                agent_epsilon = st.slider("Starting epsilon (random walk probability): ", 0.00, 1.00, 1.00)
+                agent_epsilon_dec = st.select_slider("Epsilon decline rate (random walk probability decline): ",
+                                                     options=[0.001,0.002,0.005,0.010], value=0.001)
+                agent_epsilon_end = st.slider("Minimum epsilon: ", 0.01, 0.10, 0.01)
+                agent_lr = st.select_slider("Learning rate: ", options=[0.001, 0.002, 0.005, 0.010], value=0.001)
 
+                st.write("##### Trading parameters")
+                initial_balance = st.number_input("Initial account balance (THB):", min_value=0, step=1000, value=1000000)
+                trading_size_pct = st.slider("Trading size as a percentage of initial account balance (%):", 0, 100, 10)
+                trade_size = initial_balance * trading_size_pct / 100
+                #st.write('{}% of initial investment is {:,.0f} THB'.format(trading_size_pct, trade_size))
+                commission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, value=0.157, format='%1.3f')
+
+                set_param_button = st.form_submit_button("Set Parameters")
+                if set_param_button:
+                  model_db.put({'username':st.session_state['username'],
+                               'model_name':agent_name,
+                               'episode_trained':0,
+                               'gamma':agent_gamma,
+                               'epsilon_start':agent_epsilon,
+                               'epsilon_decline':agent_epsilon_dec,
+                               'epsilon_min':agent_epsilon_end,
+                               'learning_rate':agent_lr,
+                               'initial_balance':initial_balance,
+                               'trading_size_pct':trading_size_pct,
+                               'commission_fee_pct':commission_fee_pct}
+                              )
+                  st.success('Set parameters successful!  Please proceed to "Train Model" tab')
+                  ####### -------- #######
+
+      
         with train_tab:
             st.header("Train your model with train set 🚀")
             to_train_model = st.selectbox('Choose your model to train:', options=['BBL_01', 'BBL_02', 'PTT_07'])
