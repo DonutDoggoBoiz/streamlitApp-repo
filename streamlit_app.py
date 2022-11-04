@@ -534,7 +534,7 @@ else:
                 agent_lr = st.select_slider("Learning rate: ", options=[0.001, 0.002, 0.005, 0.010], value=0.001)
 
                 st.write("##### Trading parameters")
-                initial_balance = st.number_input("Initial account balance (THB):", min_value=100000, step=1000, value=1000000)
+                initial_balance = st.number_input("Initial account balance (THB):", min_value=100000, step=10000, value=1000000)
                 trading_size_pct = st.slider("Trading size as a percentage of initial account balance (%):", 0, 100, 10)
                 trade_size = initial_balance * trading_size_pct / 100
                 commission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, value=0.157, format='%1.3f')
