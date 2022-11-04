@@ -453,21 +453,24 @@ else:
             df_length = df_price['Close'].count()
             ##### ---------- #####
             select_data_menu_holder = st.empty()
+            select_data_chart_holder = st.empty()
             with select_data_menu_holder.container():
-              col_observe_b, col_split_data_b, _ = st.columns([1,1,4])
+              col_observe_b, col_split_data_b, _ = st.columns([1,1,2])
               with col_observe_b:
                 observe_button = st.button('View Dataset 🔍')
-              with col_split_data_b:
-                split_button = st.button("Split dataset ✂️", disabled=(not st.session_state['observe_button_status']))
             if observe_button or st.session_state['observe_button_status']:
               st.session_state['observe_button_status'] = True
+              with col_split_data_b:
+                #split_button = st.button("Split dataset ✂️", disabled=(not st.session_state['observe_button_status']))
+                split_button = st.button("Split dataset ✂️")
               #observe_price()
               c = (alt.Chart(df_price['Close'].reset_index()).mark_line().encode(
                 x = alt.X('Date'),
                 y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-2, df_price['Close'].max()+2]) ),
                 tooltip=[alt.Tooltip('Date', title='Date'), alt.Tooltip('Close', title='Price (THB)')]
               ).interactive())
-              st.altair_chart(c, use_container_width=True)
+              with select_data_chart_holder.container():
+                st.altair_chart(c, use_container_width=True)
               st.write('This dataset contains {} days of historical prices'.format(df_length))
               split_point = st.slider('Select the split point between Train set and Test set:', 0, int(df_length), int(df_length/2))
               train_size_pct = (split_point/df_length)*100
@@ -491,14 +494,15 @@ else:
                 alt_split = alt.Chart(df_price.reset_index()).mark_line().encode(
                   x = alt.X('Date'),
                   y = alt.Y('Close',title='Price  (THB)', 
-                            scale=alt.Scale(domain=[df_price['Close'].min()-10, df_price['Close'].max()+10])),
+                            scale=alt.Scale(domain=[df_price['Close'].min()-2, df_price['Close'].max()+2])),
                   color = 'split',
                   tooltip=[alt.Tooltip('Date', title='Date'), 
                            alt.Tooltip('Close', title='Price (THB)'), 
                            alt.Tooltip('split', title='Dataset')]).interactive()
-                st.write("Splited dataset")
-                st.altair_chart(alt_split, use_container_width=True)
-                st.success('Please proceed to "Set Parameters" tab')
+                #st.write("Splited dataset")
+                with select_data_chart_holder.container():
+                  st.altair_chart(alt_split, use_container_width=True)
+                st.success('Your Datasets are ready! Please proceed to "Set Parameters" tab')
                 ####### --------- #######
 
         with set_para_tab:
