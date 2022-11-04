@@ -535,17 +535,25 @@ else:
                 commission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, value=0.157, format='%1.3f')
                 set_param_button = st.form_submit_button("Set Parameters")
                 if set_param_button:
-                  model_db.put({'username':st.session_state['username'],
-                                'model_name':agent_name,
-                                'episode_trained':0,
-                                'gamma':agent_gamma,
-                                'epsilon_start':agent_epsilon,
-                                'epsilon_decline':agent_epsilon_dec,
-                                'epsilon_min':agent_epsilon_end,
-                                'learning_rate':agent_lr,
-                                'initial_balance':initial_balance,
-                                'trading_size_pct':trading_size_pct,
-                                'commission_fee_pct':commission_fee_pct} )
+                  model_param_dict = {'username': st.session_state['username'],
+                                      'model_name': agent_name,
+                                      'stock_quote': stock_name,
+                                      'start_date': str(start_date),
+                                      'end_date': str(end_date),
+                                      'split_point': split_point,
+                                      'episode_trained': 0,
+                                      'trained_result': 0,
+                                      'test_result': 0,
+                                      'gamma': agent_gamma,
+                                      'epsilon_start': agent_epsilon,
+                                      'epsilon_decline': agent_epsilon_dec,
+                                      'epsilon_min': agent_epsilon_end,
+                                      'learning_rate': agent_lr,
+                                      'initial_balance': initial_balance,
+                                      'trading_size_pct': trading_size_pct,
+                                      'commission_fee_pct': commission_fee_pct
+                                     }
+                  model_db.put(model_param_dict)
                   st.success('Set parameters successful!  Please proceed to "Train Model" tab')
                   ####### -------- #######
 
