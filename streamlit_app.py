@@ -336,7 +336,6 @@ else:
           generate_advice_button = st.button('Generate Advice')
           if generate_advice_button:
             stock_name = 'BBL'
-            #start_date = datetime.date(datetime.date.today().year-1, datetime.date.today().month, datetime.date.today().day )
             start_date = ( datetime.date.today() - datetime.timedelta(days=180) )
             end_date = datetime.date.today()
             stock_code = stock_name + '.BK'
@@ -440,7 +439,6 @@ else:
             industry_name = stock_df[stock_df['symbol']==stock_name]['industry'].to_string(index=False)
             sector_name = stock_df[stock_df['symbol']==stock_name]['sector'].to_string(index=False)
             with st.expander('Company Information', expanded=True):
-              #st.write('{} --- Market: {} --- Industry:  {} --- Sector:  {}'.format(company_name, market_name, industry_name, sector_name))
               st.write('{}'.format(company_name))
               st.write('Market: {}'.format(market_name))
               st.write('Industry: {}'.format(industry_name))
@@ -474,7 +472,6 @@ else:
                 ).interactive().configure_axis(labelFontSize=16,titleFontSize=18))
                 with select_data_chart_holder.container():
                   st.altair_chart(alt_price_range, use_container_width=True)
-                #st.write('This dataset contains {} days of historical prices'.format(df_length))
                   with st.form('split_slider'):
                       split_point = st.slider('Select the split point between Train set and Test set:', 0, int(df_length), int(df_length/2))
                       split_button = st.form_submit_button("Split dataset ✂️")
@@ -520,13 +517,13 @@ else:
             st.header("Set parameters for your trading model 💡")
             #set_parameters()
             with st.form('set parameter form'):
-              col1_set_para, _ = st.columns([4,1])
+              col1_set_para, _ = st.columns([5,1])
               with col1_set_para:
                 st.write("##### Model parameters")
-                agent_name = st.text_input("Model name: ", "model_01")
+                agent_name = st.text_input("Model name: ", placeholder="model_01")
                 agent_gamma = st.slider("Gamma: ", 0.00, 1.00, 0.90)
                 agent_epsilon = st.slider("Starting epsilon (random walk probability): ", 0.00, 1.00, 1.00)
-                agent_epsilon_dec = st.select_slider("Epsilon decline rate (random walk probability decline): ",
+                agent_epsilon_dec = st.select_slider("Epsilon decline rate (random walk probability decline):",
                                                      options=[0.001,0.002,0.005,0.010], value=0.001)
                 agent_epsilon_end = st.slider("Minimum epsilon: ", 0.01, 0.10, 0.01)
                 agent_lr = st.select_slider("Learning rate: ", options=[0.001, 0.002, 0.005, 0.010], value=0.001)
@@ -535,9 +532,7 @@ else:
                 initial_balance = st.number_input("Initial account balance (THB):", min_value=0, step=1000, value=1000000)
                 trading_size_pct = st.slider("Trading size as a percentage of initial account balance (%):", 0, 100, 10)
                 trade_size = initial_balance * trading_size_pct / 100
-                #st.write('{}% of initial investment is {:,.0f} THB'.format(trading_size_pct, trade_size))
                 commission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, value=0.157, format='%1.3f')
-
                 set_param_button = st.form_submit_button("Set Parameters")
                 if set_param_button:
                   model_db.put({'username':st.session_state['username'],
