@@ -472,8 +472,9 @@ else:
                 y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-2, df_price['Close'].max()+2]) ),
                 tooltip=[alt.Tooltip('Date', title='Date'), alt.Tooltip('Close', title='Price (THB)')]
               ).interactive())
-              with select_data_chart_holder.container():
-                st.altair_chart(c, use_container_width=True)
+              if st.session_state['split_button_status'] == False:
+                with select_data_chart_holder.container():
+                  st.altair_chart(c, use_container_width=True)
               #st.write('This dataset contains {} days of historical prices'.format(df_length))
               with st.form('split_slider'):
                 split_point = st.slider('Select the split point between Train set and Test set:', 0, int(df_length), int(df_length/2))
