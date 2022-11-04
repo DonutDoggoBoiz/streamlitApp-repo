@@ -569,7 +569,7 @@ else:
             with st.expander('Model Information'):
               st.write("##### Model Parameters")
               st.write("Model name: {}".format(to_train_model) )
-              st.write("Gamma: {}".format(model_frame[model_frame['model_name']=to_train_model,'gamma']) )
+              st.write("Gamma: {}".format(model_frame[model_frame['model_name']==to_train_model,'gamma']) )
               st.write("Starting epsilon: {:.2f}".format(1.00) )
               st.write("Epsilon decline rate: {:.4f}".format(0.005) )
               st.write("Minimum epsilon: {:.2f}".format(0.01) )
