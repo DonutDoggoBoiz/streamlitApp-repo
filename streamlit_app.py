@@ -439,7 +439,12 @@ else:
             market_name = stock_df[stock_df['symbol']==stock_name]['market'].to_string(index=False)
             industry_name = stock_df[stock_df['symbol']==stock_name]['industry'].to_string(index=False)
             sector_name = stock_df[stock_df['symbol']==stock_name]['sector'].to_string(index=False)
-            st.write('{} --- Market: {} --- Industry:  {} --- Sector:  {}'.format(company_name, market_name, industry_name, sector_name))
+            with st.expander('Company Information'):
+              #st.write('{} --- Market: {} --- Industry:  {} --- Sector:  {}'.format(company_name, market_name, industry_name, sector_name))
+              st.write('{}'.format(company_name))
+              st.write('Market: {}'.format(market_name))
+              st.write('Industry: {}'.format(industry_name))
+              st.write('Sector: {}'.format(sector_name))
             start_date = st.date_input("Select start date: ", (datetime.date.today()-datetime.timedelta(days=365)) )
             end_date = st.date_input("Select end date: ", datetime.date.today() )
             stock_code = stock_name + '.BK'
