@@ -455,7 +455,7 @@ else:
             select_data_menu_holder = st.empty()
             select_data_chart_holder = st.empty()
             with select_data_menu_holder.container():
-              col_observe_b, col_split_data_b, _ = st.columns([1,1,2])
+              col_observe_b, col_split_data_b, col_describe = st.columns([1,1,2])
               with col_observe_b:
                 observe_button = st.button('View Dataset 🔍')
             if observe_button or st.session_state['observe_button_status']:
@@ -463,6 +463,8 @@ else:
               with col_split_data_b:
                 #split_button = st.button("Split dataset ✂️", disabled=(not st.session_state['observe_button_status']))
                 split_button = st.button("Split dataset ✂️")
+              with col_describe:
+                st.write('This dataset contains {} days of historical prices'.format(df_length))
               #observe_price()
               c = (alt.Chart(df_price['Close'].reset_index()).mark_line().encode(
                 x = alt.X('Date'),
@@ -471,7 +473,7 @@ else:
               ).interactive())
               with select_data_chart_holder.container():
                 st.altair_chart(c, use_container_width=True)
-              st.write('This dataset contains {} days of historical prices'.format(df_length))
+              #st.write('This dataset contains {} days of historical prices'.format(df_length))
               split_point = st.slider('Select the split point between Train set and Test set:', 0, int(df_length), int(df_length/2))
               train_size_pct = (split_point/df_length)*100
               test_size_pct = 100-train_size_pct
