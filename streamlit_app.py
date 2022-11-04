@@ -452,7 +452,13 @@ else:
             df_price.drop(columns=['Adj Close','Volume'] , inplace=True)
             df_length = df_price['Close'].count()
             ##### ---------- #####
-            observe_button = st.button('View Dataset 🔍')
+            select_data_menu_holder = st.empty()
+            with select_data_menu_holder.container():
+              col_observe_b, col_split_data_b, _ = st.columns([1,1,5])
+              with col_observe_b:
+                observe_button = st.button('View Dataset 🔍')
+              with col_split_data_b:
+                split_button = st.button("Split dataset ✂️", disabled=(not st.session_state['observe_button_status']))
             if observe_button or st.session_state['observe_button_status']:
               st.session_state['observe_button_status'] = True
               #observe_price()
@@ -471,7 +477,7 @@ else:
                                                                                                                                    df_length-split_point,
                                                                                                                                    test_size_pct) )
               ##### ---------- #####
-              split_button = st.button("Split dataset ✂️")
+              #split_button = st.button("Split dataset ✂️")
               if split_button or st.session_state['split_button_status']:
                 st.session_state['split_button_status'] = True
                 #split_dataset2()
