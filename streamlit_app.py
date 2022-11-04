@@ -24,6 +24,10 @@ user_list = user_frame['username'].values.tolist()
 password_list = user_frame['password'].values.tolist()
 name_list = user_frame['name'].values.tolist()
 
+stock_db = deta.Base("stock_db")
+stock_df = pd.DataFrame(stock_db.fetch().items)
+stock_list = stock_df['symbol'].sort_values(ascending=True)
+
 ### --- SESSION STATE --- ###
 if 'login_status' not in st.session_state:
   st.session_state['login_status'] = False
