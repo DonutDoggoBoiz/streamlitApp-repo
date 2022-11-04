@@ -454,15 +454,16 @@ else:
             ##### ---------- #####
             select_data_menu_holder = st.empty()
             select_data_chart_holder = st.empty()
+            #select_data_slider_holder = st.empty()
             with select_data_menu_holder.container():
               col_observe_b, col_split_data_b, col_describe = st.columns([1,1,2])
               with col_observe_b:
                 observe_button = st.button('View Dataset 🔍')
             if observe_button or st.session_state['observe_button_status']:
               st.session_state['observe_button_status'] = True
-              with col_split_data_b:
+              #with col_split_data_b:
                 #split_button = st.button("Split dataset ✂️", disabled=(not st.session_state['observe_button_status']))
-                split_button = st.button("Split dataset ✂️")
+                #split_button = st.button("Split dataset ✂️")
               with col_describe:
                 st.write('This dataset contains {} days of historical prices'.format(df_length))
               #observe_price()
@@ -474,18 +475,22 @@ else:
               with select_data_chart_holder.container():
                 st.altair_chart(c, use_container_width=True)
               #st.write('This dataset contains {} days of historical prices'.format(df_length))
-              split_point = st.slider('Select the split point between Train set and Test set:', 0, int(df_length), int(df_length/2))
-              train_size_pct = (split_point/df_length)*100
-              test_size_pct = 100-train_size_pct
-              st.write('Dataset will be split into {} records ({:.2f}%) as training set and {} records ({:.2f}%) as test set'.format(split_point, 
-                                                                                                                                   train_size_pct,
-                                                                                                                                   df_length-split_point,
-                                                                                                                                   test_size_pct) )
+              with st.form('split_slider'):
+                split_point = st.slider('Select the split point between Train set and Test set:', 0, int(df_length), int(df_length/2))
+                split_button = st.form_submit_button("Split dataset ✂️")
+              #train_size_pct = (split_point/df_length)*100
+              #test_size_pct = 100-train_size_pct
+              #st.write('Dataset will be split into {} records ({:.2f}%) as training set and {} records ({:.2f}%) as test set'.format(split_point, 
+                                                                                                                                   #train_size_pct,
+                                                                                                                                   #df_length-split_point,
+                                                                                                                                   #test_size_pct) )
               ##### ---------- #####
               #split_button = st.button("Split dataset ✂️")
               if split_button or st.session_state['split_button_status']:
                 st.session_state['split_button_status'] = True
                 #split_dataset2()
+                train_size_pct = (split_point/df_length)*100
+                test_size_pct = 100-train_size_pct
                 df_price['split'] = 'split'
                 df_price.loc[:split_point, 'split'] = 'Train set'
                 df_price.loc[split_point:, 'split'] = 'Test set'
@@ -504,6 +509,8 @@ else:
                 #st.write("Splited dataset")
                 with select_data_chart_holder.container():
                   st.altair_chart(alt_split, use_container_width=True)
+                  st.write('Dataset will be split into {} records ({:.2f}%) as training set and {} records ({:.2f}%) as test set'.format(
+                    split_point,train_size_pct,df_length-split_point,test_size_pct) )
                 st.success('Your Datasets are ready! Please proceed to "Set Parameters" tab')
                 ####### --------- #######
 
