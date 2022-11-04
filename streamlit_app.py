@@ -455,7 +455,7 @@ else:
             select_data_menu_holder = st.empty()
             select_data_chart_holder = st.empty()
             with select_data_menu_holder.container():
-              col_observe_b, col_split_data_b, col_describe = st.columns([1,1,2])
+              col_observe_b, col_split_data_b, col_describe = st.columns([1,1,3])
               with col_observe_b:
                 observe_button = st.button('View Dataset 🔍')
             if observe_button or st.session_state['observe_button_status']:
