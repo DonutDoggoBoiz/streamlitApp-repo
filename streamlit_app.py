@@ -455,6 +455,7 @@ else:
             select_data_menu_holder = st.empty()
             select_data_chart_holder = st.empty()
             split_data_chart_holder = st.empty()
+            success_box_holder = st.empty()
             #select_data_slider_holder = st.empty()
             with select_data_menu_holder.container():
               col_observe_b, col_describe = st.columns([1,3])
@@ -475,7 +476,7 @@ else:
                   st.altair_chart(alt_price_range, use_container_width=True)
                 #st.write('This dataset contains {} days of historical prices'.format(df_length))
                   with st.form('split_slider'):
-                      split_point = st.slider('##### Select the split point between Train set and Test set:', 0, int(df_length), int(df_length/2))
+                      split_point = st.slider('Select the split point between Train set and Test set:', 0, int(df_length), int(df_length/2))
                       split_button = st.form_submit_button("Split dataset ✂️")
                       #split_button = st.button("Split dataset ✂️")
               #train_size_pct = (split_point/df_length)*100
@@ -510,7 +511,9 @@ else:
                     st.altair_chart(alt_split, use_container_width=True)
                     st.write('Dataset will be split into {} records ({:.2f}%) as training set and {} records ({:.2f}%) as test set'.format(
                       split_point,train_size_pct,df_length-split_point,test_size_pct) )
-                  st.success('Your Datasets are ready! Please proceed to "Set Parameters" tab')
+                if split_button:
+                  with success_box_holder.container():
+                    st.success('Your Datasets are ready! Please proceed to "Set Parameters" tab')
                   ####### --------- #######
 
         with set_para_tab:
