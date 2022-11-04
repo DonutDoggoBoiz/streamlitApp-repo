@@ -232,6 +232,7 @@ else:
         st.write('#### Model Management')
 ########
         model_frame = pd.DataFrame(model_db.fetch().items)
+        model_grid = model_frame
         datamodel_dict = {'model_name': ['bbl_01','bbl_02','ppt_05','scg_111','mint_01'],
              'gamma': [0.90,0.80,0.85,0.75,0.95],
              'learning_rate': [0.001,0.002,0.005,0.04,0.099],
@@ -244,7 +245,7 @@ else:
         gb.configure_selection('single', use_checkbox=True, pre_selected_rows=[0])
         gridoptions = gb.build()
         grid_response = AgGrid(model_frame,
-                               fit_columns_on_grid_load=True,
+                               fit_columns_on_grid_load=False,
                                gridOptions=gridoptions)
         grp_data = grid_response['data']
         selected_row = grid_response['selected_rows'] 
@@ -424,9 +425,7 @@ else:
       placeholder_3.empty()
       placeholder_4.empty()
       with placeholder_3.container():
-        #tab_list = ["Select Data 📈", "Set Parameters 💡", "Train Model 🚀", "Test Model 🧪", "Save Model 💾","PENDING"]
-        #select_data_tab, set_para_tab, train_tab, test_tab, save_tab, pending_tab = st.tabs(tab_list)
-        tab_list = ["Select Data 📈", "Set Parameters 💡", "Train Model 🚀", "Test Model 🧪", "Save Model 💾"]
+        tab_list = ["Select Dataset 📈", "Set Parameters 💡", "Train Model 🚀", "Test Model 🧪", "Save Model 💾"]
         select_data_tab, set_para_tab, train_tab, test_tab, save_tab = st.tabs(tab_list)
         with select_data_tab:
             st.header("Select stock and time period 📈")
