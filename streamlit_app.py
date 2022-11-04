@@ -17,25 +17,29 @@ from func.generateAdvice import generate_advice
 ### --- DATABASE CONNECTION --- ###
 deta = Deta(st.secrets["deta_key"])
 user_db = deta.Base("user_db")
+model_db = deta.Base("model_db")
 
 user_frame = pd.DataFrame(user_db.fetch().items)
 user_list = user_frame['username'].values.tolist()
 password_list = user_frame['password'].values.tolist()
+name_list = user_frame['name'].values.tolist()
 
 ### --- SESSION STATE --- ###
 if 'login_status' not in st.session_state:
   st.session_state['login_status'] = False
 if 'username' not in st.session_state:
   st.session_state['username'] = None
-if 'show_register_form' not in st.session_state:
-  st.session_state['show_register_form'] = False
+if 'name' not in st.session_state:
+  st.session_state['name'] = None
   
   ### --- NAV BUTTON STATUS --- ###
 if 'sign_in_b_disable' not in st.session_state:
   st.session_state['sign_in_b_disable'] = True
 if 'sign_up_b_disable' not in st.session_state:
   st.session_state['sign_up_b_disable'] = False
-
+if 'show_register_form' not in st.session_state:
+  st.session_state['show_register_form'] = False
+  
 if 'model_manage_b_status' not in st.session_state:
   st.session_state['model_manage_b_status'] = False  
 if 'del_mod_button_status' not in st.session_state:
@@ -68,7 +72,7 @@ def login_func():
 def logout_func():
   st.session_state['login_status'] = False
   st.session_state['username'] = None
-  #reset_session_state
+  st.session_state['name'] = None
   st.session_state['show_register_form'] = False
   st.session_state['model_b_status'] = False
   st.session_state['advice_b_status'] = False
@@ -122,6 +126,7 @@ if st.session_state['login_status'] == False:
                 else:
                   st.success("Login Successful!")
                   st.session_state['username'] = username
+                  st.session_state['name'] = user_frame.loc[user_frame['username'] == username,'name'].values
                   login_func()
                   time.sleep(4)
                   rerun()
@@ -137,13 +142,15 @@ if st.session_state['login_status'] == False:
         new_password = register_form.text_input('Password', type='password', placeholder='your password')
         register_button = register_form.form_submit_button('Register')
         if register_button:
+          if len(new_name) <= 0:
+            st.warning('Please enter your name')
           if len(new_username) <= 0:
             st.warning("Please enter a username")
           elif len(new_password) <= 0:
             st.warning("Please enter your password")
-          elif len(new_username) > 0 and len(new_password) > 0:
+          elif len(new_name) > 0 and len(new_username) > 0 and len(new_password) > 0:
             if new_username not in user_list:
-              user_db.put({'username':new_username, 'password':new_password})
+              user_db.put({'username':new_username, 'password':new_password, 'name':new_name})
               st.success("Register Successful!")
               st.session_state['show_register_form'] = False
               time.sleep(4)
@@ -155,7 +162,7 @@ if st.session_state['login_status'] == False:
       
 ### --- LOGGED IN --- ###
 else:
-    st.sidebar.write('Welcome, {}'.format(st.session_state['username']))
+    st.sidebar.write('Welcome, {}'.format(st.session_state['name']) )
     ### --- SIDEBAR --- ###
     logout_button_side = st.sidebar.button('Logout', on_click=logout_func)
     st.sidebar.write('Menu:')
@@ -167,7 +174,7 @@ else:
     ### --- WELCOME NOTE --- ###
     placeholder_1 = st.empty()
     with placeholder_1.container():
-        st.write('### Welcome, {}'.format(st.session_state['username']))
+        st.write('### Welcome, {}'.format(st.session_state['name']) )
     
      ### --- MAIN TAB BUTTON --- ###
     menuholder = st.empty()
@@ -183,20 +190,25 @@ else:
         model_b = st.button('Develop Model')
       with col5:
         advice_b = st.button('Generate Advice', key='gen_advice_tab')
-    
+        
+    ######
     placeholder_2 = st.empty()
     placeholder_3 = st.empty()
     placeholder_4 = st.empty()
+    ######
     
     ### --- MANAGE ACCOUNT MENU --- ###
     if user_manage_b or user_manage_side_b or st.session_state['user_manage_b_status']:
+      #######
       st.session_state['user_manage_b_status'] = True
       st.session_state['model_manage_b_status'] = False
       st.session_state['model_b_status'] = False
       st.session_state['advice_b_status'] = False
+      #######
       placeholder_2.empty()
       placeholder_3.empty()
       placeholder_4.empty()
+      #######
       with placeholder_2.container():
         with st.form('change_password'):
           st.write('##### Change Password')
@@ -206,6 +218,7 @@ else:
           
     ### --- MANAGE MODEL MENU --- ###
     if model_manage_b or manage_model_side_b or st.session_state['model_manage_b_status']:
+      #######
       st.session_state['model_manage_b_status'] = True
       st.session_state['user_manage_b_status'] = False
       st.session_state['model_b_status'] = False
@@ -214,9 +227,11 @@ else:
       placeholder_2.empty()
       placeholder_3.empty()
       placeholder_4.empty()
+      #######
       with placeholder_2.container():
         st.write('#### Model Management')
 ########
+        model_frame = pd.DataFrame(model_db.fetch().items)
         datamodel_dict = {'model_name': ['bbl_01','bbl_02','ppt_05','scg_111','mint_01'],
              'gamma': [0.90,0.80,0.85,0.75,0.95],
              'learning_rate': [0.001,0.002,0.005,0.04,0.099],
@@ -225,10 +240,10 @@ else:
         datamodel_df = pd.DataFrame(datamodel_dict)
 
 ########
-        gb = GridOptionsBuilder.from_dataframe(datamodel_df)
+        gb = GridOptionsBuilder.from_dataframe(model_frame)
         gb.configure_selection('single', use_checkbox=True, pre_selected_rows=[0])
         gridoptions = gb.build()
-        grid_response = AgGrid(datamodel_df,
+        grid_response = AgGrid(model_frame,
                                fit_columns_on_grid_load=True,
                                gridOptions=gridoptions)
         grp_data = grid_response['data']
@@ -248,17 +263,17 @@ else:
                 with edit_form_col1:
                   with st.form('edit parameter form'):
                     st.write("##### Model parameters")
-                    new_agent_name = st.text_input("Model name: ", "model_01")
-                    new_agent_gamma = st.slider("Gamma: ", 0.00, 1.00, 0.90)
-                    new_agent_epsilon = st.slider("Starting epsilon (random walk probability): ", 0.00, 1.00, 1.00)
-                    new_agent_epsilon_dec = st.select_slider("Epsilon decline rate (random walk probability decline): ",
+                    edt_agent_name = st.text_input("Model name: ", "model_01")
+                    edt_agent_gamma = st.slider("Gamma: ", 0.00, 1.00, 0.90)
+                    edt_agent_epsilon = st.slider("Starting epsilon (random walk probability): ", 0.00, 1.00, 1.00)
+                    edt_agent_epsilon_dec = st.select_slider("Epsilon decline rate (random walk probability decline): ",
                                                          options=[0.001,0.002,0.005,0.010], value=0.001)
-                    new_agent_epsilon_end = st.slider("Minimum epsilon: ", 0.01, 0.10, 0.01)
-                    new_agent_lr = st.select_slider("Learning rate: ", options=[0.001, 0.002, 0.005, 0.010], value=0.001)
+                    edt_agent_epsilon_end = st.slider("Minimum epsilon: ", 0.01, 0.10, 0.01)
+                    edt_agent_lr = st.select_slider("Learning rate: ", options=[0.001, 0.002, 0.005, 0.010], value=0.001)
                     st.write("##### Trading parameters")
-                    new_initial_balance = st.number_input("Initial account balance (THB):", min_value=0, step=1000, value=1000000)
-                    new_trading_size_pct = st.slider("Trading size as a percentage of initial account balance (%):", 0, 100, 10)
-                    new_commission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, value=0.157, format='%1.3f')
+                    edt_initial_balance = st.number_input("Initial account balance (THB):", min_value=0, step=1000, value=1000000)
+                    edt_trading_size_pct = st.slider("Trading size as a percentage of initial account balance (%):", 0, 100, 10)
+                    edt_commission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, value=0.157, format='%1.3f')
                     edit_param_button = st.form_submit_button("Edit")
                     if edit_param_button:
                       st.success('Edit parameters successful!')
@@ -283,7 +298,7 @@ else:
                   elif make_sure_radio == 'No':
                     st.session_state['del_mod_button_status'] = False
                     st.experimental_rerun()
-                    #placeholder_3.empty()
+#indent#
 ########
         try:
           placeholder_3.empty()
