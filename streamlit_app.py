@@ -18,6 +18,7 @@ from func.generateAdvice import generate_advice
 deta = Deta(st.secrets["deta_key"])
 user_db = deta.Base("user_db")
 model_db = deta.Base("model_db")
+model_frame = pd.DataFrame(model_db.fetch().items)
 
 user_frame = pd.DataFrame(user_db.fetch().items)
 user_list = user_frame['username'].values.tolist()
@@ -235,7 +236,7 @@ else:
       with placeholder_2.container():
         st.write('#### Model Management')
 ########
-        model_frame = pd.DataFrame(model_db.fetch().items)
+        #model_frame = pd.DataFrame(model_db.fetch().items)
         model_grid = model_frame
         datamodel_dict = {'model_name': ['bbl_01','bbl_02','ppt_05','scg_111','mint_01'],
              'gamma': [0.90,0.80,0.85,0.75,0.95],
@@ -563,6 +564,8 @@ else:
       
         with train_tab:
             st.header("Train your model with train set 🚀")
+            model_options = model_frame['model_name']
+            st.write('type of model_options: {}'.format(type(model_options)))
             to_train_model = st.selectbox('Choose your model to train:', options=['BBL_01', 'BBL_02', 'PTT_07'])
             with st.expander('Model Information'):
               st.write("##### Model Parameters")
