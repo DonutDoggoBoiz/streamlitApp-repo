@@ -709,7 +709,7 @@ else:
                                         options=xmodel_list)
                 with st.expander('Model Information'):
                   st.write("##### Model Parameters")
-                  st.write("Model name: {}".format(xselected_model) )
+                  st.write("Model name: {}".format(xto_train_model) )
                   st.write("Gamma: {:.2f}".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'gamma'])) )
                   st.write("Starting epsilon: {:.2f}".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'epsilon_start'])) )
                   st.write("Epsilon decline rate: {:.4f}".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'epsilon_decline'])) )
