@@ -674,7 +674,7 @@ else:
                                           horizontal=True)
             if choose_model_radio == 'New Model':
                 with st.form('set parameter form2'):
-                  _, col1_set_para, _ = st.columns([1,5,1])
+                  _l, col1_set_para, _r = st.columns([1,7,1])
                   with col1_set_para:
                     st.write("##### Model parameters")
                     xagent_name = st.text_input("Model name: ", max_chars=32, placeholder="eg. model_01")
