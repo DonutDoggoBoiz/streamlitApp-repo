@@ -700,7 +700,7 @@ else:
                         # model_db.put(model_param_dict)
                         # update_model_frame()
                         ###
-                        st.success('Set parameters successful!)
+                        st.success('Set parameters successful!')
 ############
             if choose_model_radio == 'Existing Model':
                 xselected_model = st.selectbox('Choose your model',
