@@ -454,8 +454,8 @@ else:
       placeholder_3.empty()
       placeholder_4.empty()
       with placeholder_3.container():
-        tab_list = ["Select Dataset 📈", "Set Parameters 💡", "Train Model 🚀", "Test Model 🧪", "Save Model 💾"]
-        select_data_tab, set_para_tab, train_tab, test_tab, save_tab = st.tabs(tab_list)
+        tab_list = ["Select Dataset 📈", "Set Parameters 💡", "Train Model 🚀", "Test Model 🧪", "Save Model 💾","Train2"]
+        select_data_tab, set_para_tab, train_tab, test_tab, save_tab, train_tab2 = st.tabs(tab_list)
         with select_data_tab:
             st.header("Select stock and time period 📈")
             #fetch_price_data()
@@ -634,7 +634,7 @@ else:
                   st.write('test report: ---')
                   st.write('parameters: ---')
                   st.write('train_episodes: ---')
-
+########
         with save_tab:
             st.header("Save your model")
             #show_model_list_checkbox = st.checkbox('Show model list')
@@ -667,6 +667,57 @@ else:
                 #save_model()
                 time.sleep(2)
                 st.success('Your model is saved successfully. Proceed to "Generate Advice" menu to use your model')
+########
+        with train_tab2:
+            choose_model_radio = st.radio('Which model do you want to train?',
+                                          options=['New Model', 'Existing Model'],
+                                          horizontal=True)
+            if choose_model_radio == 'New Model':
+                with st.form('set parameter form2'):
+                  _, col1_set_para, _ = st.columns([1,5,1])
+                  with col1_set_para:
+                    st.write("##### Model parameters")
+                    xagent_name = st.text_input("Model name: ", max_chars=32, placeholder="eg. model_01")
+                    xagent_gamma = st.slider("Gamma: ", 0.00, 1.00, 0.90)
+                    xagent_epsilon = st.slider("Starting epsilon (random walk probability): ", 0.00, 1.00, 1.00)
+                    xagent_epsilon_dec = st.select_slider("Epsilon decline rate (random walk probability decline):",
+                                                         options=[0.001,0.002,0.005,0.010], value=0.001)
+                    xagent_epsilon_end = st.slider("Minimum epsilon: ", 0.01, 0.10, 0.01)
+                    xagent_lr = st.select_slider("Learning rate: ", options=[0.001, 0.002, 0.005, 0.010], value=0.001)
+
+                    st.write("##### Trading parameters")
+                    xinitial_balance = st.number_input("Initial account balance (THB):", min_value=100000, step=10000, value=1000000)
+                    xtrading_size_pct = st.slider("Trading size as a percentage of initial account balance (%):", 0, 100, 10)
+                    xtrade_size = initial_balance * trading_size_pct / 100
+                    xcommission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, value=0.157, format='%1.3f')
+                    xset_param_button = st.form_submit_button("Set Parameters")
+                    if xset_param_button:
+                      if len(agent_name) <= 0:
+                        st.warning('Please name your model')
+                      else:
+                        ###
+                        # model_param_dict
+                        # model_db.put(model_param_dict)
+                        # update_model_frame()
+                        ###
+                        st.success('Set parameters successful!)
+############
+            if choose_model_radio == 'Existing Model':
+                xselected_model = st.selectbox('Choose your model',
+                                        options=['BBL_01', 'BBL_02', 'PTT_07'])
+                xgenerate_advice_button = st.button('Generate Advice')
+                if xgenerate_advice_button:
+                  st.success('Generating Advice..... DONE!')
+            with st.form('train_form'):
+              t_form_col1 , t_form_col2 = st.columns(2)
+              with t_form_col1:
+                  xtrain_episodes = st.number_input('Number of training episodes:', value=2, step=1, min_value=0)
+              with t_form_col2:
+                  st.write('  ')
+                  st.write('  ')
+                  xtrain_button = st.button("Start Training 🏃")
+                  if xtrain_button:
+                    st.success('Train Train Train!')
 
         #with pending_tab:
          #   st.header("PENDING adjustment...")
