@@ -87,6 +87,22 @@ def logout_func():
   st.session_state['train_button_status'] = False
   st.session_state['test_button_status'] = False
 
+def home_func():
+  st.session_state['model_manage_b_status'] = False  
+  st.session_state['del_mod_button_status'] = False
+  st.session_state['edit_mod_button_status'] = False
+  st.session_state['model_b_status'] = False
+  st.session_state['observe_button_status'] = False
+  st.session_state['split_button_status'] = False
+  st.session_state['train_button_status'] = False
+  st.session_state['test_button_status'] = False
+  
+if 'advice_b_status' not in st.session_state:
+  st.session_state['advice_b_status'] = False
+  
+if 'user_manage_b_status' not in st.session_state:
+  st.session_state['user_manage_b_status'] = False
+
 def dis_login_button():
   st.session_state['sign_in_b_disable'] = True
   st.session_state['sign_up_b_disable'] = False
@@ -176,7 +192,9 @@ else:
     with st.sidebar.container():
       l_col, r_col = st.columns(2)
       with l_col:
-      logout_button_side = st.sidebar.button('Logout', on_click=logout_func)
+        logout_button_side = st.sidebar.button('Logout', on_click=logout_func)
+      with r_col:
+        home_button_side = st.sidebar.button('Home', on_click=home_func) 
     st.sidebar.write('Menu:')
     user_manage_side_b = st.sidebar.button('Manage Account', key='user_manage_side')
     manage_model_side_b = st.sidebar.button('Manage Model', key='model_manage_side')
