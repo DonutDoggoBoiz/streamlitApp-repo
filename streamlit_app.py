@@ -192,9 +192,9 @@ else:
     with st.sidebar.container():
       l_col, r_col = st.columns(2)
       with l_col:
-        logout_button_side = st.sidebar.button('Logout', on_click=logout_func)
+        logout_button_side = st.button('Logout', on_click=logout_func)
       with r_col:
-        home_button_side = st.sidebar.button('Home', on_click=home_func) 
+        home_button_side = st.button('Home', on_click=home_func) 
     st.sidebar.write('Menu:')
     user_manage_side_b = st.sidebar.button('Manage Account', key='user_manage_side')
     manage_model_side_b = st.sidebar.button('Manage Model', key='model_manage_side')
