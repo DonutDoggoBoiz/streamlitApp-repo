@@ -705,9 +705,6 @@ else:
             if choose_model_radio == 'Existing Model':
                 xselected_model = st.selectbox('Choose your model',
                                         options=['BBL_01', 'BBL_02', 'PTT_07'])
-                xgenerate_advice_button = st.button('Generate Advice')
-                if xgenerate_advice_button:
-                  st.success('Generating Advice..... DONE!')
             with st.form('train_form'):
               t_form_col1 , t_form_col2 = st.columns(2)
               with t_form_col1:
@@ -715,7 +712,7 @@ else:
               with t_form_col2:
                   st.write('  ')
                   st.write('  ')
-                  xtrain_button = st.button("Start Training 🏃")
+                  xtrain_button = st.form_submit_button("Start Training 🏃")
                   if xtrain_button:
                     st.success('Train Train Train!')
 
