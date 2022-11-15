@@ -703,8 +703,27 @@ else:
                         st.success('Set parameters successful!')
 ############
             if choose_model_radio == 'Existing Model':
-                xselected_model = st.selectbox('Choose your model',
-                                        options=['BBL_01', 'BBL_02', 'PTT_07'])
+                xmodel_frame = pd.DataFrame(model_db.fetch().items)
+                xmodel_list = xmodel_frame['model_name'].sort_values(ascending=True)
+                xto_train_model = st.selectbox('Choose your model',
+                                        options=xmodel_list)
+                with st.expander('Model Information'):
+                  st.write("##### Model Parameters")
+                  st.write("Model name: {}".format(xselected_model) )
+                  st.write("Gamma: {:.2f}".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'gamma'])) )
+                  st.write("Starting epsilon: {:.2f}".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'epsilon_start'])) )
+                  st.write("Epsilon decline rate: {:.4f}".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'epsilon_decline'])) )
+                  st.write("Minimum epsilon: {:.2f}".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'epsilon_min'])) )
+                  st.write("Learning rate: {:.4f}".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'learning_rate'])) )
+                  st.write('  ')
+                  st.write("##### Trading Parameters")
+                  st.write("Initial account balance:  {:,} ฿".format(int(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'initial_balance'])) )
+                  st.write("Trading size (%):  {}%".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'trading_size_pct'])) )
+                  info_initial_bal = int(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'initial_balance'])
+                  info_trade_size_pct = float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'trading_size_pct'])
+                  info_trade_size_nom = info_initial_bal * info_trade_size_pct
+                  st.write("Trading size (THB):  {:,}".format(info_trade_size_nom) )
+                  st.write("Commission fee:  {:.3f}%".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'commission_fee_pct'])) )
             with st.form('train_form'):
               t_form_col1 , t_form_col2 = st.columns(2)
               with t_form_col1:
