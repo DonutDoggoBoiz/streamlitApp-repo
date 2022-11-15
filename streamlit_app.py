@@ -173,7 +173,10 @@ if st.session_state['login_status'] == False:
 else:
     st.sidebar.write('Welcome, {}'.format(st.session_state['name']) )
     ### --- SIDEBAR --- ###
-    logout_button_side = st.sidebar.button('Logout', on_click=logout_func)
+    with st.sidebar.container():
+      l_col, r_col = st.columns(2)
+      with l_col:
+      logout_button_side = st.sidebar.button('Logout', on_click=logout_func)
     st.sidebar.write('Menu:')
     user_manage_side_b = st.sidebar.button('Manage Account', key='user_manage_side')
     manage_model_side_b = st.sidebar.button('Manage Model', key='model_manage_side')
