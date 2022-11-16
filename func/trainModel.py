@@ -104,9 +104,9 @@ class Agent():
     def load_model(self):
         self.q_eval = load_model(self.model_file)
         
-        
 ##### ------------------------------ #####
-def train_model(ag_name,
+def train_model(ag_train_prices,
+               ag_name,
                ag_gamma,
                ag_eps,
                ag_eps_dec,
@@ -116,114 +116,121 @@ def train_model(ag_name,
                ag_trade_size,
                ag_com_fee,
                ag_train_episode):
-  ### --- environment parameters
-  action_space = 2      # consist of 0(Sell) , 1(Buy)
-  window_size = 5      # n-days of prices used as observation or state
-  n_episodes = ag_train_episode      # 10ep use around 6 mins
+    ### --- environment parameters
+    action_space = 2      # consist of 0(Sell) , 1(Buy)
+    window_size = 5      # n-days of prices used as observation or state
+    n_episodes = ag_train_episode      # 10ep use around 6 mins
 
-  ### --- trading parameters
-  initial_balance = ag_ini_bal
-  trading_size_pct = ag_trade_size
-  commission_fee_pct = ag_com_fee
-  trade_size = (trading_size_pct/100) * initial_balance
-  commission_fee = (commission_fee_pct/100) * 1.07
+    train_prices = ag_train_df
 
-  ### --- episodic History
-  total_acc_reward_history = []
-  end_balance_history = []
-  eps_history = []
+    ### --- trading parameters
+    initial_balance = ag_ini_bal
+    trading_size_pct = ag_trade_size
+    commission_fee_pct = ag_com_fee
+    trade_size = (trading_size_pct/100) * initial_balance
+    commission_fee = (commission_fee_pct/100) * 1.07
 
-  ### --- trading History
-  acc_reward_history = []
-  action_history = []
-  account_balance_history = []
-  nom_return_history = []
-  real_return_history = []
-  
-  acc_reward_history_dict = {}
-  action_history_dict = {}
-  account_balance_history = {}
-  
-  global agent
-  agent = Agent(gamma=ag_gamma, 
-                epsilon=ag_eps, 
-                epsilon_dec=ag_eps_dec,
-                lr=ag_lr, 
-                input_dims=window_size,
-                n_actions=action_space, 
-                mem_size=1000000, 
-                batch_size=32,
-                epsilon_end=ag_eps_min)
+    ### --- episodic History
+    all_acc_reward_history = []
+    all_balance_history = []
+    all_eps_history = []
+    
+    ### --- History dict
+    acc_reward_history_dict = {}
+    action_history_dict = {}
+    trade_exposure_history_dict = {}
+    account_balance_history = {}
 
-  ## --- loop through episodes
-  for i in range(n_episodes):
-      ### --- start episode --- ###
-      #print ("---------- Episode " + str(i+1) + " / " + str(n_episodes) + ' ----------' )
-      st.write("--- Episode " + str(i+1) + " / " + str(n_episodes) + ' ---' )
+    agent = Agent(gamma=ag_gamma, 
+        epsilon=ag_eps, 
+        epsilon_dec=ag_eps_dec,
+        lr=ag_lr, 
+        input_dims=window_size,
+        n_actions=action_space, 
+        mem_size=1000000, 
+        batch_size=32,
+        epsilon_end=ag_eps_min)
 
-      # slider window
-      start_tick = window_size
-      end_tick = len(train_prices) - 2 
-      current_tick = start_tick
-      done = False
+    ## --- loop through episodes
+    for i in range(n_episodes):
+        ### --- start episode --- ###
+        #print ("---------- Episode " + str(i+1) + " / " + str(n_episodes) + ' ----------' )
+        st.write("--- Episode " + str(i+1) + " / " + str(n_episodes) + ' ---' )
 
-      # bundle train_prices data into state and new_state
-      state = train_prices[ (current_tick - window_size) : current_tick ]
-      new_state = train_prices[ (current_tick - window_size) + 1 : current_tick+1 ]
+        # slider window
+        start_tick = window_size
+        end_tick = len(train_prices) - 2 
+        current_tick = start_tick
+        done = False
 
-      # initiate episodial variables
-      acc_reward = 0
-      account_balance = initial_balance
-      trade_exposure = False
-      trade_exposure_ledger = []
-      last_buy = []
-
-      while not done:
-        action = agent.choose_action(state)
-
-        if action == 1: # buy
-            reward = train_prices[current_tick+1] - train_prices[current_tick]
-            acc_reward += reward
-            if trade_exposure == False:
-              last_buy.append(train_prices[current_tick])
-              trade_exposure = True 
-
-        elif action == 0: # sell
-            reward = train_prices[current_tick] - train_prices[current_tick+1]
-            acc_reward += reward
-            if trade_exposure == True:
-              return_pct = (train_prices[current_tick] - last_buy[-1]) / last_buy[-1]
-              market_value = (return_pct+1) * trade_size
-              nom_return = return_pct * trade_size
-              real_return = (return_pct * trade_size) - (market_value * commission_fee) - (trade_size * commission_fee)
-              account_balance += real_return
-              nom_return_history.append([int(current_tick),nom_return])
-              real_return_history.append([int(current_tick),real_return])
-              trade_exposure = False
-
-        done = True if current_tick == end_tick else False
-
-        agent.store_transition(state, action, reward, new_state, done)
-        agent.learn()
-
-        current_tick += 1
-        state = new_state
+        # bundle train_prices data into state and new_state
+        state = train_prices[ (current_tick - window_size) : current_tick ]
         new_state = train_prices[ (current_tick - window_size) + 1 : current_tick+1 ]
 
-        # append history lists
-        acc_reward_history.append(acc_reward)
-        action_history.append(action)
-        account_balance_history.append(account_balance)
+        # initiate episodial variables
+        acc_reward_history = []
+        action_history = []
+        trade_exposure_history = []
+        account_balance_history = []
+        nom_return_history = []
+        real_return_history = []
 
-        ### --- end of 1 episode --- ###
-        if done: 
-          st.write("---Episode {} of {} done...".format(i+1, n_episodes) )
-          st.write("---Total Reward: {:.2f} | Account_Balance: {:.2f}".format(acc_reward, account_balance) )
-          
-          total_acc_reward_history.append(acc_reward)
-          end_balance_history.append(account_balance)
-          eps_history.append(agent.epsilon)
-          
-          acc_reward_history_dict[
-        ### --- to next episode --- ###
+        acc_reward = 0
+        account_balance = initial_balance
+        trade_exposure = False
+        trade_exposure_ledger = []
+        last_buy = []
+########
+        while not done:
+            action = agent.choose_action(state)
+
+            if action == 1: # buy
+                reward = train_prices[current_tick+1] - train_prices[current_tick]
+                acc_reward += reward
+                if trade_exposure == False:
+                    last_buy.append(train_prices[current_tick])
+                    trade_exposure = True 
+
+            elif action == 0: # sell
+                reward = train_prices[current_tick] - train_prices[current_tick+1]
+                acc_reward += reward
+                if trade_exposure == True:
+                  return_pct = (train_prices[current_tick] - last_buy[-1]) / last_buy[-1]
+                  market_value = (return_pct+1) * trade_size
+                  nom_return = return_pct * trade_size
+                  real_return = (return_pct * trade_size) - (market_value * commission_fee) - (trade_size * commission_fee)
+                  account_balance += real_return
+                  nom_return_history.append([int(current_tick),nom_return])
+                  real_return_history.append([int(current_tick),real_return])
+                  trade_exposure = False
+
+            done = True if current_tick == end_tick else False
+
+            agent.store_transition(state, action, reward, new_state, done)
+            agent.learn()
+
+            current_tick += 1
+            state = new_state
+            new_state = train_prices[ (current_tick - window_size) + 1 : current_tick+1 ]
+
+            # append history lists
+            acc_reward_history.append(acc_reward)
+            action_history.append(action)
+            trade_exposure_history.append(trade_exposure)
+            account_balance_history.append(account_balance)
+
+            ### --- end of 1 episode --- ###
+            if done: 
+                st.write("---Episode {} of {} done...".format(i+1, n_episodes) )
+                st.write("---Total Reward: {:.2f} | Account_Balance: {:.2f}".format(acc_reward, account_balance) )
+
+                acc_reward_history_dict['episode_'+str(i+1)] = acc_reward_history
+                action_history_dict['episode_'+str(i+1)] = action_history
+                trade_exposure_history_dict['episode_'+str(i+1)] = trade_exposure_history
+                account_balance_history['episode_'+str(i+1)] = account_balance_history
+
+                all_acc_reward_history.append([(i+1),acc_reward])
+                all_balance_history.append([(i+1),account_balance])
+                all_eps_history.append([(i+1)agent.epsilon])
+                ### --- start next episode --- ###
         
