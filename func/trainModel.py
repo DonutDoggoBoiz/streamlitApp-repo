@@ -115,7 +115,7 @@ def train_model(ag_df_price_train,
                ag_lr,
                ag_ini_bal,
                ag_trade_size_pct,
-               ag_com_fee,
+               ag_com_fee_pct,
                ag_train_episode):
     ### --- environment parameters
     action_space = 2      # consist of 0(Sell) , 1(Buy)
