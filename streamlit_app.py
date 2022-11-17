@@ -724,8 +724,6 @@ else:
                   ex_model_list = ex_model_frame['model_name'].sort_values(ascending=True)
                   ex_to_train_model = st.selectbox('Choose your model',
                                           options=ex_model_list)
-                  ex_select_exist_model = st.form_submit_button('Select Model')
-                if ex_select_exist_model:
                   ex_agent_name = ex_to_train_model
                   ex_agent_gamma = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'gamma'])
                   ex_agent_epsilon = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_start'])
@@ -735,6 +733,8 @@ else:
                   ex_initial_balance = int(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'initial_balance'])
                   ex_trading_size_pct = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'trading_size_pct'])
                   ex_commission_fee_pct = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'commission_fee_pct'])
+                  ex_select_exist_model = st.form_submit_button('Select Model')
+                if ex_select_exist_model:
                   with st.expander('Model Information'):
                     st.write("##### Model Parameters")
                     st.write("Model name: {}".format(ex_to_train_model) )
