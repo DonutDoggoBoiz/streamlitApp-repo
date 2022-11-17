@@ -140,7 +140,7 @@ def train_model(ag_df_price_train,
     acc_reward_history_dict = {}
     action_history_dict = {}
     trade_exposure_history_dict = {}
-    account_balance_history = {}
+    account_balance_history_dict = {}
 
     agent = Agent(gamma=ag_gamma, 
         epsilon=ag_eps, 
