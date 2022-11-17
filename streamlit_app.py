@@ -685,10 +685,10 @@ else:
                 st.success('Your model is saved successfully. Proceed to "Generate Advice" menu to use your model')
 ########
         with train_tab2:
-            choose_model_radio = st.radio('Which model do you want to train?',
+            select_model_radio = st.radio('Which model do you want to train?',
                                           options=['New Model', 'Existing Model'],
                                           horizontal=True)
-            if choose_model_radio == 'New Model':
+            if select_model_radio == 'New Model':
                 with st.form('set_param_new_model'):
                   _l, col1_set_para, _r = st.columns([1,7,1])
                   with col1_set_para:
@@ -718,13 +718,24 @@ else:
                         ###
                         st.success('Set parameters successful!')
 ############
-            if choose_model_radio == 'Existing Model':
+            if select_model_radio == 'Existing Model':
                 with st.form('select_existing_model'):
                   ex_model_frame = pd.DataFrame(model_db.fetch().items)
                   ex_model_list = ex_model_frame['model_name'].sort_values(ascending=True)
-                  ex_to_train_model = st.selectbox('Choose your model',
+                  ex_to_train_model = st.selectbox('Select your existing model',
                                           options=ex_model_list)
                   ex_agent_name = ex_to_train_model
+                  ######### TEST REUSE VARIABLE ######
+                  nm_agent_name = ex_to_train_model
+                  nm_agent_gamma = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'gamma'])
+                  nm_agent_epsilon = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_start'])
+                  nm_agent_epsilon_dec = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_decline'])
+                  nm_agent_epsilon_end = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_min'])
+                  nm_agent_lr = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'learning_rate'])
+                  nm_initial_balance = int(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'initial_balance'])
+                  nm_trading_size_pct = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'trading_size_pct'])
+                  nm_commission_fee_pct = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'commission_fee_pct'])
+                  ####################################
                   ex_agent_gamma = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'gamma'])
                   ex_agent_epsilon = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_start'])
                   ex_agent_epsilon_dec = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_decline'])
@@ -735,7 +746,7 @@ else:
                   ex_commission_fee_pct = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'commission_fee_pct'])
                   ex_select_exist_model = st.form_submit_button('Select Model')
                 if ex_select_exist_model:
-                  with st.expander('Model Information'):
+                  with st.expander('Model Information', expanded=True):
                     st.write("##### Model Parameters")
                     st.write("Model name: {}".format(ex_to_train_model) )
                     st.write("Gamma: {:.2f}".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'gamma'])) )
@@ -763,7 +774,7 @@ else:
                   xtrain_button = st.form_submit_button("Start Training 🏃")
               if xtrain_button:
 ################
-                if choose_model_radio == 'New Model':
+                if select_model_radio == 'New Model' or select_model_radio == 'Existing Model':
                   try:
                     train_model(ag_df_price_train=df_price_train,
                                 ag_train_prices='None',
@@ -781,7 +792,7 @@ else:
                   except:
                     st.error("something's wrong!... check the log")
 ################
-                elif choose_model_radio == 'Existing Model':
+                elif select_model_radio == 'XX Existing Model':
 ##################
                   try:
                     train_model(ag_df_price_train=df_price_train,
