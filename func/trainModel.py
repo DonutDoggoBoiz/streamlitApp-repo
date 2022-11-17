@@ -228,7 +228,7 @@ def train_model(ag_df_price_train,
                 acc_reward_history_dict['episode_'+str(i+1)] = acc_reward_history
                 action_history_dict['episode_'+str(i+1)] = action_history
                 trade_exposure_history_dict['episode_'+str(i+1)] = trade_exposure_history
-                account_balance_history['episode_'+str(i+1)] = account_balance_history
+                account_balance_history_dict['episode_'+str(i+1)] = account_balance_history
 
                 all_acc_reward_history.append([(i+1),acc_reward])
                 all_balance_history.append([(i+1),account_balance])
