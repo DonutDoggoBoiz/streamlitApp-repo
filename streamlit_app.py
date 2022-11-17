@@ -724,8 +724,8 @@ else:
                   ex_model_list = ex_model_frame['model_name'].sort_values(ascending=True)
                   ex_to_train_model = st.selectbox('Choose your model',
                                           options=ex_model_list)
-                  xselect_exist_model = st.form_submit_button('Select Model')
-                if xselect_exist_model:
+                  ex_select_exist_model = st.form_submit_button('Select Model')
+                if ex_select_exist_model:
                   ex_agent_name = ex_to_train_model
                   ex_agent_gamma = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'gamma'])
                   ex_agent_epsilon = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_start'])
@@ -777,10 +777,11 @@ else:
                                 ag_trade_size_pct=nm_trading_size_pct,
                                 ag_com_fee_pct=nm_commission_fee_pct,
                                 ag_train_episode=xtrain_episodes)
-                    except:
-                      st.error("something's wrong!... check the log")
+                  except:
+                    st.error("something's wrong!... check the log")
 ################
                 elif choose_model_radio == 'Existing Model':
+##################
                   try:
                     train_model(ag_df_price_train=df_price_train,
                                 ag_train_prices='None',
@@ -794,8 +795,9 @@ else:
                                 ag_trade_size_pct=ex_trading_size_pct,
                                 ag_com_fee_pct=ex_commission_fee_pct,
                                 ag_train_episode=xtrain_episodes)
-                    except:
-                      st.error("something's wrong!... check the log")
-################
-                st.success('Training DONE!')
+##################
+                  except:
+                    st.error("something's wrong!... check the log")
+##############
+              st.success('Training DONE!')
 
