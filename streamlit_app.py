@@ -738,7 +738,7 @@ else:
                   with st.expander('Model Information'):
                     st.write("##### Model Parameters")
                     st.write("Model name: {}".format(ex_to_train_model) )
-                    st.write("Gamma: {:.2f}".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_model_frame,'gamma'])) )
+                    st.write("Gamma: {:.2f}".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'gamma'])) )
                     st.write("Starting epsilon: {:.2f}".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_start'])) )
                     st.write("Epsilon decline rate: {:.4f}".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_decline'])) )
                     st.write("Minimum epsilon: {:.2f}".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_min'])) )
@@ -777,6 +777,7 @@ else:
                                 ag_trade_size_pct=nm_trading_size_pct,
                                 ag_com_fee_pct=nm_commission_fee_pct,
                                 ag_train_episode=xtrain_episodes)
+                    st.success('Training DONE!')
                   except:
                     st.error("something's wrong!... check the log")
 ################
@@ -795,9 +796,9 @@ else:
                                 ag_trade_size_pct=ex_trading_size_pct,
                                 ag_com_fee_pct=ex_commission_fee_pct,
                                 ag_train_episode=xtrain_episodes)
-##################
+                    st.success('Training DONE!')
                   except:
                     st.error("something's wrong!... check the log")
 ##############
-              st.success('Training DONE!')
+              
 
