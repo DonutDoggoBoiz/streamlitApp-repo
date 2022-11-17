@@ -239,7 +239,7 @@ def train_model(ag_df_price_train,
     acc_reward_history_df = pd.DataFrame(acc_reward_history_dict, index=ag_df_price_train[5:-1].index)
     alt_acc_reward = alt.Chart(acc_reward_history_df.iloc[:,-1].reset_index()
                               ).encode(x = alt.X('Date'),
-                                       y = alt.Y(df_acc_reward_history.columns[-1], 
+                                       y = alt.Y(acc_reward_history_df.columns[-1], 
                                                  title='Rewards', 
                                                  scale=alt.Scale(domain=[acc_reward_history_df.iloc[:,-1].min()-100,
                                                                          acc_reward_history_df.iloc[:,-1].max()+100])),
