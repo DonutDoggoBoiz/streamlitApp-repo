@@ -527,7 +527,7 @@ else:
                     y = alt.Y('Close',title='Price  (THB)', 
                               scale=alt.Scale(domain=[df_price['Close'].min()-2, df_price['Close'].max()+2])),
                     color = alt.Color('split',
-                                      scale=alt.Scale(domain=['Train set','Test set'],range=['blue','orange']),
+                                      scale=alt.Scale(domain=['Train set','Test set'],range=['#4682b4','orange']),
                                       legend=alt.Legend(title="Dataset")),
                     tooltip=[alt.Tooltip('Date', title='Date'), 
                              alt.Tooltip('Close', title='Price (THB)'), 
