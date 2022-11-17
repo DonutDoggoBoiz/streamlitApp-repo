@@ -115,7 +115,13 @@ def on_click_model_b():
   st.session_state['model_manage_b_status'] = False
   st.session_state['model_b_status'] = True
   st.session_state['advice_b_status'] = False
+
+def on_click_observe_b():
+  st.session_state['observe_button_status'] = True
   
+def on_click_split_b():
+    st.session_state['split_button_status'] = True
+    
 def on_click_advice_b():
   st.session_state['user_manage_b_status'] = False
   st.session_state['model_manage_b_status'] = False
@@ -259,12 +265,6 @@ else:
     
     ### --- MANAGE ACCOUNT MENU --- ###
     if user_manage_b or user_manage_side_b or st.session_state['user_manage_b_status']:
-      #######
-      #st.session_state['user_manage_b_status'] = True
-      #st.session_state['model_manage_b_status'] = False
-      #st.session_state['model_b_status'] = False
-      #st.session_state['advice_b_status'] = False
-      #######
       placeholder_2.empty()
       placeholder_3.empty()
       placeholder_4.empty()
@@ -278,12 +278,6 @@ else:
           
     ### --- MANAGE MODEL MENU --- ###
     if model_manage_b or manage_model_side_b or st.session_state['model_manage_b_status']:
-      #######
-      #st.session_state['model_manage_b_status'] = True
-      #st.session_state['user_manage_b_status'] = False
-      #st.session_state['model_b_status'] = False
-      #st.session_state['advice_b_status'] = False
-      #######
       placeholder_2.empty()
       placeholder_3.empty()
       placeholder_4.empty()
@@ -378,10 +372,6 @@ else:
     
     ### --- GENERATE ADVICE MENU --- ###
     if advice_b or advice_side_b or st.session_state['advice_b_status']:
-      #st.session_state['model_manage_b_status'] = False
-      #st.session_state['user_manage_b_status'] = False
-      #st.session_state['model_b_status'] = False
-      #st.session_state['advice_b_status'] = True
       placeholder_2.empty()
       placeholder_3.empty()
       placeholder_4.empty()
@@ -476,13 +466,9 @@ else:
     
     ### --- DEVELOP MODEL MENU --- ###
     if model_b or model_side_b or st.session_state['model_b_status']:
-      #st.session_state['model_manage_b_status'] = False
-      #st.session_state['user_manage_b_status'] = False
-      #st.session_state['model_b_status'] = True
-      #st.session_state['advice_b_status'] = False
-      placeholder_2.empty()
-      placeholder_3.empty()
-      placeholder_4.empty()
+      #placeholder_2.empty()
+      #placeholder_3.empty()
+      #placeholder_4.empty()
       with placeholder_3.container():
         tab_list = ["Select Dataset 📈", "Set Parameters 💡", "Train Model 🚀", "Test Model 🧪", "Save Model 💾","Train2"]
         select_data_tab, set_para_tab, train_tab, test_tab, save_tab, train_tab2 = st.tabs(tab_list)
@@ -512,10 +498,10 @@ else:
             with select_data_menu_holder.container():
               col_observe_b, col_describe = st.columns([1,3])
               with col_observe_b:
-                observe_button = st.button('View Dataset 🔍')
+                observe_button = st.button('View Dataset 🔍', on_click=on_click_observe_b)
 ############  
             if observe_button or st.session_state['observe_button_status']:
-              st.session_state['observe_button_status'] = True
+              #st.session_state['observe_button_status'] = True
               stock_code = stock_name + '.BK'
               df_price = yf.download(stock_code, start=start_date, end=end_date, progress=True)
               df_price.drop(columns=['Adj Close','Volume'] , inplace=True)
@@ -533,10 +519,10 @@ else:
                 st.altair_chart(alt_price_range.interactive(), use_container_width=True)
                 with st.form('split_slider'):
                     split_point = st.slider('Select the split point between Train set and Test set:', 0, int(df_length), int(df_length/2))
-                    split_button = st.form_submit_button("Split dataset ✂️")
+                    split_button = st.form_submit_button("Split dataset ✂️", on_click=on_click_split_b)
               ##### ---------- #####
                 if split_button or st.session_state['split_button_status']:
-                  st.session_state['split_button_status'] = True
+                  #st.session_state['split_button_status'] = True
                   train_size_pct = (split_point/df_length)*100
                   test_size_pct = 100-train_size_pct
                   df_price['split'] = 'split'
@@ -566,7 +552,6 @@ else:
 
         with set_para_tab:
             st.header("Set parameters for your trading model 💡")
-            #set_parameters()
             with st.form('set parameter form'):
               _, col1_set_para, _ = st.columns([1,5,1])
               with col1_set_para:
@@ -698,7 +683,7 @@ else:
                                           options=['New Model', 'Existing Model'],
                                           horizontal=True)
             if choose_model_radio == 'New Model':
-                with st.form('set parameter form2'):
+                with st.form('set_param_new_model'):
                   _l, col1_set_para, _r = st.columns([1,7,1])
                   with col1_set_para:
                     st.write("##### Model parameters")
@@ -728,32 +713,41 @@ else:
                         st.success('Set parameters successful!')
 ############
             if choose_model_radio == 'Existing Model':
-                xmodel_frame = pd.DataFrame(model_db.fetch().items)
-                xmodel_list = xmodel_frame['model_name'].sort_values(ascending=True)
-                xto_train_model = st.selectbox('Choose your model',
-                                        options=xmodel_list)
-                with st.expander('Model Information'):
-                  st.write("##### Model Parameters")
-                  st.write("Model name: {}".format(xto_train_model) )
-                  st.write("Gamma: {:.2f}".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'gamma'])) )
-                  st.write("Starting epsilon: {:.2f}".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'epsilon_start'])) )
-                  st.write("Epsilon decline rate: {:.4f}".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'epsilon_decline'])) )
-                  st.write("Minimum epsilon: {:.2f}".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'epsilon_min'])) )
-                  st.write("Learning rate: {:.4f}".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'learning_rate'])) )
-                  st.write('  ')
-                  st.write("##### Trading Parameters")
-                  st.write("Initial account balance:  {:,} ฿".format(int(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'initial_balance'])) )
-                  st.write("Trading size (%):  {}%".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'trading_size_pct'])) )
-                  info_initial_bal = int(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'initial_balance'])
-                  info_trade_size_pct = float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'trading_size_pct'])
-                  info_trade_size_nom = info_initial_bal * info_trade_size_pct
-                  st.write("Trading size (THB):  {:,}".format(info_trade_size_nom) )
-                  st.write("Commission fee:  {:.3f}%".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'commission_fee_pct'])) )
-                  
+                with st.form('select_existing_model'):
+                  xmodel_frame = pd.DataFrame(model_db.fetch().items)
+                  xmodel_list = xmodel_frame['model_name'].sort_values(ascending=True)
+                  xto_train_model = st.selectbox('Choose your model',
+                                          options=xmodel_list)
+                  xselect_exist_model = st.form_submit_button('Select Model')
+                if xselect_exist_model:
+                  with st.expander('Model Information'):
+                    st.write("##### Model Parameters")
+                    st.write("Model name: {}".format(xto_train_model) )
+                    st.write("Gamma: {:.2f}".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'gamma'])) )
+                    st.write("Starting epsilon: {:.2f}".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'epsilon_start'])) )
+                    st.write("Epsilon decline rate: {:.4f}".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'epsilon_decline'])) )
+                    st.write("Minimum epsilon: {:.2f}".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'epsilon_min'])) )
+                    st.write("Learning rate: {:.4f}".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'learning_rate'])) )
+                    st.write('  ')
+                    st.write("##### Trading Parameters")
+                    st.write("Initial account balance:  {:,} ฿".format(int(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'initial_balance'])) )
+                    st.write("Trading size (%):  {}%".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'trading_size_pct'])) )
+                    info_initial_bal = int(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'initial_balance'])
+                    info_trade_size_pct = float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'trading_size_pct'])
+                    info_trade_size_nom = info_initial_bal * info_trade_size_pct
+                    st.write("Trading size (THB):  {:,}".format(info_trade_size_nom) )
+                    st.write("Commission fee:  {:.3f}%".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'commission_fee_pct'])) )
+                  xagent_name=xto_train_model
+                  xagent_gamma=float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'gamma'])
+                  xagent_epsilon=float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'epsilon_start'])
+                  xagent_epsilon_dec=float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'epsilon_decline'])
+                  xagent_epsilon_end=float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'epsilon_min'])
+                  xagent_lr=float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'learning_rate'])
+                  xinitial_balance=int(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'initial_balance'])
+                  xtrading_size_pct=float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'trading_size_pct'])
+                  xcommission_fee_pct=float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'commission_fee_pct'])
+############
             with st.form('train_form'):
-              #ph_train_ep_input = st.empty
-              #ph_train_result = st.empty
-              #with ph_train_ep_input.container():
               t_form_col1 , t_form_col2 = st.columns(2)
               with t_form_col1:
                   xtrain_episodes = st.number_input('Number of training episodes:', value=2, step=1, min_value=0)
@@ -762,7 +756,6 @@ else:
                   st.write('  ')
                   xtrain_button = st.form_submit_button("Start Training 🏃")
               if xtrain_button:
-                #with ph_train_result.container():
                 train_model(ag_df_price_train=df_price_train,
                             ag_train_prices='None',
                             ag_name=xagent_name,
