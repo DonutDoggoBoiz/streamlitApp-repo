@@ -64,6 +64,9 @@ if 'train_button_status' not in st.session_state:
 if 'test_button_status' not in st.session_state:
   st.session_state['test_button_status'] = False
   
+if 'xselect_exist_model_button_status' not in st.session_state:
+  st.session_state['xselect_exist_model_button_status'] = False
+  
 if 'advice_b_status' not in st.session_state:
   st.session_state['advice_b_status'] = False
   
@@ -121,6 +124,9 @@ def on_click_observe_b():
   
 def on_click_split_b():
     st.session_state['split_button_status'] = True
+    
+def on_click_select_exist_model_b():
+  st.session_state['xselect_exist_model_button_status'] = True
     
 def on_click_advice_b():
   st.session_state['user_manage_b_status'] = False
@@ -720,6 +726,15 @@ else:
                                           options=xmodel_list)
                   xselect_exist_model = st.form_submit_button('Select Model')
                 if xselect_exist_model:
+                  xagent_name = xto_train_model
+                  xagent_gamma = float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'gamma'])
+                  xagent_epsilon = float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'epsilon_start'])
+                  xagent_epsilon_dec = float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'epsilon_decline'])
+                  xagent_epsilon_end = float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'epsilon_min'])
+                  xagent_lr = float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'learning_rate'])
+                  xinitial_balance = int(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'initial_balance'])
+                  xtrading_size_pct = float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'trading_size_pct'])
+                  xcommission_fee_pct = float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'commission_fee_pct'])
                   with st.expander('Model Information'):
                     st.write("##### Model Parameters")
                     st.write("Model name: {}".format(xto_train_model) )
@@ -737,15 +752,6 @@ else:
                     info_trade_size_nom = info_initial_bal * info_trade_size_pct
                     st.write("Trading size (THB):  {:,}".format(info_trade_size_nom) )
                     st.write("Commission fee:  {:.3f}%".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'commission_fee_pct'])) )
-                  xagent_name=xto_train_model
-                  xagent_gamma=float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'gamma'])
-                  xagent_epsilon=float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'epsilon_start'])
-                  xagent_epsilon_dec=float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'epsilon_decline'])
-                  xagent_epsilon_end=float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'epsilon_min'])
-                  xagent_lr=float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'learning_rate'])
-                  xinitial_balance=int(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'initial_balance'])
-                  xtrading_size_pct=float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'trading_size_pct'])
-                  xcommission_fee_pct=float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'commission_fee_pct'])
 ############
             with st.form('train_form'):
               t_form_col1 , t_form_col2 = st.columns(2)
