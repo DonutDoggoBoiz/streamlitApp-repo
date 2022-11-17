@@ -12,6 +12,7 @@ from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 from functions import fetch_price_data, observe_price, split_dataset2, set_parameters
 from functions import set_train_episodes, train_model, train_result, test_model, test_result
 from functions import save_model
+from func.trainModel import train_model
 from func.generateAdvice import generate_advice
 
 ### --- DATABASE CONNECTION --- ###
@@ -724,6 +725,7 @@ else:
                   info_trade_size_nom = info_initial_bal * info_trade_size_pct
                   st.write("Trading size (THB):  {:,}".format(info_trade_size_nom) )
                   st.write("Commission fee:  {:.3f}%".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'commission_fee_pct'])) )
+                  
             with st.form('train_form'):
               t_form_col1 , t_form_col2 = st.columns(2)
               with t_form_col1:
@@ -733,7 +735,19 @@ else:
                   st.write('  ')
                   xtrain_button = st.form_submit_button("Start Training 🏃")
                   if xtrain_button:
-                    st.success('Train Train Train!')
+                    train_model(ag_df_price_train=df_price_train,
+                                ag_train_prices='None',
+                                ag_name=xagent_name,
+                                ag_gamma=xagent_gamma,
+                                ag_eps=xagent_epsilon,
+                                ag_eps_dec=xagent_epsilon_dec,
+                                ag_eps_min=xagent_epsilon_end,
+                                ag_lr=xagent_lr,
+                                ag_ini_bal=xinitial_balance,
+                                ag_trade_size=xtrading_size_pct,
+                                ag_com_fee_pct=xcommission_fee_pct,
+                                ag_train_episode=xtrain_episodes)
+                      st.success('Training DONE!')
 
         #with pending_tab:
          #   st.header("PENDING adjustment...")
