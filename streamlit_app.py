@@ -119,6 +119,12 @@ def update_model_frame():
   
 def rerun():
   st.experimental_rerun()
+
+def on_click_user_manage_b():
+  st.session_state['user_manage_b_status'] = True
+  st.session_state['model_manage_b_status'] = False
+  st.session_state['model_b_status'] = False
+  st.session_state['advice_b_status'] = False
   
 def on_change_date_select():
   st.session_state['observe_button_status'] = False
@@ -202,7 +208,7 @@ else:
       with r_col:
         home_button_side = st.button('Home', on_click=home_func) 
     st.sidebar.write('Menu:')
-    user_manage_side_b = st.sidebar.button('Manage Account', key='user_manage_side')
+    user_manage_side_b = st.sidebar.button('Manage Account', key='user_manage_side', on_click=on_click_user_manage_b)
     manage_model_side_b = st.sidebar.button('Manage Model', key='model_manage_side')
     model_side_b = st.sidebar.button('Develop Model', key='model_side_b')
     advice_side_b = st.sidebar.button('Generate Advice', key='advice_side_b')
@@ -219,7 +225,7 @@ else:
       with col1:
         st.write('##### MENU:')                                          
       with col2:
-        user_manage_b = st.button('Manage Account')
+        user_manage_b = st.button('Manage Account', on_click=on_click_user_manage_b)
       with col3:
         model_manage_b = st.button('Manage Model')
       with col4:
@@ -236,10 +242,10 @@ else:
     ### --- MANAGE ACCOUNT MENU --- ###
     if user_manage_b or user_manage_side_b or st.session_state['user_manage_b_status']:
       #######
-      st.session_state['user_manage_b_status'] = True
-      st.session_state['model_manage_b_status'] = False
-      st.session_state['model_b_status'] = False
-      st.session_state['advice_b_status'] = False
+      #st.session_state['user_manage_b_status'] = True
+      #st.session_state['model_manage_b_status'] = False
+      #st.session_state['model_b_status'] = False
+      #st.session_state['advice_b_status'] = False
       #######
       placeholder_2.empty()
       placeholder_3.empty()
