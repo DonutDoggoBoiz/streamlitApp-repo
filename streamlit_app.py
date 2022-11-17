@@ -154,7 +154,7 @@ if st.session_state['login_status'] == False:
                   st.session_state['username'] = username
                   st.session_state['name'] = user_frame.loc[user_frame['username'] == username,'name'].to_string(index=False)
                   login_func()
-                  time.sleep(4)
+                  time.sleep(3)
                   rerun()
                   
     ### --- SIGN UP BUTTON --- ###
@@ -496,7 +496,7 @@ else:
                   x = alt.X('Date'),
                   y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-2, df_price['Close'].max()+2]) ),
                   tooltip=[alt.Tooltip('Date', title='Date'), alt.Tooltip('Close', title='Price (THB)')]
-                ).interactive().configure_axis(labelFontSize=16,titleFontSize=18))
+                ).interactive().configure_axis(labelFontSize=14,titleFontSize=16))
                 with select_data_chart_holder.container():
                   st.altair_chart(alt_price_range, use_container_width=True)
                   with st.form('split_slider'):
@@ -531,7 +531,7 @@ else:
                                       legend=alt.Legend(title="Dataset")),
                     tooltip=[alt.Tooltip('Date', title='Date'), 
                              alt.Tooltip('Close', title='Price (THB)'), 
-                             alt.Tooltip('split', title='Dataset')]).interactive().configure_axis(labelFontSize=16,titleFontSize=18))
+                             alt.Tooltip('split', title='Dataset')]).interactive().configure_axis(labelFontSize=14,titleFontSize=16))
                   #st.write("Splited dataset")
                   with split_data_chart_holder.container():
                     st.altair_chart(alt_split, use_container_width=True)
