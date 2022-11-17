@@ -156,7 +156,8 @@ def train_model(ag_df_price_train,
     for i in range(n_episodes):
         ### --- start episode --- ###
         #st.write("--- Episode " + str(i+1) + " / " + str(n_episodes) + ' ---' )
-        train_log_expander.st.write("--- Episode " + str(i+1) + " / " + str(n_episodes) + ' ---' )
+        with train_log_expander:
+            st.write("--- Episode " + str(i+1) + " / " + str(n_episodes) + ' ---' )
 
         # slider window
         start_tick = window_size
@@ -226,8 +227,9 @@ def train_model(ag_df_price_train,
                 #st.write("---Total Reward: {:.2f} | Account_Balance: {:.2f}".format(acc_reward, account_balance) )
                 #st.write("--- Episode {} of {} done | Total Reward: {:.2f} | Account_Balance: {:.2f}".format(
                     #i+1, n_episodes,acc_reward, account_balance))
-                train_log_expander.st.write("--- Episode {} of {} done | Total Reward: {:.2f} | Account_Balance: {:.2f}".format(
-                    i+1, n_episodes,acc_reward, account_balance))
+                with train_log_expander:
+                    st.write("--- Episode {} of {} done | Total Reward: {:.2f} | Account_Balance: {:.2f}".format(
+                        i+1, n_episodes,acc_reward, account_balance))
 
                 acc_reward_history_dict['episode_'+str(i+1)] = acc_reward_history
                 action_history_dict['episode_'+str(i+1)] = action_history
