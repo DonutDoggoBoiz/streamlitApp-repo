@@ -693,22 +693,22 @@ else:
                   _l, col1_set_para, _r = st.columns([1,7,1])
                   with col1_set_para:
                     st.write("##### Model parameters")
-                    xagent_name = st.text_input("Model name: ", max_chars=32, placeholder="eg. model_01")
-                    xagent_gamma = st.slider("Gamma: ", 0.00, 1.00, 0.90)
-                    xagent_epsilon = st.slider("Starting epsilon (random walk probability): ", 0.00, 1.00, 1.00)
-                    xagent_epsilon_dec = st.select_slider("Epsilon decline rate (random walk probability decline):",
+                    nm_agent_name = st.text_input("Model name: ", max_chars=32, placeholder="eg. model_01")
+                    nm_agent_gamma = st.slider("Gamma: ", 0.00, 1.00, 0.90)
+                    nm_agent_epsilon = st.slider("Starting epsilon (random walk probability): ", 0.00, 1.00, 1.00)
+                    nm_agent_epsilon_dec = st.select_slider("Epsilon decline rate (random walk probability decline):",
                                                          options=[0.001,0.002,0.005,0.010], value=0.001)
-                    xagent_epsilon_end = st.slider("Minimum epsilon: ", 0.01, 0.10, 0.01)
-                    xagent_lr = st.select_slider("Learning rate: ", options=[0.001, 0.002, 0.005, 0.010], value=0.001)
+                    nm_agent_epsilon_end = st.slider("Minimum epsilon: ", 0.01, 0.10, 0.01)
+                    nm_agent_lr = st.select_slider("Learning rate: ", options=[0.001, 0.002, 0.005, 0.010], value=0.001)
 
                     st.write("##### Trading parameters")
-                    xinitial_balance = st.number_input("Initial account balance (THB):", min_value=100000, step=10000, value=1000000)
-                    xtrading_size_pct = st.slider("Trading size as a percentage of initial account balance (%):", 0, 100, 10)
-                    xtrade_size = initial_balance * trading_size_pct / 100
-                    xcommission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, value=0.157, format='%1.3f')
-                    xset_param_button = st.form_submit_button("Set Parameters")
-                    if xset_param_button:
-                      if len(xagent_name) <= 0:
+                    nm_initial_balance = st.number_input("Initial account balance (THB):", min_value=100000, step=10000, value=1000000)
+                    nm_trading_size_pct = st.slider("Trading size as a percentage of initial account balance (%):", 0, 100, 10)
+                    nm_trade_size = nm_initial_balance * nm_trading_size_pct / 100
+                    nm_commission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, value=0.157, format='%1.3f')
+                    nm_set_param_button = st.form_submit_button("Set Parameters")
+                    if nm_set_param_button:
+                      if len(nm_agent_name) <= 0:
                         st.warning('Please name your model')
                       else:
                         ###
@@ -720,38 +720,38 @@ else:
 ############
             if choose_model_radio == 'Existing Model':
                 with st.form('select_existing_model'):
-                  xmodel_frame = pd.DataFrame(model_db.fetch().items)
-                  xmodel_list = xmodel_frame['model_name'].sort_values(ascending=True)
-                  xto_train_model = st.selectbox('Choose your model',
-                                          options=xmodel_list)
+                  ex_model_frame = pd.DataFrame(model_db.fetch().items)
+                  ex_model_list = ex_model_frame['model_name'].sort_values(ascending=True)
+                  ex_to_train_model = st.selectbox('Choose your model',
+                                          options=ex_model_list)
                   xselect_exist_model = st.form_submit_button('Select Model')
                 if xselect_exist_model:
-                  xagent_name = xto_train_model
-                  xagent_gamma = float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'gamma'])
-                  xagent_epsilon = float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'epsilon_start'])
-                  xagent_epsilon_dec = float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'epsilon_decline'])
-                  xagent_epsilon_end = float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'epsilon_min'])
-                  xagent_lr = float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'learning_rate'])
-                  xinitial_balance = int(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'initial_balance'])
-                  xtrading_size_pct = float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'trading_size_pct'])
-                  xcommission_fee_pct = float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'commission_fee_pct'])
+                  ex_agent_name = ex_to_train_model
+                  ex_agent_gamma = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'gamma'])
+                  ex_agent_epsilon = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_start'])
+                  ex_agent_epsilon_dec = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_decline'])
+                  ex_agent_epsilon_end = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_min'])
+                  ex_agent_lr = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'learning_rate'])
+                  ex_initial_balance = int(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'initial_balance'])
+                  ex_trading_size_pct = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'trading_size_pct'])
+                  ex_commission_fee_pct = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'commission_fee_pct'])
                   with st.expander('Model Information'):
                     st.write("##### Model Parameters")
-                    st.write("Model name: {}".format(xto_train_model) )
-                    st.write("Gamma: {:.2f}".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'gamma'])) )
-                    st.write("Starting epsilon: {:.2f}".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'epsilon_start'])) )
-                    st.write("Epsilon decline rate: {:.4f}".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'epsilon_decline'])) )
-                    st.write("Minimum epsilon: {:.2f}".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'epsilon_min'])) )
-                    st.write("Learning rate: {:.4f}".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'learning_rate'])) )
+                    st.write("Model name: {}".format(ex_to_train_model) )
+                    st.write("Gamma: {:.2f}".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_model_frame,'gamma'])) )
+                    st.write("Starting epsilon: {:.2f}".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_start'])) )
+                    st.write("Epsilon decline rate: {:.4f}".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_decline'])) )
+                    st.write("Minimum epsilon: {:.2f}".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_min'])) )
+                    st.write("Learning rate: {:.4f}".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'learning_rate'])) )
                     st.write('  ')
                     st.write("##### Trading Parameters")
-                    st.write("Initial account balance:  {:,} ฿".format(int(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'initial_balance'])) )
-                    st.write("Trading size (%):  {}%".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'trading_size_pct'])) )
-                    info_initial_bal = int(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'initial_balance'])
-                    info_trade_size_pct = float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'trading_size_pct'])
+                    st.write("Initial account balance:  {:,} ฿".format(int(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'initial_balance'])) )
+                    st.write("Trading size (%):  {}%".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'trading_size_pct'])) )
+                    info_initial_bal = int(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'initial_balance'])
+                    info_trade_size_pct = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'trading_size_pct'])
                     info_trade_size_nom = info_initial_bal * info_trade_size_pct
                     st.write("Trading size (THB):  {:,}".format(info_trade_size_nom) )
-                    st.write("Commission fee:  {:.3f}%".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'commission_fee_pct'])) )
+                    st.write("Commission fee:  {:.3f}%".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'commission_fee_pct'])) )
 ############
             with st.form('train_form'):
               t_form_col1 , t_form_col2 = st.columns(2)
@@ -762,17 +762,40 @@ else:
                   st.write('  ')
                   xtrain_button = st.form_submit_button("Start Training 🏃")
               if xtrain_button:
-                train_model(ag_df_price_train=df_price_train,
-                            ag_train_prices='None',
-                            ag_name=xagent_name,
-                            ag_gamma=xagent_gamma,
-                            ag_eps=xagent_epsilon,
-                            ag_eps_dec=xagent_epsilon_dec,
-                            ag_eps_min=xagent_epsilon_end,
-                            ag_lr=xagent_lr,
-                            ag_ini_bal=xinitial_balance,
-                            ag_trade_size_pct=xtrading_size_pct,
-                            ag_com_fee_pct=xcommission_fee_pct,
-                            ag_train_episode=xtrain_episodes)
+################
+                if choose_model_radio == 'New Model':
+                  try:
+                    train_model(ag_df_price_train=df_price_train,
+                                ag_train_prices='None',
+                                ag_name=nm_agent_name,
+                                ag_gamma=nm_agent_gamma,
+                                ag_eps=nm_agent_epsilon,
+                                ag_eps_dec=nm_agent_epsilon_dec,
+                                ag_eps_min=nm_agent_epsilon_end,
+                                ag_lr=nm_agent_lr,
+                                ag_ini_bal=nm_initial_balance,
+                                ag_trade_size_pct=nm_trading_size_pct,
+                                ag_com_fee_pct=nm_commission_fee_pct,
+                                ag_train_episode=xtrain_episodes)
+                    except:
+                      st.error("something's wrong!... check the log")
+################
+                elif choose_model_radio == 'Existing Model':
+                  try:
+                    train_model(ag_df_price_train=df_price_train,
+                                ag_train_prices='None',
+                                ag_name=ex_agent_name,
+                                ag_gamma=ex_agent_gamma,
+                                ag_eps=ex_agent_epsilon,
+                                ag_eps_dec=ex_agent_epsilon_dec,
+                                ag_eps_min=ex_agent_epsilon_end,
+                                ag_lr=ex_agent_lr,
+                                ag_ini_bal=ex_initial_balance,
+                                ag_trade_size_pct=ex_trading_size_pct,
+                                ag_com_fee_pct=ex_commission_fee_pct,
+                                ag_train_episode=xtrain_episodes)
+                    except:
+                      st.error("something's wrong!... check the log")
+################
                 st.success('Training DONE!')
 
