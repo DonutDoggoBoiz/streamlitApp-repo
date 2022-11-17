@@ -71,7 +71,7 @@ if 'user_manage_b_status' not in st.session_state:
   st.session_state['user_manage_b_status'] = False
 ### --- ^^ SESSION STATE --- ###
 
-### -------------------- ###
+###### -------------DEFINE------------- ######
 def login_func():
   st.session_state['login_status'] = True
 
@@ -119,7 +119,12 @@ def update_model_frame():
   
 def rerun():
   st.experimental_rerun()
-### -------------------- ###
+  
+def on_change_date_select():
+  st.session_state['observe_button_status'] = False
+  st.session_state['split_button_status'] = False
+  
+###### -------END DEFINE SECTON ------- ######
   
 ### --- NOT LOGGED IN --- ###
 if st.session_state['login_status'] == False:
@@ -478,8 +483,12 @@ else:
             #df_price.drop(columns=['Adj Close','Volume'] , inplace=True)
             #df_length = df_price['Close'].count()
             with st.form('select_start_end_date'):
-              start_date = st.date_input("Select start date: ", (datetime.date.today()-datetime.timedelta(days=365)) )
-              end_date = st.date_input("Select end date: ", datetime.date.today() )
+              start_date = st.date_input("Select start date: ",
+                                         (datetime.date.today()-datetime.timedelta(days=365)),
+                                        on_change=on_change_date_select)
+              end_date = st.date_input("Select end date: ",
+                                       datetime.date.today(),
+                                      on_change=on_change_date_select)
               col_observe_b, col_describe = st.columns([1,3])
               with col_observe_b:
                 observe_button = st.form_submit_button('View Dataset 🔍')
