@@ -693,7 +693,7 @@ else:
                     xcommission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, value=0.157, format='%1.3f')
                     xset_param_button = st.form_submit_button("Set Parameters")
                     if xset_param_button:
-                      if len(agent_name) <= 0:
+                      if len(xagent_name) <= 0:
                         st.warning('Please name your model')
                       else:
                         ###
