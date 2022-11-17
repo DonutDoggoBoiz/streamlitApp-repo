@@ -232,7 +232,7 @@ def train_model(ag_df_price_train,
 
                 all_acc_reward_history.append([(i+1),acc_reward])
                 all_balance_history.append([(i+1),account_balance])
-                all_eps_history.append([(i+1)agent.epsilon])
+                all_eps_history.append([(i+1),agent.epsilon])
                 ### --- start next episode --- ###
     ### --- end of training --- ###
     st.write('Reward History of last episode')
