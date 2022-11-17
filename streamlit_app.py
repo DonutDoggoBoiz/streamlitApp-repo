@@ -75,7 +75,7 @@ if 'user_manage_b_status' not in st.session_state:
 def login_func():
   st.session_state['login_status'] = True
 
-def logout_func():
+def on_click_logout():
   st.session_state['login_status'] = False
   st.session_state['username'] = None
   st.session_state['name'] = None
@@ -88,7 +88,7 @@ def logout_func():
   st.session_state['train_button_status'] = False
   st.session_state['test_button_status'] = False
 
-def home_func():
+def on_click_home():
   st.session_state['model_manage_b_status'] = False  
   st.session_state['del_mod_button_status'] = False
   st.session_state['edit_mod_button_status'] = False
@@ -97,6 +97,34 @@ def home_func():
   st.session_state['split_button_status'] = False
   st.session_state['train_button_status'] = False
   st.session_state['test_button_status'] = False
+
+def on_click_user_manage_b():
+  st.session_state['user_manage_b_status'] = True
+  st.session_state['model_manage_b_status'] = False
+  st.session_state['model_b_status'] = False
+  st.session_state['advice_b_status'] = False
+
+def on_click_model_manage_b():
+  st.session_state['user_manage_b_status'] = False
+  st.session_state['model_manage_b_status'] = True
+  st.session_state['model_b_status'] = False
+  st.session_state['advice_b_status'] = False
+  
+def on_click_model_b():
+  st.session_state['user_manage_b_status'] = False
+  st.session_state['model_manage_b_status'] = False
+  st.session_state['model_b_status'] = True
+  st.session_state['advice_b_status'] = False
+  
+def on_click_advice_b():
+  st.session_state['user_manage_b_status'] = False
+  st.session_state['model_manage_b_status'] = False
+  st.session_state['model_b_status'] = False
+  st.session_state['advice_b_status'] = True
+  
+def on_change_date_select():
+  st.session_state['observe_button_status'] = False
+  st.session_state['split_button_status'] = False
   
 if 'advice_b_status' not in st.session_state:
   st.session_state['advice_b_status'] = False
@@ -119,16 +147,6 @@ def update_model_frame():
   
 def rerun():
   st.experimental_rerun()
-
-def on_click_user_manage_b():
-  st.session_state['user_manage_b_status'] = True
-  st.session_state['model_manage_b_status'] = False
-  st.session_state['model_b_status'] = False
-  st.session_state['advice_b_status'] = False
-  
-def on_change_date_select():
-  st.session_state['observe_button_status'] = False
-  st.session_state['split_button_status'] = False
   
 ###### -------END DEFINE SECTON ------- ######
   
@@ -204,14 +222,14 @@ else:
     with st.sidebar.container():
       l_col, r_col = st.columns(2)
       with l_col:
-        logout_button_side = st.button('Logout', on_click=logout_func)
+        logout_button_side = st.button('Logout', on_click=on_click_logout)
       with r_col:
-        home_button_side = st.button('Home', on_click=home_func) 
+        home_button_side = st.button('Home', on_click=on_click_home) 
     st.sidebar.write('Menu:')
     user_manage_side_b = st.sidebar.button('Manage Account', key='user_manage_side', on_click=on_click_user_manage_b)
-    manage_model_side_b = st.sidebar.button('Manage Model', key='model_manage_side')
-    model_side_b = st.sidebar.button('Develop Model', key='model_side_b')
-    advice_side_b = st.sidebar.button('Generate Advice', key='advice_side_b')
+    manage_model_side_b = st.sidebar.button('Manage Model', key='model_manage_side', on_click=on_click_model_manage_b)
+    model_side_b = st.sidebar.button('Develop Model', key='model_side_b', on_click=on_click_model_b)
+    advice_side_b = st.sidebar.button('Generate Advice', key='advice_side_b', on_click=on_click_advice_b)
     
     ### --- WELCOME NOTE --- ###
     placeholder_1 = st.empty()
@@ -227,11 +245,11 @@ else:
       with col2:
         user_manage_b = st.button('Manage Account', on_click=on_click_user_manage_b)
       with col3:
-        model_manage_b = st.button('Manage Model')
+        model_manage_b = st.button('Manage Model',on_click=on_click_model_manage_b)
       with col4:
-        model_b = st.button('Develop Model')
+        model_b = st.button('Develop Model',on_click=on_click_model_b)
       with col5:
-        advice_b = st.button('Generate Advice', key='gen_advice_tab')
+        advice_b = st.button('Generate Advice', key='gen_advice_tab',on_click=on_click_advice_b)
         
     ######
     placeholder_2 = st.empty()
@@ -261,10 +279,10 @@ else:
     ### --- MANAGE MODEL MENU --- ###
     if model_manage_b or manage_model_side_b or st.session_state['model_manage_b_status']:
       #######
-      st.session_state['model_manage_b_status'] = True
-      st.session_state['user_manage_b_status'] = False
-      st.session_state['model_b_status'] = False
-      st.session_state['advice_b_status'] = False
+      #st.session_state['model_manage_b_status'] = True
+      #st.session_state['user_manage_b_status'] = False
+      #st.session_state['model_b_status'] = False
+      #st.session_state['advice_b_status'] = False
       #######
       placeholder_2.empty()
       placeholder_3.empty()
@@ -360,10 +378,10 @@ else:
     
     ### --- GENERATE ADVICE MENU --- ###
     if advice_b or advice_side_b or st.session_state['advice_b_status']:
-      st.session_state['model_manage_b_status'] = False
-      st.session_state['user_manage_b_status'] = False
-      st.session_state['model_b_status'] = False
-      st.session_state['advice_b_status'] = True
+      #st.session_state['model_manage_b_status'] = False
+      #st.session_state['user_manage_b_status'] = False
+      #st.session_state['model_b_status'] = False
+      #st.session_state['advice_b_status'] = True
       placeholder_2.empty()
       placeholder_3.empty()
       placeholder_4.empty()
@@ -458,10 +476,10 @@ else:
     
     ### --- DEVELOP MODEL MENU --- ###
     if model_b or model_side_b or st.session_state['model_b_status']:
-      st.session_state['model_manage_b_status'] = False
-      st.session_state['user_manage_b_status'] = False
-      st.session_state['model_b_status'] = True
-      st.session_state['advice_b_status'] = False
+      #st.session_state['model_manage_b_status'] = False
+      #st.session_state['user_manage_b_status'] = False
+      #st.session_state['model_b_status'] = True
+      #st.session_state['advice_b_status'] = False
       placeholder_2.empty()
       placeholder_3.empty()
       placeholder_4.empty()
@@ -759,17 +777,3 @@ else:
                             ag_train_episode=xtrain_episodes)
                 st.success('Training DONE!')
 
-        #with pending_tab:
-         #   st.header("PENDING adjustment...")
-          #  st.success("select data ---- DONE")
-           # st.warning("parameter -- adjust interface and input choice")
-            #st.warning("parameter -- add info to each input")
-            #st.success("train model -- add input field for n_episodes ---- DONE")
-            #st.warning("train / test model -- better result visualization")
-            #st.warning("save model -- integrate to cloud infrastructure")
-            #st.warning("generate advice -- add load_model function")
-            #st.warning("generate advice -- compulsory stock quote")
-            #st.warning("generate advice -- formally written buy/sell advice")
-            #st.error("overall -- user database and management system")
-            #st.error("overall -- stock quote database")
-            #st.error("overall -- set up cloud infrastructure")
