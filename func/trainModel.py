@@ -114,7 +114,7 @@ def train_model(ag_df_price_train,
                ag_eps_min,
                ag_lr,
                ag_ini_bal,
-               ag_trade_size,
+               ag_trade_size_pct,
                ag_com_fee,
                ag_train_episode):
     ### --- environment parameters
@@ -126,7 +126,7 @@ def train_model(ag_df_price_train,
 
     ### --- trading parameters
     initial_balance = ag_ini_bal
-    trading_size_pct = ag_trade_size
+    trading_size_pct = ag_trade_size_pct
     commission_fee_pct = ag_com_fee
     trade_size = (trading_size_pct/100) * initial_balance
     commission_fee = (commission_fee_pct/100) * 1.07
