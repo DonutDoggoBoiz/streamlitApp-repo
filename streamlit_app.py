@@ -744,7 +744,7 @@ else:
                                 ag_eps_min=xagent_epsilon_end,
                                 ag_lr=xagent_lr,
                                 ag_ini_bal=xinitial_balance,
-                                ag_trade_size=xtrading_size_pct,
+                                ag_trade_size_pct=xtrading_size_pct,
                                 ag_com_fee_pct=xcommission_fee_pct,
                                 ag_train_episode=xtrain_episodes)
                     st.success('Training DONE!')
