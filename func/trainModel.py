@@ -244,7 +244,7 @@ def train_model(ag_df_price_train,
                                                  scale=alt.Scale(domain=[acc_reward_history_df.iloc[:,-1].min()-100,
                                                                          acc_reward_history_df.iloc[:,-1].max()+100])),
                                        tooltip=[alt.Tooltip('Date', title='Date'),
-                                                alt.Tooltip(df_acc_reward_history.columns[-1], title='Rewards')]
+                                                alt.Tooltip(acc_reward_history_df.columns[-1], title='Rewards')]
                                       )
     st.altair_chart(alt_acc_reward.interactive(), use_container_width=True)
 
