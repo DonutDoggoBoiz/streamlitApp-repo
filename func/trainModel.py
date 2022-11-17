@@ -246,7 +246,7 @@ def train_model(ag_df_price_train,
                                        tooltip=[alt.Tooltip('Date', title='Date'),
                                                 alt.Tooltip(acc_reward_history_df.columns[-1], title='Rewards')]
                                       )
-    st.altair_chart(alt_acc_reward.interactive(), use_container_width=True)
+    st.altair_chart(alt_acc_reward.mark_line().interactive(), use_container_width=True)
 
 
 
