@@ -470,38 +470,51 @@ else:
               st.write('Market: {}'.format(market_name))
               st.write('Industry: {}'.format(industry_name))
               st.write('Sector: {}'.format(sector_name))
-            start_date = st.date_input("Select start date: ", (datetime.date.today()-datetime.timedelta(days=365)) )
-            end_date = st.date_input("Select end date: ", datetime.date.today() )
-            stock_code = stock_name + '.BK'
-            df_price = yf.download(stock_code, start=start_date, end=end_date, progress=True)
-            df_price.drop(columns=['Adj Close','Volume'] , inplace=True)
-            df_length = df_price['Close'].count()
+            ####################
+            #start_date = st.date_input("Select start date: ", (datetime.date.today()-datetime.timedelta(days=365)) )
+            #end_date = st.date_input("Select end date: ", datetime.date.today() )
+            #stock_code = stock_name + '.BK'
+            #df_price = yf.download(stock_code, start=start_date, end=end_date, progress=True)
+            #df_price.drop(columns=['Adj Close','Volume'] , inplace=True)
+            #df_length = df_price['Close'].count()
+            with st.form('select_start_end_date'):
+              start_date = st.date_input("Select start date: ", (datetime.date.today()-datetime.timedelta(days=365)) )
+              end_date = st.date_input("Select end date: ", datetime.date.today() )
+              col_observe_b, col_describe = st.columns([1,3])
+              with col_observe_b:
+                observe_button = st.form_submit_button('View Dataset 🔍')
+            ####################
             ##### ---------- #####
             select_data_menu_holder = st.empty()
             select_data_chart_holder = st.empty()
             split_data_chart_holder = st.empty()
             #success_box_holder = st.empty()
             #select_data_slider_holder = st.empty()
-            with select_data_menu_holder.container():
-              col_observe_b, col_describe = st.columns([1,3])
-              with col_observe_b:
-                observe_button = st.button('View Dataset 🔍')
-##############  
-              if observe_button or st.session_state['observe_button_status']:
-                st.session_state['observe_button_status'] = True
-                with col_describe:
-                  st.write('This dataset contains {} days of historical prices'.format(df_length))
-              #observe_price()
-                alt_price_range = (alt.Chart(df_price['Close'].reset_index()).mark_line().encode(
-                  x = alt.X('Date'),
-                  y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-2, df_price['Close'].max()+2]) ),
-                  tooltip=[alt.Tooltip('Date', title='Date'), alt.Tooltip('Close', title='Price (THB)')]
-                ).interactive().configure_axis(labelFontSize=14,titleFontSize=16))
-                with select_data_chart_holder.container():
-                  st.altair_chart(alt_price_range, use_container_width=True)
-                  with st.form('split_slider'):
-                      split_point = st.slider('Select the split point between Train set and Test set:', 0, int(df_length), int(df_length/2))
-                      split_button = st.form_submit_button("Split dataset ✂️")
+            #with select_data_menu_holder.container():
+              #col_observe_b, col_describe = st.columns([1,3])
+              #with col_observe_b:
+                #observe_button = st.button('View Dataset 🔍')
+############  
+            if observe_button or st.session_state['observe_button_status']:
+              st.session_state['observe_button_status'] = True
+              ###############
+              stock_code = stock_name + '.BK'
+              df_price = yf.download(stock_code, start=start_date, end=end_date, progress=True)
+              df_price.drop(columns=['Adj Close','Volume'] , inplace=True)
+              df_length = df_price['Close'].count()
+              ###############
+              with col_describe:
+                st.write('This dataset contains {} days of historical prices'.format(df_length))
+              alt_price_range = (alt.Chart(df_price['Close'].reset_index()).mark_line().encode(
+                x = alt.X('Date'),
+                y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-2, df_price['Close'].max()+2]) ),
+                tooltip=[alt.Tooltip('Date', title='Date'), alt.Tooltip('Close', title='Price (THB)')]
+              ).interactive().configure_axis(labelFontSize=14,titleFontSize=16))
+              with select_data_chart_holder.container():
+                st.altair_chart(alt_price_range, use_container_width=True)
+                with st.form('split_slider'):
+                    split_point = st.slider('Select the split point between Train set and Test set:', 0, int(df_length), int(df_length/2))
+                    split_button = st.form_submit_button("Split dataset ✂️")
                       #split_button = st.button("Split dataset ✂️")
               #train_size_pct = (split_point/df_length)*100
               #test_size_pct = 100-train_size_pct
