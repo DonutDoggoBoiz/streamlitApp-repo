@@ -151,12 +151,12 @@ def train_model(ag_df_price_train,
         mem_size=1000000, 
         batch_size=32,
         epsilon_end=ag_eps_min)
-
+    train_log_expander = st.expander('Training Logs',expanded=True)
     ## --- loop through episodes
     for i in range(n_episodes):
         ### --- start episode --- ###
-        #print ("---------- Episode " + str(i+1) + " / " + str(n_episodes) + ' ----------' )
-        st.write("--- Episode " + str(i+1) + " / " + str(n_episodes) + ' ---' )
+        #st.write("--- Episode " + str(i+1) + " / " + str(n_episodes) + ' ---' )
+        train_log_expander.st.write("--- Episode " + str(i+1) + " / " + str(n_episodes) + ' ---' )
 
         # slider window
         start_tick = window_size
@@ -222,8 +222,12 @@ def train_model(ag_df_price_train,
 
             ### --- end of 1 episode --- ###
             if done: 
-                st.write("---Episode {} of {} done...".format(i+1, n_episodes) )
-                st.write("---Total Reward: {:.2f} | Account_Balance: {:.2f}".format(acc_reward, account_balance) )
+                #st.write("---Episode {} of {} done...".format(i+1, n_episodes) )
+                #st.write("---Total Reward: {:.2f} | Account_Balance: {:.2f}".format(acc_reward, account_balance) )
+                #st.write("--- Episode {} of {} done | Total Reward: {:.2f} | Account_Balance: {:.2f}".format(
+                    #i+1, n_episodes,acc_reward, account_balance))
+                train_log_expander.st.write("--- Episode {} of {} done | Total Reward: {:.2f} | Account_Balance: {:.2f}".format(
+                    i+1, n_episodes,acc_reward, account_balance))
 
                 acc_reward_history_dict['episode_'+str(i+1)] = acc_reward_history
                 action_history_dict['episode_'+str(i+1)] = action_history
@@ -255,8 +259,8 @@ def train_model(ag_df_price_train,
                               ).encode(x = alt.X('Date'),
                                        y = alt.Y(account_balance_history_df.columns[-1], 
                                                  title='Rewards', 
-                                                 scale=alt.Scale(domain=[account_balance_history_df.iloc[:,-1].min()-100,
-                                                                         account_balance_history_df.iloc[:,-1].max()+100])),
+                                                 scale=alt.Scale(domain=[account_balance_history_df.iloc[:,-1].min()-10000,
+                                                                         account_balance_history_df.iloc[:,-1].max()+10000])),
                                        tooltip=[alt.Tooltip('Date', title='Date'),
                                                 alt.Tooltip(account_balance_history_df.columns[-1], title='Account Balance')]
                                       )
