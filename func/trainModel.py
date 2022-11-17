@@ -241,12 +241,27 @@ def train_model(ag_df_price_train,
                               ).encode(x = alt.X('Date'),
                                        y = alt.Y(acc_reward_history_df.columns[-1], 
                                                  title='Rewards', 
-                                                 scale=alt.Scale(domain=[acc_reward_history_df.iloc[:,-1].min()-100,
-                                                                         acc_reward_history_df.iloc[:,-1].max()+100])),
+                                                 scale=alt.Scale(domain=[acc_reward_history_df.iloc[:,-1].min()-2,
+                                                                         acc_reward_history_df.iloc[:,-1].max()+2])),
                                        tooltip=[alt.Tooltip('Date', title='Date'),
                                                 alt.Tooltip(acc_reward_history_df.columns[-1], title='Rewards')]
                                       )
-    st.altair_chart(alt_acc_reward.mark_line().interactive(), use_container_width=True)
+    st.altair_chart(alt_acc_reward.mark_line().interactive().configure_axis(labelFontSize=14,titleFontSize=16),
+                    use_container_width=True)
+    
+    st.write('Account Balance History of last episode')
+    account_balance_history_df = pd.DataFrame(account_balance_history_dict, index=ag_df_price_train[5:-1].index)
+    alt_acc_bal_hist = alt.Chart(account_balance_history_df.iloc[:,-1].reset_index()
+                              ).encode(x = alt.X('Date'),
+                                       y = alt.Y(account_balance_history_df.columns[-1], 
+                                                 title='Rewards', 
+                                                 scale=alt.Scale(domain=[account_balance_history_df.iloc[:,-1].min()-100,
+                                                                         account_balance_history_df.iloc[:,-1].max()+100])),
+                                       tooltip=[alt.Tooltip('Date', title='Date'),
+                                                alt.Tooltip(account_balance_history_df.columns[-1], title='Account Balance')]
+                                      )
+    st.altair_chart(alt_acc_bal_hist.mark_line().interactive().configure_axis(labelFontSize=14,titleFontSize=16),
+                    use_container_width=True)
 
 
 
