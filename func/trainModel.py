@@ -79,7 +79,7 @@ class Agent():
             action = np.random.choice(self.action_space)
         else:  # exploitation
             state = np.array([observation])
-            actions = self.q_eval.predict(state)
+            actions = self.q_eval.predict(state, verbose=0)
             action = np.argmax(actions)
 
         return action
@@ -90,8 +90,8 @@ class Agent():
           
         states, actions, rewards, states_, dones = \
                 self.memory.sample_buffer(self.batch_size)
-        q_eval = self.q_eval.predict(states)
-        q_next = self.q_eval.predict(states_)
+        q_eval = self.q_eval.predict(states, verbose=0)
+        q_next = self.q_eval.predict(states_, verbose=0)
         q_target = np.copy(q_eval)
         batch_index = np.arange(self.batch_size, dtype=np.int32)
         q_target[batch_index, actions] = rewards + self.gamma * np.max(q_next, axis=1)
@@ -105,7 +105,8 @@ class Agent():
         self.q_eval = load_model(self.model_file)
         
 ##### ------------------------------ #####
-def train_model(ag_train_prices,
+def train_model(ag_df_price_train,
+               ag_train_prices,
                ag_name,
                ag_gamma,
                ag_eps,
@@ -121,7 +122,7 @@ def train_model(ag_train_prices,
     window_size = 5      # n-days of prices used as observation or state
     n_episodes = ag_train_episode      # 10ep use around 6 mins
 
-    train_prices = ag_train_df
+    train_prices = ag_df_price_train['Close'].to_numpy()
 
     ### --- trading parameters
     initial_balance = ag_ini_bal
@@ -233,4 +234,20 @@ def train_model(ag_train_prices,
                 all_balance_history.append([(i+1),account_balance])
                 all_eps_history.append([(i+1)agent.epsilon])
                 ### --- start next episode --- ###
-        
+    ### --- end of training --- ###
+    st.write('Reward History of last episode')
+    acc_reward_history_df = pd.DataFrame(acc_reward_history_dict, index=ag_df_price_train[5:-1].index)
+    alt_acc_reward = alt.Chart(acc_reward_history_df.iloc[:,-1].reset_index()
+                              ).encode(x = alt.X('Date'),
+                                       y = alt.Y(df_acc_reward_history.columns[-1], 
+                                                 title='Rewards', 
+                                                 scale=alt.Scale(domain=[acc_reward_history_df.iloc[:,-1].min()-100,
+                                                                         acc_reward_history_df.iloc[:,-1].max()+100])),
+                                       tooltip=[alt.Tooltip('Date', title='Date'),
+                                                alt.Tooltip(df_acc_reward_history.columns[-1], title='Rewards')]
+                                      )
+    st.altair_chart(alt_acc_reward.interactive(), use_container_width=True)
+
+
+
+
