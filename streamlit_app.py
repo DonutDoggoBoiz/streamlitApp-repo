@@ -727,27 +727,31 @@ else:
                   st.write("Commission fee:  {:.3f}%".format(float(xmodel_frame.loc[xmodel_frame['model_name']==xto_train_model,'commission_fee_pct'])) )
                   
             with st.form('train_form'):
-              t_form_col1 , t_form_col2 = st.columns(2)
-              with t_form_col1:
-                  xtrain_episodes = st.number_input('Number of training episodes:', value=2, step=1, min_value=0)
-              with t_form_col2:
-                  st.write('  ')
-                  st.write('  ')
-                  xtrain_button = st.form_submit_button("Start Training 🏃")
-                  if xtrain_button:
-                    train_model(ag_df_price_train=df_price_train,
-                                ag_train_prices='None',
-                                ag_name=xagent_name,
-                                ag_gamma=xagent_gamma,
-                                ag_eps=xagent_epsilon,
-                                ag_eps_dec=xagent_epsilon_dec,
-                                ag_eps_min=xagent_epsilon_end,
-                                ag_lr=xagent_lr,
-                                ag_ini_bal=xinitial_balance,
-                                ag_trade_size_pct=xtrading_size_pct,
-                                ag_com_fee_pct=xcommission_fee_pct,
-                                ag_train_episode=xtrain_episodes)
-                    st.success('Training DONE!')
+              #ph_train_ep_input = st.empty
+              #ph_train_result = st.empty
+              with ph_train_ep_input.container():
+                t_form_col1 , t_form_col2 = st.columns(2)
+                with t_form_col1:
+                    xtrain_episodes = st.number_input('Number of training episodes:', value=2, step=1, min_value=0)
+                with t_form_col2:
+                    st.write('  ')
+                    st.write('  ')
+                    xtrain_button = st.form_submit_button("Start Training 🏃")
+                if xtrain_button:
+                  #with ph_train_result.container():
+                  train_model(ag_df_price_train=df_price_train,
+                              ag_train_prices='None',
+                              ag_name=xagent_name,
+                              ag_gamma=xagent_gamma,
+                              ag_eps=xagent_epsilon,
+                              ag_eps_dec=xagent_epsilon_dec,
+                              ag_eps_min=xagent_epsilon_end,
+                              ag_lr=xagent_lr,
+                              ag_ini_bal=xinitial_balance,
+                              ag_trade_size_pct=xtrading_size_pct,
+                              ag_com_fee_pct=xcommission_fee_pct,
+                              ag_train_episode=xtrain_episodes)
+                  st.success('Training DONE!')
 
         #with pending_tab:
          #   st.header("PENDING adjustment...")
