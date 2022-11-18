@@ -418,6 +418,9 @@ def test_model(ag_df_price_test,
 
 ########## ---------------SAVE_MODEL--------------- ##########
 def save_model_gcs(save_username):
-    path = 'model/'+str(save_username)+'/'+str(agent.model_file_name)+'.h5'
-    agent.q_eval.save(path)
+    try:
+        path = 'model/'+str(save_username)+'/'+str(agent.model_file_name)+'.h5'
+        agent.q_eval.save(path)
+    except:
+        st.error('ERROR: save_model_gcs')
 #END###### ---------------SAVE_MODEL--------------- ##########
