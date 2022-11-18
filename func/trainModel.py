@@ -420,5 +420,4 @@ def test_model(ag_df_price_test,
 def save_model_gcs(save_username):
     path = 'model/'+str(save_username)+'/'+str(agent.model_file_name)+'.h5'
     agent.q_eval.save(path)
-    return path
 #END###### ---------------SAVE_MODEL--------------- ##########
