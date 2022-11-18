@@ -821,7 +821,6 @@ else:
                 if select_model_radio == 'New Model' or select_model_radio == 'Existing Model':
                   try:
                     train_model(ag_df_price_train=df_price_train,
-                                ag_train_prices='None',
                                 ag_name=nm_agent_name,
                                 ag_gamma=nm_agent_gamma,
                                 ag_eps=nm_agent_epsilon,
