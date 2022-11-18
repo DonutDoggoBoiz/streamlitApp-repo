@@ -687,7 +687,7 @@ else:
                   if save_submit:
                       save_model_gcs(save_username=st.session_state['username'])
                       upload_model_gcs(save_username=st.session_state['username'],
-                                       ag_name=nm_agent_name):
+                                       ag_name=nm_agent_name)
                       time.sleep(2)
                       st.success('Save model successful')
                       time.sleep(1)
