@@ -717,7 +717,7 @@ else:
                     if nm_create_model:
                       if len(nm_agent_name) <= 0:
                         st.warning('Please name your model')
-                      elif nm_agent_name in model_frame['model_name']:
+                      elif nm_agent_name in model_frame['model_name'].to_list() == True:
                         st.warning('Model name is already exist. Please type new model name')
                       else:
 ########################
