@@ -9,14 +9,9 @@ path_uri = 'gs://streamlitapphost.appspot.com/gcs_mnist_test.csv'
 bucket_name = "streamlitapphost.appspot.com"
 bucket = client.bucket(bucket_name)
 
-gcs_file_path = 'gcs_mnist_test.csv'
-
-local_path = 'model/'+str(username)+'/'+str(model_name)+'.h5'
-
-content = bucket.blob(file_path).download_to_filename(local_path)
-
-def upload_model(username, model_name):
-  local_path = 'model/'+str(username)+'/'+str(model_name)+'.h5'
-  gcs_path = 'gcs_model/'+str(username)+'/'+str(model_name)+'.h5'
+# upload function
+def upload_model(save_username, ag_name):
+  local_path = 'model/'+str(save_username)+'/'+str(ag_name)+'.h5'
+  gcs_path = 'gcs_model/'+str(save_username)+'/'+str(ag_name)+'.h5'
   gcs_blob = bucket.blob(gcs_path)
   gcs_blob.upload_from_filename(local_path)
