@@ -717,6 +717,8 @@ else:
                     if nm_create_model:
                       if len(nm_agent_name) <= 0:
                         st.warning('Please name your model')
+                      elif str(nm_agent_name) is in model_frame['model_name']:
+                        st.warning('Model name is already exist. Please type new model name')
                       else:
 ########################
                         model_param_dict = {'username': st.session_state['username'],
@@ -739,7 +741,7 @@ else:
 ########################
                         model_db.put(model_param_dict)
                         update_model_frame()
-                        st.success('Create Model Successful')
+                        st.success('Create Model Successful!')
 ############
             if select_model_radio == 'Existing Model':
                 with st.form('select_existing_model'):
