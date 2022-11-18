@@ -223,7 +223,7 @@ def train_model(ag_df_price_train,
                 with train_log_expander:
                     #st.write("--- Episode {} of {} done | Total Reward: {:.2f} | Account_Balance: {:.2f}".format(
                         #i+1, n_episodes,acc_reward, account_balance))
-                    st.write("--- Episode {} of {} done | Total Reward: {:.2f} | Account_Balance: {:.2f} THB | Profit/Loss: {+:.2f} THB".format(
+                    st.write("--- Episode {} of {} done | Total Reward: {:.2f} | Account_Balance: {:.2f} THB | Profit/Loss: {:+.2f} THB".format(
                         i+1, n_episodes,acc_reward, account_balance, account_balance-initial_balance))
 
                 acc_reward_history_dict['episode_'+str(i+1)] = acc_reward_history
