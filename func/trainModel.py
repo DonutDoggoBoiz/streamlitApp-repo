@@ -1,8 +1,5 @@
 import streamlit as st
 import altair as alt
-import datetime
-import time
-from deta import Deta
 ##### ------------------------------ #####
 import numpy as np
 import pandas as pd
@@ -60,14 +57,14 @@ def build_dqn(lr, n_actions, input_dims, fc1_dims, fc2_dims):   # this function 
 class Agent():
     def __init__(self, lr, gamma, n_actions, epsilon, batch_size,
                 input_dims, epsilon_dec=1e-3, epsilon_end=0.01,
-                mem_size=1000000, fname='dqn_model.h5'):
+                mem_size=1000000, fname='dqn_model'):
         self.action_space = [i for i in range(n_actions)]
         self.gamma = gamma
         self.epsilon = epsilon
         self.eps_dec = epsilon_dec
         self.eps_min = epsilon_end  ### ***change word to eps_min
         self.batch_size = batch_size
-        self.model_file = fname
+        self.model_file_name = fname
         self.memory = ReplayBuffer(mem_size, input_dims)
         self.q_eval = build_dqn(lr, n_actions, input_dims, 256, 256)
 
@@ -81,13 +78,11 @@ class Agent():
             state = np.array([observation])
             actions = self.q_eval.predict(state, verbose=0)
             action = np.argmax(actions)
-
         return action
 
     def learn(self): 
         if self.memory.mem_cntr < self.batch_size:
             return
-          
         states, actions, rewards, states_, dones = \
                 self.memory.sample_buffer(self.batch_size)
         q_eval = self.q_eval.predict(states, verbose=0)
@@ -104,9 +99,8 @@ class Agent():
     def load_model(self):
         self.q_eval = load_model(self.model_file)
         
-##### ------------------------------ #####
+########## ---------------TRAIN_MODEL--------------- ##########
 def train_model(ag_df_price_train,
-               ag_train_prices,
                ag_name,
                ag_gamma,
                ag_eps,
@@ -117,6 +111,7 @@ def train_model(ag_df_price_train,
                ag_trade_size_pct,
                ag_com_fee_pct,
                ag_train_episode):
+    global agent
     ### --- environment parameters
     action_space = 2      # consist of 0(Sell) , 1(Buy)
     window_size = 5      # n-days of prices used as observation or state
@@ -142,15 +137,17 @@ def train_model(ag_df_price_train,
     trade_exposure_history_dict = {}
     account_balance_history_dict = {}
 
-    agent = Agent(gamma=ag_gamma, 
-        epsilon=ag_eps, 
-        epsilon_dec=ag_eps_dec,
-        lr=ag_lr, 
-        input_dims=window_size,
-        n_actions=action_space, 
-        mem_size=1000000, 
-        batch_size=32,
-        epsilon_end=ag_eps_min)
+    agent = Agent(gamma=ag_gamma,
+                  epsilon=ag_eps,
+                  epsilon_dec=ag_eps_dec,
+                  lr=ag_lr,
+                  input_dims=window_size,
+                  n_actions=action_space,
+                  mem_size=1000000,
+                  batch_size=32,
+                  epsilon_end=ag_eps_min,
+                  fname=ag_name)
+    
     train_log_expander = st.expander('Training Logs',expanded=True)
     ## --- loop through episodes
     for i in range(n_episodes):
@@ -222,14 +219,12 @@ def train_model(ag_df_price_train,
             account_balance_history.append(account_balance)
 
             ### --- end of 1 episode --- ###
-            if done: 
-                #st.write("---Episode {} of {} done...".format(i+1, n_episodes) )
-                #st.write("---Total Reward: {:.2f} | Account_Balance: {:.2f}".format(acc_reward, account_balance) )
-                #st.write("--- Episode {} of {} done | Total Reward: {:.2f} | Account_Balance: {:.2f}".format(
-                    #i+1, n_episodes,acc_reward, account_balance))
+            if done:
                 with train_log_expander:
-                    st.write("--- Episode {} of {} done | Total Reward: {:.2f} | Account_Balance: {:.2f}".format(
-                        i+1, n_episodes,acc_reward, account_balance))
+                    #st.write("--- Episode {} of {} done | Total Reward: {:.2f} | Account_Balance: {:.2f}".format(
+                        #i+1, n_episodes,acc_reward, account_balance))
+                    st.write("--- Episode {} of {} done | Total Reward: {:.2f} | Account_Balance: {:.2f} THB | Profit/Loss: {+:.2f} THB".format(
+                        i+1, n_episodes,acc_reward, account_balance, account_balance-initial_balance))
 
                 acc_reward_history_dict['episode_'+str(i+1)] = acc_reward_history
                 action_history_dict['episode_'+str(i+1)] = action_history
@@ -268,7 +263,162 @@ def train_model(ag_df_price_train,
                                       )
     st.altair_chart(alt_acc_bal_hist.mark_line().interactive().configure_axis(labelFontSize=14,titleFontSize=16),
                     use_container_width=True)
+#END###### ---------------TRAIN_MODEL--------------- ##########
 
+########## ---------------TEST_MODEL--------------- ##########
+def test_model(ag_df_price_test,
+               ag_name,
+               ag_gamma,
+               ag_eps,
+               ag_eps_dec,
+               ag_eps_min,
+               ag_lr,
+               ag_ini_bal,
+               ag_trade_size_pct,
+               ag_com_fee_pct,
+               ag_train_episode):
+    ### --- environment parameters
+    action_space = 2      # consist of 0(Sell) , 1(Buy)
+    window_size = 5      # n-days of prices used as observation or state
+    n_episodes = 1
 
+    test_prices = ag_df_price_test['Close'].to_numpy()
 
+    ### --- trading parameters
+    initial_balance = ag_ini_bal
+    trading_size_pct = ag_trade_size_pct
+    commission_fee_pct = ag_com_fee_pct
+    trade_size = (trading_size_pct/100) * initial_balance
+    commission_fee = (commission_fee_pct/100) * 1.07
 
+    ### --- episodic History
+    all_acc_reward_history = []
+    all_balance_history = []
+    all_eps_history = []
+    
+    ### --- History dict
+    acc_reward_history_dict = {}
+    action_history_dict = {}
+    trade_exposure_history_dict = {}
+    account_balance_history_dict = {}
+    
+    train_log_expander = st.expander('Training Logs',expanded=True)
+    ## --- loop through episodes
+    for i in range(n_episodes):
+        ### --- start episode --- ###
+        #st.write("--- Episode " + str(i+1) + " / " + str(n_episodes) + ' ---' )
+        with train_log_expander:
+            st.write("--- Episode " + str(i+1) + " / " + str(n_episodes) + ' ---' )
+
+        # slider window
+        start_tick = window_size
+        end_tick = len(test_prices) - 2 
+        current_tick = start_tick
+        done = False
+
+        # bundle test_prices data into state and new_state
+        state = test_prices[ (current_tick - window_size) : current_tick ]
+        new_state = test_prices[ (current_tick - window_size) + 1 : current_tick+1 ]
+
+        # initiate episodial variables
+        acc_reward_history = []
+        action_history = []
+        trade_exposure_history = []
+        account_balance_history = []
+        nom_return_history = []
+        real_return_history = []
+
+        acc_reward = 0
+        account_balance = initial_balance
+        trade_exposure = False
+        trade_exposure_ledger = []
+        last_buy = []
+########
+        while not done:
+            action = agent.choose_action(state)
+
+            if action == 1: # buy
+                reward = test_prices[current_tick+1] - test_prices[current_tick]
+                acc_reward += reward
+                if trade_exposure == False:
+                    last_buy.append(test_prices[current_tick])
+                    trade_exposure = True 
+
+            elif action == 0: # sell
+                reward = test_prices[current_tick] - test_prices[current_tick+1]
+                acc_reward += reward
+                if trade_exposure == True:
+                  return_pct = (test_prices[current_tick] - last_buy[-1]) / last_buy[-1]
+                  market_value = (return_pct+1) * trade_size
+                  nom_return = return_pct * trade_size
+                  real_return = (return_pct * trade_size) - (market_value * commission_fee) - (trade_size * commission_fee)
+                  account_balance += real_return
+                  nom_return_history.append([int(current_tick),nom_return])
+                  real_return_history.append([int(current_tick),real_return])
+                  trade_exposure = False
+
+            done = True if current_tick == end_tick else False
+
+            current_tick += 1
+            state = new_state
+            new_state = test_prices[ (current_tick - window_size) + 1 : current_tick+1 ]
+
+            # append history lists
+            acc_reward_history.append(acc_reward)
+            action_history.append(action)
+            trade_exposure_history.append(trade_exposure)
+            account_balance_history.append(account_balance)
+
+            ### --- end of 1 episode --- ###
+            if done:
+                with train_log_expander:
+                    #st.write("--- Episode {} of {} done | Total Reward: {:.2f} | Account_Balance: {:.2f}".format(
+                        #i+1, n_episodes,acc_reward, account_balance))
+                    st.write("--- Episode {} of {} done | Total Reward: {:.2f} | Account_Balance: {:.2f} THB | Profit/Loss: {+:.2f} THB".format(
+                        i+1, n_episodes,acc_reward, account_balance, account_balance-initial_balance))
+
+                acc_reward_history_dict['episode_'+str(i+1)] = acc_reward_history
+                action_history_dict['episode_'+str(i+1)] = action_history
+                trade_exposure_history_dict['episode_'+str(i+1)] = trade_exposure_history
+                account_balance_history_dict['episode_'+str(i+1)] = account_balance_history
+
+                all_acc_reward_history.append([(i+1),acc_reward])
+                all_balance_history.append([(i+1),account_balance])
+                all_eps_history.append([(i+1),agent.epsilon])
+                ### --- start next episode --- ###
+    ### --- end of training --- ###
+    st.write('Reward History of last episode')
+    acc_reward_history_df = pd.DataFrame(acc_reward_history_dict, index=ag_df_price_test[5:-1].index)
+    alt_acc_reward = alt.Chart(acc_reward_history_df.iloc[:,-1].reset_index()
+                              ).encode(x = alt.X('Date'),
+                                       y = alt.Y(acc_reward_history_df.columns[-1], 
+                                                 title='Rewards', 
+                                                 scale=alt.Scale(domain=[acc_reward_history_df.iloc[:,-1].min()-2,
+                                                                         acc_reward_history_df.iloc[:,-1].max()+2])),
+                                       tooltip=[alt.Tooltip('Date', title='Date'),
+                                                alt.Tooltip(acc_reward_history_df.columns[-1], title='Rewards')]
+                                      )
+    st.altair_chart(alt_acc_reward.mark_line().interactive().configure_axis(labelFontSize=14,titleFontSize=16),
+                    use_container_width=True)
+    
+    st.write('Account Balance History of last episode')
+    account_balance_history_df = pd.DataFrame(account_balance_history_dict, index=ag_df_price_test[5:-1].index)
+    alt_acc_bal_hist = alt.Chart(account_balance_history_df.iloc[:,-1].reset_index()
+                              ).encode(x = alt.X('Date'),
+                                       y = alt.Y(account_balance_history_df.columns[-1], 
+                                                 title='Rewards', 
+                                                 scale=alt.Scale(domain=[account_balance_history_df.iloc[:,-1].min()-10000,
+                                                                         account_balance_history_df.iloc[:,-1].max()+10000])),
+                                       tooltip=[alt.Tooltip('Date', title='Date'),
+                                                alt.Tooltip(account_balance_history_df.columns[-1], title='Account Balance')]
+                                      )
+    st.altair_chart(alt_acc_bal_hist.mark_line().interactive().configure_axis(labelFontSize=14,titleFontSize=16),
+                    use_container_width=True)
+#END###### ---------------TEST_MODEL--------------- ##########
+
+########## ---------------SAVE_MODEL--------------- ##########
+def save_model_gcs(save_username):
+    path = 'model/'+str(save_username)+'/'+str(agent.model_file_name)+'.h5'
+    agent.q_eval.save(path)
+    return path
+#END###### ---------------SAVE_MODEL--------------- ##########
