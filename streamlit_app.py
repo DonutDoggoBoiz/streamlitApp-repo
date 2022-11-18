@@ -38,6 +38,9 @@ if 'username' not in st.session_state:
   st.session_state['username'] = None
 if 'name' not in st.session_state:
   st.session_state['name'] = None
+
+if 'sess_model_name' not in st.session_state:
+  st.session_state['sess_model_name'] = None
   
   ### --- NAV BUTTON STATUS --- ###
 if 'sign_in_b_disable' not in st.session_state:
@@ -644,9 +647,9 @@ else:
             if test_button:
                 st.session_state['test_button_status'] = True
                 st.write("Test Result")
-                test_model()
+                #test_model()
                 if st.session_state['test_button_status']:
-                  test_result()
+                  #test_result()
                   st.write('test report: ---')
                   st.write('parameters: ---')
                   st.write('train_episodes: ---')
@@ -658,22 +661,24 @@ else:
               #st.write(model_df)
             save_model_button = st.button('Save 💾')
             if save_model_button:
+              model_name_sv = st.session_state['sess_model_name']
               with st.form('save model'):
                 with st.expander('----- Model Information -----'):
                   #st.write('----- Model Information -----')
                   st.write("##### Model Parameters")
-                  st.write("Model name: {}".format(nm_agent_name) )
-                  st.write("Gamma: {}".format(nm_agent_gamma) )
-                  st.write("Starting epsilon: {:.2f}".format(nm_agent_epsilon) )
-                  st.write("Epsilon decline rate: {:.4f}".format(nm_agent_epsilon_dec) )
-                  st.write("Minimum epsilon: {:.2f}".format(nm_agent_epsilon_end) )
-                  st.write("Learning rate: {:.4f}".format(nm_agent_lr) )
+                  st.write("Model name: {}".format(model_name_sv) )
+                  st.write("Gamma: {}".format(float(model_frame.loc[model_frame['model_name']==model_name_sv,'gamma'].values)))
+                  st.write("Starting epsilon: {:.2f}".format(float(model_frame.loc[model_frame['model_name']==model_name_sv,'epsilon_start'].values)))
+                  st.write("Epsilon decline rate: {:.4f}".format(float(model_frame.loc[model_frame['model_name']==model_name_sv,'epsilon_decline'].values)))
+                  st.write("Minimum epsilon: {:.2f}".format(float(model_frame.loc[model_frame['model_name']==model_name_sv,'epsilon_min'].values)))
+                  st.write("Learning rate: {:.4f}".format(float(model_frame.loc[model_frame['model_name']==model_name_sv,'learning_rate'].values)))
                   st.write('  ')
                   st.write("##### Trading Parameters")
-                  st.write("Initial account balance:  {:,} ฿".format(nm_initial_balance) )
-                  st.write("Trading size (%):  {}%".format(nm_trading_size_pct) )
-                  st.write("Trading size (THB):  {:,}".format(nm_initial_balance*nm_trading_size_pct) )
-                  st.write("Commission fee:  {:.3f}%".format(nm_commission_fee_pct) )
+                  st.write("Initial account balance:  {:,} ฿".format(int(model_frame.loc[model_frame['model_name']==model_name_sv,'initial_balance'].values)))
+                  st.write("Trading size (%):  {}%".format(float(model_frame.loc[model_frame['model_name']==model_name_sv,'trading_size_pct'].values)))
+                  st.write("Trading size (THB):  {:,}".format(int(model_frame.loc[model_frame['model_name']==model_name_sv,'initial_balance'].values)-
+                                                                  float(model_frame.loc[model_frame['model_name']==model_name_sv,'trading_size_pct'].values)))
+                  st.write("Commission fee:  {:.3f}%".format(float(model_frame.loc[model_frame['model_name']==model_name_sv,'commission_fee_pct'].values)))
                   #st.write('  ')
                   #st.write("##### Train Result")
                   #st.write("Trained episodes:  {:,}".format(10) )
@@ -681,23 +686,22 @@ else:
                   #st.write('  ')
                   #st.write("##### Test Result")
                   #st.write("Profit/Loss on test set:  {:+,.2f}".format(1078.84) )
-                  save_submit = st.form_submit_button('Confirm')
-                  if save_submit:
-                      save_model_gcs(save_username=st.session_state['username'])
-                      upload_model_gcs(save_username=st.session_state['username'],
-                                       ag_name=nm_agent_name)
-                      time.sleep(2)
-                      st.success('Save model successful')
-                      time.sleep(1)
-                      st.info('You can use your model at "Generate Advice" menu', icon="ℹ️")
+                save_submit = st.form_submit_button('Confirm')
+                if save_submit:
+                    save_model_gcs(save_username=st.session_state['username'])
+                    upload_model_gcs(save_username=st.session_state['username'],
+                                     ag_name=model_name_sv)
+                    time.sleep(2)
+                    st.success('Save model successful')
+                    time.sleep(1)
+                    st.info('You can use your model at "Generate Advice" menu', icon="ℹ️")
+                    
 ########
         with train_tab2:
             select_model_radio = st.radio('Which model do you want to train?',
                                           options=['New Model', 'Existing Model'],
                                           horizontal=True)
             if select_model_radio == 'New Model':
-                #new_model_frame = pd.DataFrame(model_db.fetch().items)
-                #model_list_to_check = new_model_frame['model_name'].to_list()
                 with st.form('set_param_new_model'):
                   _l, col1_set_para, _r = st.columns([1,7,1])
                   with col1_set_para:
@@ -723,6 +727,7 @@ else:
                         st.warning('Model name is already exist. Please type new model name')
                       else:
 ########################
+                        st.session_state['sess_model_name'] = nm_agent_name
                         model_param_dict = {'username': st.session_state['username'],
                                         'model_name': nm_agent_name,
                                         'stock_quote': stock_name,
