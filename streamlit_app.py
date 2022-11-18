@@ -819,39 +819,38 @@ else:
               if xtrain_button:
 ################
                 if select_model_radio == 'New Model' or select_model_radio == 'Existing Model':
-                  try:
-                    train_model(ag_df_price_train=df_price_train,
-                                ag_name=nm_agent_name,
-                                ag_gamma=nm_agent_gamma,
-                                ag_eps=nm_agent_epsilon,
-                                ag_eps_dec=nm_agent_epsilon_dec,
-                                ag_eps_min=nm_agent_epsilon_end,
-                                ag_lr=nm_agent_lr,
-                                ag_ini_bal=nm_initial_balance,
-                                ag_trade_size_pct=nm_trading_size_pct,
-                                ag_com_fee_pct=nm_commission_fee_pct,
-                                ag_train_episode=xtrain_episodes)
-                    st.success('Training DONE!')
-                  except:
-                    st.error("something's wrong!... check the log")
+                  train_model(ag_df_price_train=df_price_train,
+                              ag_name=nm_agent_name,
+                              ag_gamma=nm_agent_gamma,
+                              ag_eps=nm_agent_epsilon,
+                              ag_eps_dec=nm_agent_epsilon_dec,
+                              ag_eps_min=nm_agent_epsilon_end,
+                              ag_lr=nm_agent_lr,
+                              ag_ini_bal=nm_initial_balance,
+                              ag_trade_size_pct=nm_trading_size_pct,
+                              ag_com_fee_pct=nm_commission_fee_pct,
+                              ag_train_episode=xtrain_episodes)
+                  st.success('Training DONE!')
+                  #except:
+                    #st.error("something's wrong!... check the log")
 ################
-                elif select_model_radio == 'XX Existing Model':
+#elif select_model_radio == 'XX Existing Model':
 ##################
-                  try:
-                    train_model(ag_df_price_train=df_price_train,
-                                ag_name=ex_agent_name,
-                                ag_gamma=ex_agent_gamma,
-                                ag_eps=ex_agent_epsilon,
-                                ag_eps_dec=ex_agent_epsilon_dec,
-                                ag_eps_min=ex_agent_epsilon_end,
-                                ag_lr=ex_agent_lr,
-                                ag_ini_bal=ex_initial_balance,
-                                ag_trade_size_pct=ex_trading_size_pct,
-                                ag_com_fee_pct=ex_commission_fee_pct,
-                                ag_train_episode=xtrain_episodes)
-                    st.success('Training DONE!')
-                  except:
-                    st.error("something's wrong!... check the log")
+#try:
+#train_model(ag_df_price_train=df_price_train,
+#ag_name=ex_agent_name,
+#ag_gamma=ex_agent_gamma,
+#ag_eps=ex_agent_epsilon,
+#ag_eps_dec=ex_agent_epsilon_dec,
+#ag_eps_min=ex_agent_epsilon_end,
+#ag_lr=ex_agent_lr,
+#ag_ini_bal=ex_initial_balance,
+#ag_trade_size_pct=ex_trading_size_pct,
+#ag_com_fee_pct=ex_commission_fee_pct,
+#ag_train_episode=xtrain_episodes)
+#st.success('Training DONE!')
+#except:
+#st.error("something's wrong!... check the log")
 ##############
               
 
