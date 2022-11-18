@@ -10,7 +10,7 @@ bucket_name = "streamlitapphost.appspot.com"
 bucket = client.bucket(bucket_name)
 
 # upload function
-def upload_model(save_username, ag_name):
+def upload_model_gcs(save_username, ag_name):
   local_path = 'model/'+str(save_username)+'/'+str(ag_name)+'.h5'
   gcs_path = 'gcs_model/'+str(save_username)+'/'+str(ag_name)+'.h5'
   gcs_blob = bucket.blob(gcs_path)
