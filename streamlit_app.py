@@ -696,6 +696,8 @@ else:
                                           options=['New Model', 'Existing Model'],
                                           horizontal=True)
             if select_model_radio == 'New Model':
+                #new_model_frame = pd.DataFrame(model_db.fetch().items)
+                #model_list_to_check = new_model_frame['model_name'].to_list()
                 with st.form('set_param_new_model'):
                   _l, col1_set_para, _r = st.columns([1,7,1])
                   with col1_set_para:
@@ -717,7 +719,7 @@ else:
                     if nm_create_model:
                       if len(nm_agent_name) <= 0:
                         st.warning('Please name your model')
-                      elif nm_agent_name in model_frame['model_name'].to_list() == True:
+                      elif (nm_agent_name in model_list_to_check) == True:
                         st.warning('Model name is already exist. Please type new model name')
                       else:
 ########################
