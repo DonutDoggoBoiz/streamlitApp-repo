@@ -12,8 +12,9 @@ from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 from functions import fetch_price_data, observe_price, split_dataset2, set_parameters
 from functions import set_train_episodes, train_model, train_result, test_model, test_result
 from functions import save_model
-from func.trainModel import train_model
+from func.trainModel import train_model, test_model, save_model_gcs
 from func.generateAdvice import generate_advice
+from func.googleCloud import upload_model_gcs
 
 ### --- DATABASE CONNECTION --- ###
 deta = Deta(st.secrets["deta_key"])
@@ -449,18 +450,12 @@ else:
                       .interactive() )
             c_all = alt.layer(c_line, c_point)
             st.write('#### Model performance compared to actual trading data in the past year')
-            #st.altair_chart(c_line, use_container_width=True)
-            #st.altair_chart(c_point, use_container_width=True)
-            #st.altair_chart((base.mark_line() + base.mark_point()).resolve_scale(y='independent'))
             st.altair_chart( (base.mark_line() + base.mark_circle()), use_container_width=True)
-            #bundle = (base.mark_line() + base.mark_circle().transform_filter(alt.FieldEqualPredicate(field='expos', equal=True)))
-            #st.altair_chart(bundle, use_container_width=True) .add_selection(alt.selection_interval(bind='scales'))
             bundle2 = (base.mark_line() + base2.mark_circle().transform_filter(alt.FieldEqualPredicate(field='expos', equal=True)))
             layer1 = base.mark_line()
             layer2 = base2.mark_circle(size=50).transform_filter(alt.FieldEqualPredicate(field='expos', equal=True))
             bundle3 = alt.layer(layer1,layer2).configure_axis(labelFontSize=16,titleFontSize=18)
             st.altair_chart(bundle3, use_container_width=True)
-            #st.altair_chart(c_all, use_container_width=True)
             
             #rand_num = np.random.randn()
             st.write('Model advice: ')
@@ -524,6 +519,7 @@ else:
               with select_data_chart_holder.container():
                 st.altair_chart(alt_price_range.interactive(), use_container_width=True)
                 with st.form('split_slider'):
+####################
                     split_point = st.slider('Select the split point between Train set and Test set:', 0, int(df_length), int(df_length/2))
                     ##########
                     train_size_pct = (split_point/df_length)*100
@@ -536,32 +532,26 @@ else:
                     train_prices = df_price_train['Close'].to_numpy()
                     test_prices = df_price_test['Close'].to_numpy()
                     ##########
+                    alt_split = (alt.Chart(df_price.reset_index()).mark_line().encode(
+                      x = alt.X('Date'),
+                      y = alt.Y('Close',
+                                title='Price  (THB)',
+                                scale=alt.Scale(domain=[df_price['Close'].min()-2, df_price['Close'].max()+2])),
+                      color = alt.Color('split',
+                                        scale=alt.Scale(domain=['Train set','Test set'],range=['#4682b4','orange']),
+                                        legend=alt.Legend(title="Dataset")),
+                      tooltip=[alt.Tooltip('Date', title='Date'),
+                               alt.Tooltip('Close', title='Price (THB)'),
+                               alt.Tooltip('split', title='Dataset')]).configure_axis(labelFontSize=14,titleFontSize=16))
+####################
                     split_button = st.form_submit_button("Split dataset ✂️", on_click=on_click_split_b)
               ##### ---------- #####
                 if split_button or st.session_state['split_button_status']:
                   ##########
-                  #train_size_pct = (split_point/df_length)*100
-                  #test_size_pct = 100-train_size_pct
-                  #df_price['split'] = 'split'
-                  #df_price.loc[:split_point, 'split'] = 'Train set'
-                  #df_price.loc[split_point:, 'split'] = 'Test set'
-                  #df_price_train = df_price[:split_point]
-                  #df_price_test = df_price[split_point:]
-                  #train_prices = df_price_train['Close'].to_numpy()
-                  #test_prices = df_price_test['Close'].to_numpy()
+              
+                  #alt_split#
+            
                   ##########
-                  alt_split = (alt.Chart(df_price.reset_index()).mark_line().encode(
-                    x = alt.X('Date'),
-                    y = alt.Y('Close',
-                              title='Price  (THB)', 
-                              scale=alt.Scale(domain=[df_price['Close'].min()-2, df_price['Close'].max()+2])),
-                    color = alt.Color('split',
-                                      scale=alt.Scale(domain=['Train set','Test set'],range=['#4682b4','orange']),
-                                      legend=alt.Legend(title="Dataset")),
-                    tooltip=[alt.Tooltip('Date', title='Date'), 
-                             alt.Tooltip('Close', title='Price (THB)'), 
-                             alt.Tooltip('split', title='Dataset')]).configure_axis(labelFontSize=14,titleFontSize=16))
-                  
                   with split_data_chart_holder.container():
                     st.altair_chart(alt_split.interactive(), use_container_width=True)
                     st.write('Dataset will be split into {} records ({:.2f}%) as training set and {} records ({:.2f}%) as test set'.format(
@@ -668,33 +658,40 @@ else:
             #show_model_list_checkbox = st.checkbox('Show model list')
             #if show_model_list_checkbox:
               #st.write(model_df)
-            with st.container():
-              st.write('----- Model Information -----')
-              st.write("##### Model Parameters")
-              st.write("Model name: {}".format(to_train_model) )
-              st.write("Gamma: {}".format(0.99) )
-              st.write("Starting epsilon: {:.2f}".format(1.00) )
-              st.write("Epsilon decline rate: {:.4f}".format(0.005) )
-              st.write("Minimum epsilon: {:.2f}".format(0.01) )
-              st.write("Learning rate: {:.4f}".format(0.001) )
-              st.write('  ')
-              st.write("##### Trading Parameters")
-              st.write("Initial account balance:  {:,} ฿".format(1500000) )
-              st.write("Trading size (%):  {}%".format(10) )
-              st.write("Trading size (THB):  {:,}".format(150000) )
-              st.write("Commission fee:  {:.3f}%".format(0.157) )
-              st.write('  ')
-              st.write("##### Train Result")
-              st.write("Trained episodes:  {:,}".format(10) )
-              st.write("Last session profit/loss:  {:+,.2f}".format(11576.23) )
-              st.write('  ')
-              st.write("##### Test Result")
-              st.write("Profit/Loss on test set:  {:+,.2f}".format(1078.84) )
-            save_button = st.button("Save 💾")
-            if save_button:
-                #save_model()
-                time.sleep(2)
-                st.success('Your model is saved successfully. Proceed to "Generate Advice" menu to use your model')
+            save_model_button = st.button('Save 💾')
+            if save_model_button:
+              with st.form('save model'):
+                with st.expander('----- Model Information -----'):
+                  #st.write('----- Model Information -----')
+                  st.write("##### Model Parameters")
+                  st.write("Model name: {}".format(nm_agent_name) )
+                  st.write("Gamma: {}".format(nm_agent_gamma) )
+                  st.write("Starting epsilon: {:.2f}".format(nm_agent_epsilon) )
+                  st.write("Epsilon decline rate: {:.4f}".format(nm_agent_epsilon_dec) )
+                  st.write("Minimum epsilon: {:.2f}".format(nm_agent_epsilon_end) )
+                  st.write("Learning rate: {:.4f}".format(nm_agent_lr) )
+                  st.write('  ')
+                  st.write("##### Trading Parameters")
+                  st.write("Initial account balance:  {:,} ฿".format(nm_initial_balance) )
+                  st.write("Trading size (%):  {}%".format(nm_trading_size_pct) )
+                  st.write("Trading size (THB):  {:,}".format(nm_initial_balance*nm_trading_size_pct) )
+                  st.write("Commission fee:  {:.3f}%".format(nm_commission_fee_pct) )
+                  #st.write('  ')
+                  #st.write("##### Train Result")
+                  #st.write("Trained episodes:  {:,}".format(10) )
+                  #st.write("Last session profit/loss:  {:+,.2f}".format(11576.23) )
+                  #st.write('  ')
+                  #st.write("##### Test Result")
+                  #st.write("Profit/Loss on test set:  {:+,.2f}".format(1078.84) )
+                  save_submit = st.form_submit_button('Confirm')
+                  if save_submit:
+                      save_model_gcs(save_username=st.session_state['username'])
+                      upload_model_gcs(save_username=st.session_state['username'],
+                                       ag_name=nm_agent_name):
+                      time.sleep(2)
+                      st.success('Save model successful')
+                      time.sleep(1)
+                      st.info('You can use your model at "Generate Advice" menu', icon="ℹ️")
 ########
         with train_tab2:
             select_model_radio = st.radio('Which model do you want to train?',
@@ -718,17 +715,33 @@ else:
                     nm_trading_size_pct = st.slider("Trading size as a percentage of initial account balance (%):", 0, 100, 10)
                     nm_trade_size = nm_initial_balance * nm_trading_size_pct / 100
                     nm_commission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, value=0.157, format='%1.3f')
-                    nm_set_param_button = st.form_submit_button("Set Parameters")
-                    if nm_set_param_button:
+                    nm_create_model = st.form_submit_button("Create Model")
+                    if nm_create_model:
                       if len(nm_agent_name) <= 0:
                         st.warning('Please name your model')
                       else:
-                        ###
-                        # model_param_dict
-                        # model_db.put(model_param_dict)
-                        # update_model_frame()
-                        ###
-                        st.success('Set parameters successful!')
+########################
+                        model_param_dict = {'username': st.session_state['username'],
+                                        'model_name': nm_agent_name,
+                                        'stock_quote': stock_name,
+                                        'start_date': str(start_date),
+                                        'end_date': str(end_date),
+                                        'split_point': split_point,
+                                        'episode_trained': 0,
+                                        'trained_result': 0,
+                                        'test_result': 0,
+                                        'gamma': nm_agent_gamma,
+                                        'epsilon_start': nm_agent_epsilon,
+                                        'epsilon_decline': nm_agent_epsilon_dec,
+                                        'epsilon_min': nm_agent_epsilon_end,
+                                        'learning_rate': nm_agent_lr,
+                                        'initial_balance': nm_initial_balance,
+                                        'trading_size_pct': nm_trading_size_pct,
+                                        'commission_fee_pct': nm_commission_fee_pct}
+########################
+                        model_db.put(model_param_dict)
+                        update_model_frame()
+                        st.success('Create Model Successful')
 ############
             if select_model_radio == 'Existing Model':
                 with st.form('select_existing_model'):
@@ -748,35 +761,54 @@ else:
                   nm_trading_size_pct = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'trading_size_pct'])
                   nm_commission_fee_pct = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'commission_fee_pct'])
                   ####################################
-                  ex_agent_gamma = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'gamma'])
-                  ex_agent_epsilon = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_start'])
-                  ex_agent_epsilon_dec = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_decline'])
-                  ex_agent_epsilon_end = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_min'])
-                  ex_agent_lr = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'learning_rate'])
-                  ex_initial_balance = int(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'initial_balance'])
-                  ex_trading_size_pct = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'trading_size_pct'])
-                  ex_commission_fee_pct = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'commission_fee_pct'])
+                  #ex_agent_gamma = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'gamma'])
+                  #ex_agent_epsilon = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_start'])
+                  #ex_agent_epsilon_dec = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_decline'])
+                  #ex_agent_epsilon_end = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_min'])
+                  #ex_agent_lr = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'learning_rate'])
+                  #ex_initial_balance = int(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'initial_balance'])
+                  #ex_trading_size_pct = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'trading_size_pct'])
+                  #ex_commission_fee_pct = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'commission_fee_pct'])
+                  info_trade_size_nom = nm_initial_balance * nm_trading_size_pct
+                  
                   ex_select_exist_model = st.form_submit_button('Select Model')
+                  
                 if ex_select_exist_model:
                   with st.expander('Model Information', expanded=True):
+                    ###############
+                    #st.write("##### Model Parameters")
+                    #st.write("Model name: {}".format(ex_to_train_model) )
+                    #st.write("Gamma: {:.2f}".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'gamma'])) )
+                    #st.write("Starting epsilon: {:.2f}".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_start'])) )
+                    #st.write("Epsilon decline rate: {:.4f}".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_decline'])) )
+                    #st.write("Minimum epsilon: {:.2f}".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_min'])) )
+                    #st.write("Learning rate: {:.4f}".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'learning_rate'])) )
+                    #st.write('  ')
+                    #st.write("##### Trading Parameters")
+                    #st.write("Initial account balance:  {:,} ฿".format(int(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'initial_balance'])) )
+                    #st.write("Trading size (%):  {}%".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'trading_size_pct'])) )
+                    #info_initial_bal = int(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'initial_balance'])
+                    #info_trade_size_pct = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'trading_size_pct'])
+                    #info_trade_size_nom = info_initial_bal * info_trade_size_pct
+                    #st.write("Trading size (THB):  {:,}".format(info_trade_size_nom) )
+                    #st.write("Commission fee:  {:.3f}%".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'commission_fee_pct'])) )
+                    ###############
                     st.write("##### Model Parameters")
-                    st.write("Model name: {}".format(ex_to_train_model) )
-                    st.write("Gamma: {:.2f}".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'gamma'])) )
-                    st.write("Starting epsilon: {:.2f}".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_start'])) )
-                    st.write("Epsilon decline rate: {:.4f}".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_decline'])) )
-                    st.write("Minimum epsilon: {:.2f}".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'epsilon_min'])) )
-                    st.write("Learning rate: {:.4f}".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'learning_rate'])) )
+                    st.write("Model name: {}".format(nm_agent_name))
+                    st.write("Gamma: {:.2f}".format(nm_agent_gamma))
+                    st.write("Starting epsilon: {:.2f}".format(nm_agent_epsilon))
+                    st.write("Epsilon decline rate: {:.4f}".format(nm_agent_epsilon_dec))
+                    st.write("Minimum epsilon: {:.2f}".format(nm_agent_epsilon_end))
+                    st.write("Learning rate: {:.4f}".format(nm_agent_lr))
                     st.write('  ')
                     st.write("##### Trading Parameters")
-                    st.write("Initial account balance:  {:,} ฿".format(int(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'initial_balance'])) )
-                    st.write("Trading size (%):  {}%".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'trading_size_pct'])) )
-                    info_initial_bal = int(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'initial_balance'])
-                    info_trade_size_pct = float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'trading_size_pct'])
-                    info_trade_size_nom = info_initial_bal * info_trade_size_pct
-                    st.write("Trading size (THB):  {:,}".format(info_trade_size_nom) )
-                    st.write("Commission fee:  {:.3f}%".format(float(ex_model_frame.loc[ex_model_frame['model_name']==ex_to_train_model,'commission_fee_pct'])) )
+                    st.write("Initial account balance:  {:,} ฿".format(nm_initial_balance))
+                    st.write("Trading size (%):  {}%".format(nm_trading_size_pct))
+                    st.write("Trading size (THB):  {:,}".format(info_trade_size_nom))
+                    st.write("Commission fee:  {:.3f}%".format(nm_commission_fee_pct))
 ############
             with st.form('train_form'):
+              st.write('How many episodes to train?')
               t_form_col1 , t_form_col2 = st.columns(2)
               with t_form_col1:
                   xtrain_episodes = st.number_input('Number of training episodes:', value=2, step=1, min_value=0)
