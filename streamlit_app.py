@@ -10,8 +10,8 @@ import numpy as np
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 
 from functions import fetch_price_data, observe_price, split_dataset2, set_parameters
-from functions import set_train_episodes, train_model, train_result, test_model, test_result
-from functions import save_model
+#from functions import set_train_episodes, train_model, train_result, test_model, test_result
+#from functions import save_model
 from func.trainModel import train_model, test_model, save_model_gcs
 from func.generateAdvice import generate_advice
 from func.googleCloud import upload_model_gcs
@@ -719,7 +719,7 @@ else:
                     if nm_create_model:
                       if len(nm_agent_name) <= 0:
                         st.warning('Please name your model')
-                      elif (nm_agent_name in model_list_to_check) == True:
+                      elif (nm_agent_name in model_frame['model_name'].to_list()) == True:
                         st.warning('Model name is already exist. Please type new model name')
                       else:
 ########################
