@@ -335,7 +335,8 @@ def test_model(ag_df_price_test,
         last_buy = []
 ########
         while not done:
-            action = agent.choose_action(state)
+            pred_action = agent.q_eval.predict(np.array([state]), verbose=0)
+            action = np.argmax(pred_action)
 
             if action == 1: # buy
                 reward = test_prices[current_tick+1] - test_prices[current_tick]
