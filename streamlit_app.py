@@ -608,37 +608,35 @@ else:
       
         with train_tab:
             st.header("Train your model with train set 🚀")
-            model_options = model_frame['model_name']
-            to_train_model = st.selectbox('Choose your model to train:', options=model_options)
-            with st.expander('Model Information'):
-              st.write("##### Model Parameters")
-              st.write("Model name: {}".format(to_train_model) )
-              st.write("Gamma: {:.2f}".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'gamma'])) )
-              st.write("Starting epsilon: {:.2f}".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'epsilon_start'])) )
-              st.write("Epsilon decline rate: {:.4f}".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'epsilon_decline'])) )
-              st.write("Minimum epsilon: {:.2f}".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'epsilon_min'])) )
-              st.write("Learning rate: {:.4f}".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'learning_rate'])) )
-              st.write('  ')
-              st.write("##### Trading Parameters")
-              st.write("Initial account balance:  {:,} ฿".format(int(model_frame.loc[model_frame['model_name']==to_train_model,'initial_balance'])) )
-              st.write("Trading size (%):  {}%".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'trading_size_pct'])) )
-              info_initial_bal = int(model_frame.loc[model_frame['model_name']==to_train_model,'initial_balance'])
-              info_trade_size_pct = float(model_frame.loc[model_frame['model_name']==to_train_model,'trading_size_pct'])
-              info_trade_size_nom = info_initial_bal * info_trade_size_pct
-              st.write("Trading size (THB):  {:,}".format(info_trade_size_nom) )
-              st.write("Commission fee:  {:.3f}%".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'commission_fee_pct'])) )
-            col1 , col2 = st.columns(2)
-            with col1:
-                set_train_episodes()
-            with col2:
+            train_checkbox = st.checkbox('Train checkbox')
+            if train_checkbox:
+              model_options = model_frame['model_name']
+              to_train_model = st.selectbox('Choose your model to train:', options=model_options)
+              with st.expander('Model Information'):
+                st.write("##### Model Parameters")
+                st.write("Model name: {}".format(to_train_model))
+                st.write("Gamma: {:.2f}".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'gamma'])) )
+                st.write("Starting epsilon: {:.2f}".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'epsilon_start'])) )
+                st.write("Epsilon decline rate: {:.4f}".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'epsilon_decline'])) )
+                st.write("Minimum epsilon: {:.2f}".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'epsilon_min'])) )
+                st.write("Learning rate: {:.4f}".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'learning_rate'])) )
                 st.write('  ')
-                st.write('  ')
-                train_button = st.button("Start Training 🏃")
-            if train_button: #or st.session_state['train_button_status']:
-              st.session_state['train_button_status'] = True
-              train_model()
-              if st.session_state['train_button_status']:
-                train_result()
+                st.write("##### Trading Parameters")
+                st.write("Initial account balance:  {:,} ฿".format(int(model_frame.loc[model_frame['model_name']==to_train_model,'initial_balance'])) )
+                st.write("Trading size (%):  {}%".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'trading_size_pct'])) )
+                info_initial_bal = int(model_frame.loc[model_frame['model_name']==to_train_model,'initial_balance'])
+                info_trade_size_pct = float(model_frame.loc[model_frame['model_name']==to_train_model,'trading_size_pct'])
+                info_trade_size_nom = info_initial_bal * info_trade_size_pct
+                st.write("Trading size (THB):  {:,}".format(info_trade_size_nom) )
+                st.write("Commission fee:  {:.3f}%".format(float(model_frame.loc[model_frame['model_name']==to_train_model,'commission_fee_pct'])) )
+              col1 , col2 = st.columns(2)
+              with col1:
+                  st.number_input('Episodes input', min_value=0, max_value=10, value=2, step=1)
+              with col2:
+                  st.write('  ')
+                  st.write('  ')
+                  train_button = st.button("Start Training 🏃 NONE")
+
 
         with test_tab:
             st.header("Test your model on test set 🧪")
