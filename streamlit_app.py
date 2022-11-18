@@ -840,7 +840,6 @@ else:
 ##################
                   try:
                     train_model(ag_df_price_train=df_price_train,
-                                ag_train_prices='None',
                                 ag_name=ex_agent_name,
                                 ag_gamma=ex_agent_gamma,
                                 ag_eps=ex_agent_epsilon,
