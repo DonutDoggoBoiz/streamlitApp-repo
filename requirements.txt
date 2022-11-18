@@ -3,6 +3,6 @@ pandas
 tensorflow
 yfinance
 altair
-matplotlib
 deta
 streamlit-aggrid
+google-cloud-storage
