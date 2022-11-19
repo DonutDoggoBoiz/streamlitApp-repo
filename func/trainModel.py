@@ -422,6 +422,7 @@ def save_model_local(save_username):
     try:
         path = 'model/'+str(save_username)+'/'+str(agent.model_file_name)+'.h5'
         agent.q_eval.save(path)
+        st.success('Save model on local DONE!
     except:
         st.error('ERROR: save_model_local')
 #END###### ---------------SAVE_MODEL--------------- ##########
