@@ -12,7 +12,7 @@ from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 #from functions import fetch_price_data, observe_price, split_dataset2, set_parameters
 #from functions import set_train_episodes, train_model, train_result, test_model, test_result
 #from functions import save_model
-from func.trainModel import train_model, test_model, save_model_gcs
+from func.trainModel import train_model, test_model, save_model_local
 from func.generateAdvice import generate_advice
 from func.googleCloud import upload_model_gcs
 
@@ -688,7 +688,7 @@ else:
                   #st.write("Profit/Loss on test set:  {:+,.2f}".format(1078.84) )
                 save_submit = st.form_submit_button('Confirm')
                 if save_submit:
-                    save_model_gcs(save_username=st.session_state['username'])
+                    save_model_local(save_username=st.session_state['username'])
                     upload_model_gcs(save_username=st.session_state['username'],
                                      ag_name=model_name_sv)
                     time.sleep(2)
