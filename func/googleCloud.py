@@ -5,7 +5,6 @@ from google.cloud import storage
 # Create API client.
 credentials = service_account.Credentials.from_service_account_info(st.secrets["gcp_service_account"])
 client = storage.Client(credentials=credentials)
-path_uri = 'gs://streamlitapphost.appspot.com/gcs_mnist_test.csv'
 bucket_name = "streamlitapphost.appspot.com"
 bucket = client.bucket(bucket_name)
 
