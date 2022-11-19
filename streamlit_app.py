@@ -67,6 +67,8 @@ if 'train_button_status' not in st.session_state:
   st.session_state['train_button_status'] = False
 if 'test_button_status' not in st.session_state:
   st.session_state['test_button_status'] = False
+if 'show_save_box' not in st.session_state:
+  st.session_state['show_save_box'] = False
   
 if 'xselect_exist_model_button_status' not in st.session_state:
   st.session_state['xselect_exist_model_button_status'] = False
@@ -131,6 +133,9 @@ def on_click_split_b():
     
 def on_click_select_exist_model_b():
   st.session_state['xselect_exist_model_button_status'] = True
+  
+def on_click_show_save_box():
+  st.session_state['show_save_box'] = True
     
 def on_click_advice_b():
   st.session_state['user_manage_b_status'] = False
@@ -142,12 +147,6 @@ def on_change_date_select():
   st.session_state['observe_button_status'] = False
   st.session_state['split_button_status'] = False
   
-if 'advice_b_status' not in st.session_state:
-  st.session_state['advice_b_status'] = False
-  
-if 'user_manage_b_status' not in st.session_state:
-  st.session_state['user_manage_b_status'] = False
-
 def dis_login_button():
   st.session_state['sign_in_b_disable'] = True
   st.session_state['sign_up_b_disable'] = False
@@ -659,8 +658,8 @@ else:
             #show_model_list_checkbox = st.checkbox('Show model list')
             #if show_model_list_checkbox:
               #st.write(model_df)
-            save_model_button = st.button('Save 💾')
-            if save_model_button:
+            save_model_button = st.button('Save 💾', on_click=on_click_show_save_box)
+            if st.session_state['show_save_box'] == True:
               model_name_sv = st.session_state['sess_model_name']
               with st.form('save model'):
                 with st.expander('----- Model Information -----'):
