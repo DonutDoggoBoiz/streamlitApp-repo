@@ -45,8 +45,8 @@ def build_dqn(lr, n_actions, input_dims, fc1_dims, fc2_dims):   # this function 
         keras.layers.Dense(fc1_dims, activation='relu'),
         keras.layers.Dense(fc2_dims, activation='relu'),
         keras.layers.Dense(n_actions, activation='linear')])
-    model.compile(optimizer=Adam(learning_rate=lr), loss='mean_squared_error')
-
+    model.compile(optimizer=Adam(learning_rate=lr), loss=tf.keras.losses.MeanSquaredError())
+    
     return model
 
 # --- AGENT OBJECT ---
