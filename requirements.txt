@@ -6,4 +6,3 @@ altair
 deta
 streamlit-aggrid
 google-cloud-storage
-h5py
