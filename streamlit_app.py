@@ -323,7 +323,7 @@ else:
     with placeholder_2.container():
       st.write('#### Model Management')
 ######
-      model_for_grid = pd.DataFrame(model_db.fetch().items)
+      model_for_grid = pd.DataFrame(model_db.fetch({'username':st.session_state['username']}).items)
       shuffle_col = ['model_name','episode_trained','stock_quote','start_date','end_date','initial_balance','trading_size_pct','commission_fee_pct','gamma',]
       model_grid = model_for_grid.loc[:,shuffle_col]
       ###
