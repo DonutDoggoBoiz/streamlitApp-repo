@@ -350,8 +350,8 @@ else:
       gb = GridOptionsBuilder.from_dataframe(model_grid)
       gb.configure_selection('single', use_checkbox=True, pre_selected_rows=[0])
       gridoptions = gb.build()
-      grid_response = AgGrid(model_frame,
-                             fit_columns_on_grid_load=False,
+      grid_response = AgGrid(model_grid,
+                             fit_columns_on_grid_load=True,
                              gridOptions=gridoptions)
       grp_data = grid_response['data']
       selected_row = grid_response['selected_rows'] 
