@@ -418,10 +418,10 @@ def test_model(ag_df_price_test,
 #END###### ---------------TEST_MODEL--------------- ##########
 
 ########## ---------------SAVE_MODEL--------------- ##########
-def save_model_gcs(save_username):
+def save_model_local(save_username):
     try:
         path = 'model/'+str(save_username)+'/'+str(agent.model_file_name)+'.h5'
         agent.q_eval.save(path)
     except:
-        st.error('ERROR: save_model_gcs')
+        st.error('ERROR: save_model_local')
 #END###### ---------------SAVE_MODEL--------------- ##########
