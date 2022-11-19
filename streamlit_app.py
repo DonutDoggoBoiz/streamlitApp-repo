@@ -675,7 +675,7 @@ else:
                   st.write("##### Trading Parameters")
                   st.write("Initial account balance:  {:,} ฿".format(int(model_frame.loc[model_frame['model_name']==model_name_sv,'initial_balance'].values)))
                   st.write("Trading size (%):  {}%".format(float(model_frame.loc[model_frame['model_name']==model_name_sv,'trading_size_pct'].values)))
-                  st.write("Trading size (THB):  {:,}".format(int(model_frame.loc[model_frame['model_name']==model_name_sv,'initial_balance'].values)-
+                  st.write("Trading size (THB):  {:,}".format(int(model_frame.loc[model_frame['model_name']==model_name_sv,'initial_balance'].values)*
                                                                   float(model_frame.loc[model_frame['model_name']==model_name_sv,'trading_size_pct'].values)))
                   st.write("Commission fee:  {:.3f}%".format(float(model_frame.loc[model_frame['model_name']==model_name_sv,'commission_fee_pct'].values)))
                   #st.write('  ')
