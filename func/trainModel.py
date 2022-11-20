@@ -423,7 +423,7 @@ def test_model(ag_df_price_test,
 ########## ---------------SAVE_MODEL--------------- ##########
 def save_model_local(save_username):
     try:
-        path = 'model/'+str(save_username)+'/'+str(agent.model_file_name)+'.h5'
+        path = 'model/'+str(save_username)+'_'+str(agent.model_file_name)+'.h5'
         agent.q_eval.save(path)
         st.success('Save model on local DONE!')
     except:
@@ -464,7 +464,7 @@ def generate_advice(ag_df_price_advice,
     push_start_pred = agent.q_eval.predict(np.array([push_start_state]), verbose=0)
     
     ### --- Load Weights
-    local_path = 'model/'+str(save_username)+'/'+str(ag_name)+'.h5'
+    local_path = 'model/'+str(save_username)+'_'+str(ag_name)+'.h5'
     agent.q_eval.load_weights(local_path)
 ####
     #####_LOOP_THROUGH_1_EPISODE_#########################
