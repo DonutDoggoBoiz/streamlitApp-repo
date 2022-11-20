@@ -364,7 +364,7 @@ else:
         del_mod_button = st.button('Delete')
 ######
       ### --- edit button --- ###
-      if edit_mod_button: or st.session_state['edit_mod_button_status']:
+      if edit_mod_button or st.session_state['edit_mod_button_status']:
         st.session_state['edit_mod_button_status'] = True
         selected_row_model_name = selected_row[0]['model_name']
         with placeholder_4.container():
