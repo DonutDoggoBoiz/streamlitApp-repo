@@ -737,18 +737,30 @@ else:
             with st.expander('----- Model Information -----'):
               st.write("##### Model Parameters")
               st.write("Model name: {}".format(model_name_sv) )
-              st.write("Gamma: {}".format(float(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,'gamma'].values)))
-              st.write("Starting epsilon: {:.2f}".format(float(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,'epsilon_start'].values)))
-              st.write("Epsilon decline rate: {:.4f}".format(float(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,'epsilon_decline'].values)))
-              st.write("Minimum epsilon: {:.2f}".format(float(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,'epsilon_min'].values)))
-              st.write("Learning rate: {:.4f}".format(float(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,'learning_rate'].values)))
+              st.write("Gamma: {}".format(float(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,
+                                                                  'gamma'].values)))
+              st.write("Starting epsilon: {:.2f}".format(float(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,
+                                                                                 'epsilon_start'].values)))
+              st.write("Epsilon decline rate: {:.4f}".format(float(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,
+                                                                                     'epsilon_decline'].values)))
+              st.write("Minimum epsilon: {:.2f}".format(float(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,
+                                                                                'epsilon_min'].values)))
+              st.write("Learning rate: {:.4f}".format(float(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,
+                                                                              'learning_rate'].values)))
               st.write('  ')
               st.write("##### Trading Parameters")
-              st.write("Initial account balance:  {:,} ฿".format(int(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,'initial_balance'].values)))
-              st.write("Trading size (%):  {}%".format(float(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,'trading_size_pct'].values)))
-              st.write("Trading size (THB):  {:,}".format(int(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,'initial_balance'].values)))
-                                                              float(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,'trading_size_pct'].values)))
-              st.write("Commission fee:  {:.3f}%".format(float(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,'commission_fee_pct'].values)))
+              st.write("Initial account balance:  {:,} ฿".format(int(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,
+                                                                                       'initial_balance'].values)))
+              st.write("Trading size (%):  {}%".format(float(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,
+                                                                               'trading_size_pct'].values)))
+              st.write("Trading size (THB):  {:,}".format(int(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,
+                                                                                'initial_balance'].values)*
+                                                          float(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,
+                                                                                  'trading_size_pct'].values)
+                                                         )
+                      )
+              st.write("Commission fee:  {:.3f}%".format(float(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,
+                                                                                 'commission_fee_pct'].values)))
             save_submit = st.form_submit_button('Confirm')
             if save_submit:
               save_model_local(save_username=st.session_state['username'])
