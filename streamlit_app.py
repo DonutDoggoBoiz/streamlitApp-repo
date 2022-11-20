@@ -183,9 +183,6 @@ def on_click_empty_ph_123():
   
 #########_PRE_LOGIN_#############################################
 if st.session_state['login_status'] == False:
-  ###############
-  model_frame_u = pd.DataFrame(model_db.fetch({'username':st.session_state['username']}).items)
-  ###############
   pre_login_top_holder = st.empty()
   pre_login_form_holder = st.empty()
   with pre_login_top_holder.container():
@@ -221,6 +218,7 @@ if st.session_state['login_status'] == False:
               st.session_state['username'] = username
               st.session_state['name'] = user_frame.loc[user_frame['username'] == username,'name'].to_string(index=False)
               login_func()
+              update_model_frame_u()
               time.sleep(3)
               st.experimental_rerun()
 ####
