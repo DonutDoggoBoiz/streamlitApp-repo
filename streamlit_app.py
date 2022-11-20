@@ -372,7 +372,8 @@ else:
             with edit_form_col1:
               with st.form('edit parameter form'):
                 st.write("##### Model parameters")
-                edt_agent_name = st.text_input("Model name: ", placeholder=str(selected_row[0]['model_name']))
+                edt_agent_name = st.text_input("Model name: ", placeholder=str(selected_row[0]['model_name']),
+                                              value=selected_row_model_name)
                 edt_agent_gamma = st.slider("Gamma: ", min_value=0.00, max_value=1.00, 
                                             value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'gamma'].to_list()[0] )
                 edt_agent_epsilon = st.slider("Starting epsilon (random walk probability): ", min_value=0.00, max_value=1.00, 
@@ -393,20 +394,21 @@ else:
                                                          value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'commission_fee_pct'].to_list()[0], 
                                                          format='%1.3f')
                 edit_param_button = st.form_submit_button('Edit')
-              if edit_param_button:
-                with st.expander('Model Update', expanded=True):
-                  st.write('{}'.format(edt_agent_name))
-                  st.write('{}'.format(edt_agent_gamma))
-                  st.write('{}'.format(edt_agent_epsilon))
-                  st.write('{}'.format(edt_agent_epsilon_dec))
-                  st.write('{}'.format(edt_agent_epsilon_end))
-                  st.write('{}'.format(edt_agent_lr))
-                  st.write('{}'.format(edt_initial_balance))
-                  st.write('{}'.format(edt_trading_size_pct))
-                  st.write('{}'.format(edt_commission_fee_pct))
-                st.success('Edit parameters successful!')
-                time.sleep(3)
-                #st.experimental_rerun()
+            if edit_param_button:
+              with st.expander('Model Update', expanded=True):
+                st.write('{}'.format(edt_agent_name))
+                st.write('{}'.format(edt_agent_gamma))
+                st.write('{}'.format(edt_agent_epsilon))
+                st.write('{}'.format(edt_agent_epsilon_dec))
+                st.write('{}'.format(edt_agent_epsilon_end))
+                st.write('{}'.format(edt_agent_lr))
+                st.write('{}'.format(edt_initial_balance))
+                st.write('{}'.format(edt_trading_size_pct))
+                st.write('{}'.format(edt_commission_fee_pct))
+              st.success('Edit parameters successful!')
+              time.sleep(3)
+              st.success('Edit 222 parameters successful!')
+              #st.experimental_rerun()
 ######
       ### --- delete button --- ###
       if del_mod_button or st.session_state['del_mod_button_status']:
