@@ -512,7 +512,7 @@ else:
   if model_b or model_side_b or st.session_state['model_b_status']:
     with placeholder_3.container():
       tab_list = ["Select Dataset 📈", "Train Model 🚀", "Test Model 🧪", "Save Model 💾"]
-      select_data_tab, train_tab, test_tab, save_tab, train_tab2 = st.tabs(tab_list)
+      select_data_tab, train_tab, test_tab, save_tab = st.tabs(tab_list)
 ######
       ######_SELECT_DATA_TAB_######
       with select_data_tab:
