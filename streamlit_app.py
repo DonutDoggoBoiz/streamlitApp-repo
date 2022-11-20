@@ -364,8 +364,8 @@ else:
         del_mod_button = st.button('Delete')
 ######
       ### --- edit button --- ###
-      if edit_mod_button: #or st.session_state['edit_mod_button_status']:
-        #st.session_state['edit_mod_button_status'] = True
+      if edit_mod_button: or st.session_state['edit_mod_button_status']:
+        st.session_state['edit_mod_button_status'] = True
         selected_row_model_name = selected_row[0]['model_name']
         with placeholder_4.container():
             edit_form_col1, _ = st.columns([2,1])
@@ -406,6 +406,7 @@ else:
                 st.write('{}'.format(edt_trading_size_pct))
                 st.write('{}'.format(edt_commission_fee_pct))
               st.success('Edit parameters successful!')
+              st.session_state['edit_mod_button_status'] = False
               time.sleep(3)
               st.success('Edit 222 parameters successful!')
               #st.experimental_rerun()
