@@ -428,3 +428,142 @@ def save_model_local(save_username):
     except:
         st.error('ERROR: save_model_local')
 #END###### ---------------SAVE_MODEL--------------- ##########
+
+########## ---------------GENERATE_ADVICE--------------- ##########
+def generate_advice(ag_df_price_advice,
+                    ag_name,
+                    ag_gamma,
+                    ag_eps,
+                    ag_eps_dec,
+                    ag_eps_min,
+                    ag_lr,
+                    ag_ini_bal,
+                    ag_trade_size_pct,
+                    ag_com_fee_pct,
+                    ag_train_episode):
+    ### --- Price Data
+    advice_prices = ag_df_price_advice['Close'].to_numpy()
+    
+    ### --- Environment parameters
+    action_space = 2
+    window_size = 5
+    adv_episodes = 1
+
+    ### --- Trading parameters
+    initial_balance = ag_ini_bal
+    trading_size_pct = ag_trade_size_pct
+    commission_fee_pct = ag_com_fee_pct
+    trade_size = (trading_size_pct/100) * initial_balance
+    commission_fee = (commission_fee_pct/100) * 1.07
+    
+    ### --- History Dict
+    action_history_dict = {}
+    position_history_dict = {}
+    exposure_history_dict = {}
+    
+    agent = Agent(gamma=ag_gamma,
+                  epsilon=ag_eps,
+                  epsilon_dec=ag_eps_dec,
+                  lr=ag_lr,
+                  input_dims=window_size,
+                  n_actions=action_space,
+                  mem_size=1000000,
+                  batch_size=32,
+                  epsilon_end=ag_eps_min,
+                  fname=ag_name)
+    
+    ### Kick start Agent
+    push_start_state = advice_prices[ 0 : 5 ]
+    push_start_pred = agent.q_eval.predict(np.array([push_start_state]), verbose=0)
+    
+    ## Load Weights
+    path = 'xxx'
+    agent.q_eval.load_weights(path)
+####
+    #####_LOOP_THROUGH_1_EPISODE_#########################
+    for i in range(adv_episodes):
+        # slider window
+        start_tick = window_size
+        end_tick = len(advice_prices)-1
+        current_tick = start_tick
+        done = False
+
+        # bundle advice_prices data into first state
+        state = advice_prices[ (current_tick - window_size) : current_tick ]
+
+        # initiate episodial variables
+        action_history = []
+        position_history = []
+        exposure_history = []
+
+        trade_exposure = False
+        last_buy = []
+
+        #####_MOVING_PRICE_WINDOW_#########################
+        while not done:
+            pred_action = agent.q_eval.predict(np.array([state]), verbose=0)
+            action = np.argmax(pred_action)
+
+            if action == 1: # buy
+                position = 'Buy'
+                if trade_exposure == False:
+                    last_buy.append(advice_prices[current_tick])
+                    trade_exposure = True 
+
+            elif action == 0: # sell
+                position = 'Sell'
+                if trade_exposure == True:
+                    trade_exposure = False
+                    
+            #####_APPEND_HISTORY_LIST_#####
+            action_history.append(action)
+            position_history.append(position)
+            exposure_history.append(trade_exposure)
+            
+            if current_tick == end_tick:
+                done = True
+            else:
+                current_tick +=1
+                state = advice_prices[ (current_tick - window_size) : current_tick ]
+            
+            if done:
+                advice_df_dict = {'Close':ag_df_price_advice[5:]['Close'].to_list(),
+                                 'position':position_history,
+                                 'exposure':exposure_history}
+                advice_df = pd.DataFrame(advice_df_dict, index=ag_df_price_advice[5:].index)
+        #####_END_OF_PRICE_WINDOW_#########################
+    #####_END_LOOP_##############################
+    
+    #####_ALTAIR_CHART_##################################################
+    #####_PRICE_LINE_#####
+    base = alt.Chart(advice_df.reset_index()).encode(
+        x = alt.X('Date'),
+        y = alt.Y('Close', title='Price  (THB)',
+                  scale=alt.Scale(domain=[advice_df['Close'].min()-2,
+                                          advice_df['Close'].max()+2])),
+        tooltip=[alt.Tooltip('Date',title='Date'),
+                 alt.Tooltip('Close',title='Price (THB)')] )
+    #####_ACTION_OVERLAY_#####
+    base2 = alt.Chart(advice_df.reset_index()).encode(
+        x = alt.X('Date'),
+        y = alt.Y('Close', title='Price  (THB)',
+                  scale=alt.Scale(domain=[advice_df['Close'].min()-2,
+                                          advice_df['Close'].max()+2])),
+        color = alt.Color('position',
+                          scale=alt.Scale(domain=['Buy','Sell'],
+                                          range=['green','red']),
+                          legend=alt.Legend(title="Model Advice")),
+        tooltip=[alt.Tooltip('Date', title='Date'),
+                 alt.Tooltip('Close', title='Price (THB)'),
+                 alt.Tooltip('position', title='Advice')] )
+    #####_LAYERED_CHART_#####
+    layer1 = base.mark_line()
+    layer2 = base2.mark_circle(size=50).transform_filter(alt.FieldEqualPredicate(field='exposure',equal=True))
+    bundle = alt.layer(layer1,layer2).configure_axis(labelFontSize=16,titleFontSize=18)
+    #####_SHOW_ADVICE_CHART_#####
+    st.altair_chart(bundle, use_container_width=True)
+        
+                
+
+
+
