@@ -345,7 +345,7 @@ else:
               update_user_frame()
               with st.spinner('Processing...'):
                 time.sleep(2)
-               st.experimental_rerun()
+              st.experimental_rerun()
 ##
   ######_MANAGE_MODEL_MENU_######
   if model_manage_b or manage_model_side_b or st.session_state['model_manage_b_status']:
