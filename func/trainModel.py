@@ -1,6 +1,7 @@
 import streamlit as st
 import altair as alt
 ##### ------------------------------ #####
+import datetime
 import numpy as np
 import pandas as pd
 import tensorflow as tf
@@ -431,16 +432,9 @@ def save_model_local(save_username):
 
 ########## ---------------GENERATE_ADVICE--------------- ##########
 def generate_advice(ag_df_price_advice,
+                    save_username,
                     ag_name,
-                    ag_gamma,
-                    ag_eps,
-                    ag_eps_dec,
-                    ag_eps_min,
-                    ag_lr,
-                    ag_ini_bal,
-                    ag_trade_size_pct,
-                    ag_com_fee_pct,
-                    ag_train_episode):
+                    ag_quote):
     ### --- Price Data
     advice_prices = ag_df_price_advice['Close'].to_numpy()
     
@@ -450,35 +444,35 @@ def generate_advice(ag_df_price_advice,
     adv_episodes = 1
 
     ### --- Trading parameters
-    initial_balance = ag_ini_bal
-    trading_size_pct = ag_trade_size_pct
-    commission_fee_pct = ag_com_fee_pct
-    trade_size = (trading_size_pct/100) * initial_balance
-    commission_fee = (commission_fee_pct/100) * 1.07
+    #initial_balance = ag_ini_bal
+    #trading_size_pct = ag_trade_size_pct
+    #commission_fee_pct = ag_com_fee_pct
+    #trade_size = (trading_size_pct/100) * initial_balance
+    #commission_fee = (commission_fee_pct/100) * 1.07
     
     ### --- History Dict
     action_history_dict = {}
     position_history_dict = {}
     exposure_history_dict = {}
     
-    agent = Agent(gamma=ag_gamma,
-                  epsilon=ag_eps,
-                  epsilon_dec=ag_eps_dec,
-                  lr=ag_lr,
+    agent = Agent(gamma=0.99,
+                  epsilon=1.00,
+                  epsilon_dec=0.01,
+                  lr=0.001,
                   input_dims=window_size,
                   n_actions=action_space,
                   mem_size=1000000,
                   batch_size=32,
-                  epsilon_end=ag_eps_min,
+                  epsilon_end=0.01,
                   fname=ag_name)
     
-    ### Kick start Agent
+    ### --- push start Agent
     push_start_state = advice_prices[ 0 : 5 ]
     push_start_pred = agent.q_eval.predict(np.array([push_start_state]), verbose=0)
     
-    ## Load Weights
-    path = 'xxx'
-    agent.q_eval.load_weights(path)
+    ### --- Load Weights
+    local_path = 'model/'+str(save_username)+'/'+str(ag_name)+'.h5'
+    agent.q_eval.load_weights(local_path)
 ####
     #####_LOOP_THROUGH_1_EPISODE_#########################
     for i in range(adv_episodes):
@@ -562,6 +556,14 @@ def generate_advice(ag_df_price_advice,
     bundle = alt.layer(layer1,layer2).configure_axis(labelFontSize=16,titleFontSize=18)
     #####_SHOW_ADVICE_CHART_#####
     st.altair_chart(bundle, use_container_width=True)
+    
+    #####_ADVICE_REPORT_#####
+    st.write('#### Model advice: ')
+    st.write('Date: {}'.format(datetime.date.today()))
+      if advice_df['position'][-1] == 'Buy':
+        st.success('#### BUY {} at current price of {} THB per share'.format(ag_quote,advice_df['Close'][-1]) )
+      else:
+        st.error('#### SELL {} at current price of {} THB per share'.format(ag_quote,advice_df['Close'][-1]) )
         
                 
 
