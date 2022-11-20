@@ -336,7 +336,7 @@ else:
         grid_response = AgGrid(model_grid,
                                fit_columns_on_grid_load=False,
                                gridOptions=gridoptions)
-        grp_data = grid_response['data']
+        #grid_data = grid_response['data']
         selected_row = grid_response['selected_rows']
       except:
         st.warning('Loading model database...')
