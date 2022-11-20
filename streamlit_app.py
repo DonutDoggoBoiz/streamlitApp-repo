@@ -265,10 +265,10 @@ else:
     with sb_button_2:
       home_button_side = st.button('Home', on_click=on_click_home) 
   st.sidebar.write('Menu:')
-  user_manage_side_b = st.sidebar.button('Manage Account', key='user_manage_side', on_click=on_click_user_manage_b)
-  manage_model_side_b = st.sidebar.button('Manage Model', key='model_manage_side', on_click=on_click_model_manage_b)
-  model_side_b = st.sidebar.button('Develop Model', key='model_side_b', on_click=on_click_model_b)
-  advice_side_b = st.sidebar.button('Generate Advice', key='advice_side_b', on_click=on_click_advice_b)
+  user_manage_side_b = st.sidebar.button('Manage Account', key='user_manage_side', on_click=on_click_user_manage_b, on_click_empty_ph_123)
+  manage_model_side_b = st.sidebar.button('Manage Model', key='model_manage_side', on_click=on_click_model_manage_b, on_click_empty_ph_123)
+  model_side_b = st.sidebar.button('Develop Model', key='model_side_b', on_click=on_click_model_b, on_click_empty_ph_123)
+  advice_side_b = st.sidebar.button('Generate Advice', key='advice_side_b', on_click=on_click_advice_b, on_click_empty_ph_123)
 ##
   ######_WELCOME_NOTE_######
   welcome_note_holder = st.empty()
@@ -282,13 +282,13 @@ else:
     with menu_1:
       st.write('##### MENU:')                                          
     with menu_2:
-      user_manage_b = st.button('Manage Account', on_click=on_click_user_manage_b)
+      user_manage_b = st.button('Manage Account', on_click=on_click_user_manage_b, on_click_empty_ph_123)
     with menu_3:
-      model_manage_b = st.button('Manage Model',on_click=on_click_model_manage_b)
+      model_manage_b = st.button('Manage Model',on_click=on_click_model_manage_b, on_click_empty_ph_123)
     with menu_4:
-      model_b = st.button('Develop Model',on_click=on_click_model_b)
+      model_b = st.button('Develop Model',on_click=on_click_model_b, on_click_empty_ph_123)
     with menu_5:
-      advice_b = st.button('Generate Advice', key='gen_advice_tab',on_click=on_click_advice_b)
+      advice_b = st.button('Generate Advice', key='gen_advice_tab',on_click=on_click_advice_b, on_click_empty_ph_123)
 
   ######_MAIN_PLACEHOLDER_######
   placeholder_2 = st.empty()
@@ -299,9 +299,9 @@ else:
   ######_MANAGE_ACCOUNT_MENU_######
   if user_manage_b or user_manage_side_b or st.session_state['user_manage_b_status']:
     #####################
-    placeholder_2.empty()
-    placeholder_3.empty()
-    placeholder_4.empty()
+    #placeholder_2.empty()
+    #placeholder_3.empty()
+    #placeholder_4.empty()
     #####################
     with placeholder_2.container():
       with st.form('change_name'):
@@ -318,9 +318,9 @@ else:
   ######_MANAGE_MODEL_MENU_######
   if model_manage_b or manage_model_side_b or st.session_state['model_manage_b_status']:
     #####################
-    placeholder_2.empty()
-    placeholder_3.empty()
-    placeholder_4.empty()
+    #placeholder_2.empty()
+    #placeholder_3.empty()
+    #placeholder_4.empty()
     #####################
 ####
     with placeholder_2.container():
@@ -440,9 +440,9 @@ else:
   
   ######_GENERATE_ADVICE_MENU_################################################
   if advice_b or advice_side_b or st.session_state['advice_b_status']:
-    placeholder_2.empty()
-    placeholder_3.empty()
-    placeholder_4.empty()
+    #placeholder_2.empty()
+    #placeholder_3.empty()
+    #placeholder_4.empty()
     with placeholder_2.container():
         st.markdown("### Generate Investment Advice 📈")
         model_options = model_frame_u.loc[:,'model_name']
@@ -501,9 +501,9 @@ else:
 ##
   ######_DEVELOP_MODEL_MENU_##########################################
   if model_b or model_side_b or st.session_state['model_b_status']:
-    placeholder_2.empty()
-    placeholder_3.empty()
-    placeholder_4.empty()
+    #placeholder_2.empty()
+    #placeholder_3.empty()
+    #placeholder_4.empty()
     with placeholder_3.container():
       tab_list = ["Select Dataset 📈", "Set Parameters 💡", "Train Model 🚀", "Test Model 🧪", "Save Model 💾","Train2"]
       select_data_tab, set_para_tab, train_tab, test_tab, save_tab, train_tab2 = st.tabs(tab_list)
