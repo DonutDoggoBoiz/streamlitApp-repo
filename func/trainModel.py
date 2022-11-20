@@ -378,8 +378,8 @@ def test_model(ag_df_price_test,
                         #i+1, n_episodes,acc_reward, account_balance))
                     #st.write("--- Episode {} of {} done | Total Reward: {:.2f} | Account_Balance: {:,.2f} THB | Profit/Loss: {+:.2f} THB".format(
                         #i+1, n_episodes,acc_reward, account_balance, account_balance-initial_balance))
-                    st.write("--- Episode {} of {} done | Total Reward: {:.2f} | Profit/Loss: {+:,.2f} THB".format(
-                        i+1, n_episodes,acc_reward, account_balance, account_balance-initial_balance))
+                    st.write("--- Episode {} of {} done | Total Reward: {:+,.2f} | Profit/Loss: {:+,.2f} THB".format(
+                        i+1, n_episodes, acc_reward, account_balance-initial_balance))
 
                 acc_reward_history_dict['episode_'+str(i+1)] = acc_reward_history
                 action_history_dict['episode_'+str(i+1)] = action_history
@@ -472,11 +472,9 @@ def generate_advice(ag_df_price_advice,
     
     ### --- Load Weights
     local_path = 'model/'+str(save_username)+'/'+str(ag_name)+'.h5'
-    try:
-        agent.q_eval.load_weights(local_path)
-        st.success('load_weights DONE!')
-    except:
-        st.error('ERROR load_weights')
+    agent.q_eval.load_weights(local_path)
+    st.success('load_weights DONE!')
+    st.error('ERROR load_weights')
 ####
     #####_LOOP_THROUGH_1_EPISODE_#########################
     for i in range(adv_episodes):
