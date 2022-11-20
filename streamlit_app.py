@@ -170,6 +170,10 @@ def on_change_date_select():
   
 
       #########_UTILITY_FUNCTIONS_#########
+def update_user_frame():
+  global user_frame
+  user_frame = pd.DataFrame(user_db.fetch().items)
+  
 def update_model_frame_u():
   global model_frame_u
   model_frame_u = pd.DataFrame(model_db.fetch({'username':st.session_state['username']}).items)
@@ -302,30 +306,49 @@ else:
 ##
   ######_MANAGE_ACCOUNT_MENU_######
   if user_manage_b or user_manage_side_b or st.session_state['user_manage_b_status']:
-    #####################
-    #placeholder_2.empty()
-    #placeholder_3.empty()
-    #placeholder_4.empty()
-    #####################
+    
+    #####_CHANGE_NAME_FORM_#####
     with placeholder_2.container():
       with st.form('change_name'):
         st.write('##### Change Name')
         new_name = st.text_input('Your new name', type='password', placeholder=str(st.session_state['name']))
         change_name_button = st.form_submit_button('Change Name')
+       if change_name_button:
+        if len(new_name) <= 0:
+          st.warning('Please enter your name')
+        else:
+          st.session_state['name'] = new_name
+          user_key_to_update = user_frame.loc[user_frame['username']==st.session_state['username'], 'key'].to_list()[0]
+          user_db.update(updates={'name':new_name}, key=user_key_to_update)
+          st.success('Change name successful!')
+          update_user_frame()
+          with st.spinner('Processing...'):
+            time.sleep(2)
+           st.experimental_rerun()
+          
+      #####_CHANGE_PASSWORD_FORM_#####
       with st.form('change_password'):
         st.write('##### Change Password')
         old_password = st.text_input('Old Password', type='password', placeholder='your old password')
         new_password = st.text_input('New Password', type='password', placeholder='your new password')
         change_pass_button = st.form_submit_button('Change Password')
-        
+        if change_pass_button:
+          if len(old_password) <= 0 or len(new_password) <= 0:
+            st.warning('Please type your password')
+          else: #both passwords length > 0
+            if old_password != user_frame.loc[user_frame['username']==st.session_state['username'], 'password'].to_list()[0]
+              st.warning('Old password is incorrect.  Please try again')
+            else: #correct old password
+              user_key_to_update = user_frame.loc[user_frame['username']==st.session_state['username'], 'key'].to_list()[0]
+              user_db.update(updates={'password':new_password}, key=user_key_to_update)
+              st.success('Change password successful!')
+              update_user_frame()
+              with st.spinner('Processing...'):
+                time.sleep(2)
+               st.experimental_rerun()
 ##
   ######_MANAGE_MODEL_MENU_######
   if model_manage_b or manage_model_side_b or st.session_state['model_manage_b_status']:
-    #####################
-    #placeholder_2.empty()
-    #placeholder_3.empty()
-    #placeholder_4.empty()
-    #####################
 ####
     with placeholder_2.container():
       st.write('#### Model Management')
@@ -338,7 +361,6 @@ else:
         grid_response = AgGrid(model_grid,
                                fit_columns_on_grid_load=False,
                                gridOptions=gridoptions)
-        #grid_data = grid_response['data']
         selected_row = grid_response['selected_rows']
       except:
         st.warning('Loading model database...')
