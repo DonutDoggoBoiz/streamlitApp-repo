@@ -336,10 +336,10 @@ else:
           if len(old_password) <= 0 or len(new_password) <= 0:
             st.warning('Please type your password')
           else: #both passwords length > 0
-            if old_password != user_frame.loc[user_frame['username']==st.session_state['username'], 'password'].to_list()[0]
+            if old_password != (user_frame.loc[user_frame['username']==st.session_state['username'],'password'].to_list()[0])
               st.warning('Old password is incorrect.  Please try again')
             else: #correct old password
-              user_key_to_update = user_frame.loc[user_frame['username']==st.session_state['username'], 'key'].to_list()[0]
+              user_key_to_update = user_frame.loc[user_frame['username']==st.session_state['username'],'key'].to_list()[0]
               user_db.update(updates={'password':new_password}, key=user_key_to_update)
               st.success('Change password successful! ✔️')
               update_user_frame()
