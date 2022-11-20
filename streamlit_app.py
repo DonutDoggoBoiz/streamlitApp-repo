@@ -208,7 +208,6 @@ if st.session_state['login_status'] == False:
           st.warning("Please enter your password")
         elif len(username) > 0 and len(password) > 0:
           if username not in user_list:
-            #st.warning('User not found. Please check your username')
             st.error("Username or Password is incorrect. Please try again")
           else: 
             if user_frame.loc[user_frame['username'] == username,'password'].values != password:
@@ -373,16 +372,25 @@ else:
               with st.form('edit parameter form'):
                 st.write("##### Model parameters")
                 edt_agent_name = st.text_input("Model name: ", placeholder=str(selected_row[0]['model_name']))
-                edt_agent_gamma = st.slider("Gamma: ", min_value=0.00, max_value=1.00, value=selected_row[0]['gamma'])
-                edt_agent_epsilon = st.slider("Starting epsilon (random walk probability): ", min_value=0.00, max_value=1.00, value=selected_row[0]['epsilon_start'])
+                edt_agent_gamma = st.slider("Gamma: ", min_value=0.00, max_value=1.00, 
+                                            value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'gamma'].to_list()[0] )
+                edt_agent_epsilon = st.slider("Starting epsilon (random walk probability): ", min_value=0.00, max_value=1.00, 
+                                              value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_start'].to_list()[0] )
                 edt_agent_epsilon_dec = st.select_slider("Epsilon decline rate (random walk probability decline): ",
-                                                     options=[0.001,0.002,0.005,0.010], value=selected_row[0]['epsilon_decline'])
-                edt_agent_epsilon_end = st.slider("Minimum epsilon: ", min_value=0.01, max_value=0.10, value=selected_row[0]['epsilon_min'])
-                edt_agent_lr = st.select_slider("Learning rate: ", options=[0.001, 0.002, 0.005, 0.010], value=selected_row[0]['learning_rate'])
+                                                     options=[0.001,0.002,0.005,0.010], 
+                                                         value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_decline'].to_list()[0] )
+                edt_agent_epsilon_end = st.slider("Minimum epsilon: ", min_value=0.01, max_value=0.10, 
+                                                  value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_min'].to_list()[0] )
+                edt_agent_lr = st.select_slider("Learning rate: ", options=[0.001, 0.002, 0.005, 0.010], 
+                                                value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'learning_rate'].to_list()[0] )
                 st.write("##### Trading parameters")
-                edt_initial_balance = st.number_input("Initial account balance (THB):", min_value=0, step=1000, value=selected_row[0]['initial_balance'])
-                edt_trading_size_pct = st.slider("Trading size as a percentage of initial account balance (%):", min_value=0, max_value=100, value=selected_row[0]['trading_size_pct'])
-                edt_commission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, value=selected_row[0]['commission_fee_pct'], format='%1.3f')
+                edt_initial_balance = st.number_input("Initial account balance (THB):", min_value=0, step=1000, 
+                                                      value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'initial_balance'].to_list()[0] )
+                edt_trading_size_pct = st.slider("Trading size as a percentage of initial account balance (%):", min_value=0, max_value=100, 
+                                                 value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'trading_size_pct'].to_list()[0] )
+                edt_commission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, 
+                                                         value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'commission_fee_pct'].to_list()[0], 
+                                                         format='%1.3f')
                 edit_param_button = st.form_submit_button("Edit")
                 if edit_param_button:
                   with st.expander('Model Update', expanded=True):
