@@ -218,7 +218,6 @@ if st.session_state['login_status'] == False:
               st.session_state['username'] = username
               st.session_state['name'] = user_frame.loc[user_frame['username'] == username,'name'].to_string(index=False)
               login_func()
-              update_model_frame_u()
               time.sleep(3)
               st.experimental_rerun()
 ####
@@ -255,6 +254,10 @@ if st.session_state['login_status'] == False:
       
 #########_POST_LOGIN_#############################################
 else:
+  ###########################
+  model_frame_u = pd.DataFrame(model_db.fetch({'username':st.session_state['username']}).items)
+  ###########################
+  
   ######_SIDEBAR_######
   st.sidebar.write('Welcome, {}'.format(st.session_state['name']) )
   with st.sidebar.container():
