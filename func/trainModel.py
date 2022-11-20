@@ -472,7 +472,11 @@ def generate_advice(ag_df_price_advice,
     
     ### --- Load Weights
     local_path = 'model/'+str(save_username)+'/'+str(ag_name)+'.h5'
-    agent.q_eval.load_weights(local_path)
+    try:
+        agent.q_eval.load_weights(local_path)
+        st.success('load_weights DONE!')
+    except:
+        st.error('ERROR load_weights')
 ####
     #####_LOOP_THROUGH_1_EPISODE_#########################
     for i in range(adv_episodes):
