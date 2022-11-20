@@ -113,4 +113,45 @@
                         ag_com_fee_pct=nm_commission_fee_pct,
                         ag_train_episode=xtrain_episodes)
             st.success('Training DONE!')
+            
+############################################################################################################
+base = alt.Chart(advice_df.reset_index()).encode(
+        x = alt.X('Date'),
+        y = alt.Y('Close', title='Price  (THB)',
+                  scale=alt.Scale(domain=[advice_df['Close'].min()-2,
+                                          advice_df['Close'].max()+2])),
+        tooltip=[alt.Tooltip('Date',title='Date'),
+                 alt.Tooltip('Close',title='Price (THB)')] )
+    #####_ACTION_OVERLAY_#####
+    buy_plot = alt.Chart(advice_df.reset_index()).encode(
+        x = alt.X('Date'),
+        y = alt.Y('Close', title='Price  (THB)',
+                  scale=alt.Scale(domain=[advice_df['Close'].min()-2,
+                                          advice_df['Close'].max()+2])),
+        color = alt.Color('position',
+                          scale=alt.Scale(domain=['Buy','Sell'],
+                                          range=['green','red']),
+                          legend=alt.Legend(title="Model Advice")),
+        tooltip=[alt.Tooltip('Date', title='Date'),
+                 alt.Tooltip('Close', title='Price (THB)'),
+                 alt.Tooltip('position', title='Advice')] )
+    
+    sell_plot = alt.Chart(advice_df.reset_index()).encode(
+        x = alt.X('Date'),
+        y = alt.Y('Close', title='Price  (THB)',
+                  scale=alt.Scale(domain=[advice_df['Close'].min()-2,
+                                          advice_df['Close'].max()+2])),
+        color = alt.Color('position',
+                          scale=alt.Scale(domain=['Buy','Sell'],
+                                          range=['green','red']),
+                          legend=alt.Legend(title="Model Advice")),
+        tooltip=[alt.Tooltip('Date', title='Date'),
+                 alt.Tooltip('Close', title='Price (THB)'),
+                 alt.Tooltip('position', title='Advice')] )
+    #####_LAYERED_CHART_#####
+    layer1 = base.mark_line()
+    layer2 = base2.mark_circle(size=50).transform_filter(alt.FieldEqualPredicate(field='exposure',equal=True))
+    bundle = alt.layer(layer1,layer2).configure_axis(labelFontSize=16,titleFontSize=18)
+    #####_SHOW_ADVICE_CHART_#####
+    st.altair_chart(bundle, use_container_width=True)
               
