@@ -489,7 +489,7 @@ else:
           #loading_box = st.empty()
           #with loading_box.container():
             #st.warning('Generating advice....')
-          with st.spinner('Generating advice...')
+          with st.spinner('Generating advice...'):
             download_model_gcs(save_username=st.session_state['username'],
                                ag_name=selected_advice_model)
           
