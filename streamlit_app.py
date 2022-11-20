@@ -313,18 +313,18 @@ else:
         st.write('##### Change Name')
         new_name = st.text_input('Your new name', type='password', placeholder=str(st.session_state['name']))
         change_name_button = st.form_submit_button('Change Name')
-       if change_name_button:
-        if len(new_name) <= 0:
-          st.warning('Please enter your name')
-        else:
-          st.session_state['name'] = new_name
-          user_key_to_update = user_frame.loc[user_frame['username']==st.session_state['username'], 'key'].to_list()[0]
-          user_db.update(updates={'name':new_name}, key=user_key_to_update)
-          st.success('Change name successful! ✔️')
-          update_user_frame()
-          with st.spinner('Processing...'):
-            time.sleep(2)
-           st.experimental_rerun()
+        if change_name_button:
+          if len(new_name) <= 0:
+            st.warning('Please enter your name')
+          else:
+            st.session_state['name'] = new_name
+            user_key_to_update = user_frame.loc[user_frame['username']==st.session_state['username'], 'key'].to_list()[0]
+            user_db.update(updates={'name':new_name}, key=user_key_to_update)
+            st.success('Change name successful! ✔️')
+            update_user_frame()
+            with st.spinner('Processing...'):
+              time.sleep(2)
+              st.experimental_rerun()
           
       #####_CHANGE_PASSWORD_FORM_#####
       with st.form('change_password'):
