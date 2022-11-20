@@ -448,7 +448,25 @@ else:
         st.markdown("### Generate Investment Advice 📈")
         model_options = model_frame_u.loc[:,'model_name']
         selected_advice_model = st.selectbox('Choose your model',options=model_options)
+        with st.expander('Model Information:'):
+          st.write('##### Model Name : {}'.format(selected_advice_model))
+          st.write('##### Stock Quote : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'stock_quote'].to_list()[0]))
+          st.write('##### Start Date : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'start_date'].to_list()[0]))
+          st.write('##### End Date : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'end_date'].to_list()[0]))
+          st.write('##### Episode Trained : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'episode_trained'].to_list()[0]))
+          st.write('##### Train Profit/Loss : {:+,.2f} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trained_result'].to_list()[0]))
+          st.write('##### Test Profit/Loss : {+,.2f} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'test_result'].to_list()[0]))
+          st.write('##### Initial Balance : {:,} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'initial_balance'].to_list()[0]))
+          st.write('##### Trading Size : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trading_size_pct'].to_list()[0]))
+          st.write('##### Commission Fee : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'commission_fee_pct'].to_list()[0]))
+          st.write('##### Gamma : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'gamma'].to_list()[0]))
+          st.write('##### Epsilon Start: {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_start'].to_list()[0]))
+          st.write('##### Epsilon Decline rate : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_decline'].to_list()[0]))
+          st.write('##### Epsilon Minimum : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_min'].to_list()[0]))
+          st.write('##### Learning Rate : {:.3f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'learning_rate'].to_list()[0]))
+          
         generate_advice_button = st.button('Generate Advice')
+        #####_GENERATE_ADVICE_BUTTON_#####
         if generate_advice_button:
           stock_name = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'stock_quote'].to_list()[0]
           start_date = ( datetime.date.today() - datetime.timedelta(days=180) )
@@ -458,110 +476,22 @@ else:
                                 start=start_date,
                                 end=end_date,
                                 progress=True)
-          df_price.drop(columns=['Adj Close','Volume'] , inplace=True)
-          last_price = df_price['Close'][-1]
-          ########
-          adv_agent_name = selected_advice_model
-          adv_agent_gamma = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'gamma'].to_list()[0]
-          adv_agent_epsilon = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_start'].to_list()[0]
-          adv_agent_epsilon_dec = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_decline'].to_list()[0]
-          adv_agent_epsilon_end = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_min'].to_list()[0]
-          adv_agent_lr = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'learning_rate'].to_list()[0]
-          adv_initial_balance = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'initial_balance'].to_list()[0]
-          adv_trading_size_pct = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trading_size_pct'].to_list()[0]
-          adv_commission_fee_pct = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'commission_fee_pct'].to_list()[0]
-          #####_ALTAIR_CHART_#########################
-          #####_PRICE_LINE_#####
-          base = alt.Chart(df_price.reset_index()).encode(
-            x = alt.X('Date'),
-            y = alt.Y('Close', title='Price  (THB)', 
-                      scale=alt.Scale(domain=[df_price['Close'].min()-2, df_price['Close'].max()+2])),
-            tooltip=[alt.Tooltip('Date', title='Date'),alt.Tooltip('Close', title='Price (THB)')] )
-          #####_ACTION_OVERLAY_#####
-          base2 = alt.Chart(df_price.reset_index()).encode(
-            x = alt.X('Date') ,
-            y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-2, df_price['Close'].max()+2])),
-                            color = alt.Color('pos', 
-                                              scale=alt.Scale(domain=['Buy','Sell'],range=['green','red']),
-                                             legend=alt.Legend(title="Model Advice")),
-            tooltip=[alt.Tooltip('Date', title='Date'),
-                     alt.Tooltip('Close', title='Price (THB)'),
-                     alt.Tooltip('pos', title='Action')] )
-          #####_LAYERED_CHART_#####
-          layer1 = base.mark_line()
-          layer2 = base2.mark_circle(size=50).transform_filter(alt.FieldEqualPredicate(field='expos', equal=True))
-          bundle3 = alt.layer(layer1,layer2).configure_axis(labelFontSize=16,titleFontSize=18)
+          ################################################
+          #adv_agent_name = selected_advice_model
+          #adv_agent_gamma = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'gamma'].to_list()[0]
+          #adv_agent_epsilon = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_start'].to_list()[0]
+          #adv_agent_epsilon_dec = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_decline'].to_list()[0]
+          #adv_agent_epsilon_end = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_min'].to_list()[0]
+          #adv_agent_lr = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'learning_rate'].to_list()[0]
+          #adv_initial_balance = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'initial_balance'].to_list()[0]
+          #adv_trading_size_pct = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trading_size_pct'].to_list()[0]
+          #adv_commission_fee_pct = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'commission_fee_pct'].to_list()[0]
+          ################################################
           
-          ########## NEED pos and expos column ##########
-          df_price['pos'] = pos_list
-          df_price['expos'] = expos_list
-          
-          #### ------------------------------ ####
-          pos_list = []
-          for i in range(len(df_price)):
-            rand_num = np.random.randn()
-            if rand_num >= 0:
-              pos_list.append('Buy')
-            else:
-              pos_list.append('Sell')
-
-          expos_list = []
-          for i in range(len(df_price)):
-            rand_num = np.random.randn()
-            if rand_num >= 0:
-              expos_list.append(True)
-            else:
-              expos_list.append(False)
-
-          df_price['pos'] = pos_list
-          df_price['expos'] = expos_list
-          #### ----- ####
-          base = alt.Chart(df_price.reset_index()).encode(
-            x = alt.X('Date'),
-            y = alt.Y('Close', title='Price  (THB)', 
-                      scale=alt.Scale(domain=[df_price['Close'].min()-2, df_price['Close'].max()+2])),
-            tooltip=[alt.Tooltip('Date', title='Date'),alt.Tooltip('Close', title='Price (THB)')] )
-
-          base2 = alt.Chart(df_price.reset_index()).encode(
-            x = alt.X('Date') ,
-            y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-2, df_price['Close'].max()+2])),
-                            color = alt.Color('pos', 
-                                              scale=alt.Scale(domain=['Buy','Sell'],range=['green','red']),
-                                             legend=alt.Legend(title="Model Advice")),
-            tooltip=[alt.Tooltip('Date', title='Date'),
-                     alt.Tooltip('Close', title='Price (THB)'),
-                     alt.Tooltip('pos', title='Action')] )
-
-          c_line = (alt.Chart(df_price.reset_index())
-                    .mark_line()
-                    .encode(x = alt.X('Date') ,
-                            y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-10, df_price['Close'].max()+10]) ) ,
-                            tooltip=[alt.Tooltip('Date', title='Date'),
-                                     alt.Tooltip('Close', title='Price (THB)')])
-                    .interactive() )
-          c_point = (alt.Chart(df_price[df_price['expos'] == True].reset_index())
-                    .mark_circle()
-                    .encode(x = alt.X('Date') ,
-                            y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-10, df_price['Close'].max()+10]) ) ,
-                            color = 'pos',
-                            tooltip=[alt.Tooltip('pos', title='Action')])
-                    .interactive() )
-          c_all = alt.layer(c_line, c_point)
-          st.write('#### Model performance compared to actual trading data in the past year')
-          st.altair_chart( (base.mark_line() + base.mark_circle()), use_container_width=True)
-          bundle2 = (base.mark_line() + base2.mark_circle().transform_filter(alt.FieldEqualPredicate(field='expos', equal=True)))
-          layer1 = base.mark_line()
-          layer2 = base2.mark_circle(size=50).transform_filter(alt.FieldEqualPredicate(field='expos', equal=True))
-          bundle3 = alt.layer(layer1,layer2).configure_axis(labelFontSize=16,titleFontSize=18)
-          st.altair_chart(bundle3, use_container_width=True)
-
-          #rand_num = np.random.randn()
-          st.write('Model advice: ')
-          #if rand_num > 0:
-          if pos_list[-1] == 'Buy':
-            st.success('#### BUY {} at current price of {} THB per share'.format('BBL',last_price) )
-          else:
-            st.error('#### SELL {} at current price of {} THB per share'.format('BBL',last_price) )
+          generate_advice(ag_df_price_advice=df_price,
+                    save_username=st.session_state['username'],
+                    ag_name=selected_advice_model,
+                    ag_quote=stock_name):
   ######################################################################################################
 ##
   ######_DEVELOP_MODEL_MENU_##########################################
