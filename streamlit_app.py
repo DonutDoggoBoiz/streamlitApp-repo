@@ -11,7 +11,7 @@ from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 
 from func.trainModel import train_model, test_model, save_model_local
 from func.generateAdvice import generate_advice
-from func.googleCloud import upload_model_gcs
+from func.googleCloud import upload_model_gcs, download_model_gcs
 #################################################################################
 
 #########_DATABASE_CONNECTION_####################################
