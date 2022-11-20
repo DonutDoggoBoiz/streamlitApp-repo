@@ -260,7 +260,7 @@ else:
   ######_SIDEBAR_######
   st.sidebar.write('Welcome, {}'.format(st.session_state['name']) )
   with st.sidebar.container():
-    sb_button_1, sb_button_2 = st.columns([1,1,1])
+    sb_button_1, sb_button_2, _ = st.columns([1,1,1])
     with sb_button_1:
       logout_button_side = st.button('Logout', on_click=on_click_logout)
     with sb_button_2:
