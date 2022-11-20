@@ -333,16 +333,20 @@ else:
       gb = GridOptionsBuilder.from_dataframe(model_grid)
       gb.configure_selection('single', use_checkbox=True, pre_selected_rows=[0])
       gridoptions = gb.build()
-      grid_response = AgGrid(model_grid,
-                             fit_columns_on_grid_load=False,
-                             gridOptions=gridoptions)
-      grp_data = grid_response['data']
-      selected_row = grid_response['selected_rows']
+      try:
+        grid_response = AgGrid(model_grid,
+                               fit_columns_on_grid_load=False,
+                               gridOptions=gridoptions)
+        grp_data = grid_response['data']
+        selected_row = grid_response['selected_rows']
+      except:
+        st.warning('Loading model database...')
 ####
     with placeholder_3.container():
-      try:
+      view_model_detail = st.button('See Model Detail')
+      if view_model_detail:
         selected_row_model_name = selected_row[0]['model_name']
-        with st.expander('More model information:'):
+        with st.expander('Model information:',expanded=True):
             st.write('Name : {}'.format(selected_row_model_name))
             st.write('Gamma : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'gamma'].to_list()[0]))
             st.write('Epsilon : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_start'].to_list()[0]))
@@ -352,8 +356,6 @@ else:
             st.write('Initial Balance : {:,} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'initial_balance'].to_list()[0]))
             st.write('Trading Size : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'trading_size_pct'].to_list()[0]))
             st.write('Commission Fee : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'commission_fee_pct'].to_list()[0]))
-      except:
-        st.warning('Loading model database...')
 ####
     with placeholder_4.container():
       ph2col1, ph2col2, _ = st.columns([1,1,6])
@@ -383,7 +385,6 @@ else:
                 edt_commission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, value=selected_row[0]['commission_fee_pct'], format='%1.3f')
                 edit_param_button = st.form_submit_button("Edit")
                 if edit_param_button:
-                  st.success('Edit parameters successful!')
                   with st.expander('Model Update', expanded=True):
                     st.write('{}'.format(edt_agent_name))
                     st.write('{}'.format(edt_agent_gamma))
@@ -394,6 +395,7 @@ else:
                     st.write('{}'.format(edt_initial_balance))
                     st.write('{}'.format(edt_trading_size_pct))
                     st.write('{}'.format(edt_commission_fee_pct))
+                  st.success('Edit parameters successful!')
                   time.sleep(3)
                   #st.experimental_rerun()
 ######
@@ -417,21 +419,6 @@ else:
               elif make_sure_radio == 'No':
                 st.session_state['del_mod_button_status'] = False
                 st.experimental_rerun()
-#indent#
-########
-      #try:
-        #placeholder_3.empty()
-        #with placeholder_3.container():
-          #with st.expander('More model information:'):
-              #st.write('Name : {}'.format(selected_row[0]['model_name']))
-              #st.write('Gamma : {:.2f}'.format(selected_row[0]['gamma']))
-              #st.write('Learning Rate : {:.3f}'.format(selected_row[0]['learning_rate']))
-              #st.write('Initial Balance : {:,} THB'.format(selected_row[0]['initial_balance']))
-              #st.write('Trading Size : {:.2f}%'.format(selected_row[0]['trading_size']*100))
-      #except:
-        #with placeholder_3.container():
-          #st.success('Loading...')
-
   ####### ---------------------- #######
 
   ### --- GENERATE ADVICE MENU --- ###
