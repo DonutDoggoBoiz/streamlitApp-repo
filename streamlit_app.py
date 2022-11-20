@@ -127,18 +127,21 @@ def on_click_user_manage_b():
   st.session_state['model_manage_b_status'] = False
   st.session_state['model_b_status'] = False
   st.session_state['advice_b_status'] = False
+  on_click_empty_ph_123()
 
 def on_click_model_manage_b():
   st.session_state['user_manage_b_status'] = False
   st.session_state['model_manage_b_status'] = True
   st.session_state['model_b_status'] = False
   st.session_state['advice_b_status'] = False
+  on_click_empty_ph_123()
   
 def on_click_model_b():
   st.session_state['user_manage_b_status'] = False
   st.session_state['model_manage_b_status'] = False
   st.session_state['model_b_status'] = True
   st.session_state['advice_b_status'] = False
+  on_click_empty_ph_123()
 
       #########_DEVELOP_MODEL_TAB_#########
 def on_click_observe_b():
@@ -159,6 +162,7 @@ def on_click_advice_b():
   st.session_state['model_manage_b_status'] = False
   st.session_state['model_b_status'] = False
   st.session_state['advice_b_status'] = True
+  on_click_empty_ph_123()
   
 def on_change_date_select():
   st.session_state['observe_button_status'] = False
@@ -265,10 +269,10 @@ else:
     with sb_button_2:
       home_button_side = st.button('Home', on_click=on_click_home) 
   st.sidebar.write('Menu:')
-  user_manage_side_b = st.sidebar.button('Manage Account', key='user_manage_side', on_click=(on_click_user_manage_b,on_click_empty_ph_123))
-  manage_model_side_b = st.sidebar.button('Manage Model', key='model_manage_side', on_click=(on_click_model_manage_b,on_click_empty_ph_123))
-  model_side_b = st.sidebar.button('Develop Model', key='model_side_b', on_click=(on_click_model_b, on_click_empty_ph_123))
-  advice_side_b = st.sidebar.button('Generate Advice', key='advice_side_b', on_click=(on_click_advice_b, on_click_empty_ph_123))
+  user_manage_side_b = st.sidebar.button('Manage Account', key='user_manage_side', on_click=on_click_user_manage_b)
+  manage_model_side_b = st.sidebar.button('Manage Model', key='model_manage_side', on_click=on_click_model_manage_b)
+  model_side_b = st.sidebar.button('Develop Model', key='model_side_b', on_click=on_click_model_b)
+  advice_side_b = st.sidebar.button('Generate Advice', key='advice_side_b', on_click=on_click_advice_b)
 ##
   ######_WELCOME_NOTE_######
   welcome_note_holder = st.empty()
@@ -282,13 +286,13 @@ else:
     with menu_1:
       st.write('##### MENU:')                                          
     with menu_2:
-      user_manage_b = st.button('Manage Account', on_click=(on_click_user_manage_b, on_click_empty_ph_123))
+      user_manage_b = st.button('Manage Account', on_click=on_click_user_manage_b)
     with menu_3:
-      model_manage_b = st.button('Manage Model',on_click=(on_click_model_manage_b, on_click_empty_ph_123))
+      model_manage_b = st.button('Manage Model',on_click=on_click_model_manage_b)
     with menu_4:
-      model_b = st.button('Develop Model',on_click=(on_click_model_b, on_click_empty_ph_123))
+      model_b = st.button('Develop Model',on_click=on_click_model_b)
     with menu_5:
-      advice_b = st.button('Generate Advice', key='gen_advice_tab',on_click=(on_click_advice_b, on_click_empty_ph_123))
+      advice_b = st.button('Generate Advice', key='gen_advice_tab',on_click=on_click_advice_b)
 
   ######_MAIN_PLACEHOLDER_######
   placeholder_2 = st.empty()
