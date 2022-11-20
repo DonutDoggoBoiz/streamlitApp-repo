@@ -338,11 +338,10 @@ else:
                              gridOptions=gridoptions)
       grp_data = grid_response['data']
       selected_row = grid_response['selected_rows']
-      time.sleep(3)
-      selected_row_model_name = selected_row[0]['model_name']
 ####
     with placeholder_3.container():
       try:
+        selected_row_model_name = selected_row[0]['model_name']
         with st.expander('More model information:'):
             st.write('Name : {}'.format(selected_row_model_name))
             st.write('Gamma : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'gamma'].to_list()[0]))
