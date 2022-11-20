@@ -338,19 +338,23 @@ else:
                              gridOptions=gridoptions)
       grp_data = grid_response['data']
       selected_row = grid_response['selected_rows']
+      time.sleep(3)
       selected_row_model_name = selected_row[0]['model_name']
 ####
     with placeholder_3.container():
-      with st.expander('More model information:'):
-          st.write('Name : {}'.format(selected_row_model_name))
-          st.write('Gamma : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'gamma'].to_list()[0]))
-          st.write('Epsilon : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_start'].to_list()[0]))
-          st.write('Epsilon decline : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_decline'].to_list()[0]))
-          st.write('Epsilon minimum : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_min'].to_list()[0]))
-          st.write('Learning Rate : {:.3f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'learning_rate'].to_list()[0]))
-          st.write('Initial Balance : {:,} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'initial_balance'].to_list()[0]))
-          st.write('Trading Size : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'trading_size_pct'].to_list()[0]))
-          st.write('Commission Fee : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'commission_fee_pct'].to_list()[0]))
+      try:
+        with st.expander('More model information:'):
+            st.write('Name : {}'.format(selected_row_model_name))
+            st.write('Gamma : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'gamma'].to_list()[0]))
+            st.write('Epsilon : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_start'].to_list()[0]))
+            st.write('Epsilon decline : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_decline'].to_list()[0]))
+            st.write('Epsilon minimum : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_min'].to_list()[0]))
+            st.write('Learning Rate : {:.3f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'learning_rate'].to_list()[0]))
+            st.write('Initial Balance : {:,} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'initial_balance'].to_list()[0]))
+            st.write('Trading Size : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'trading_size_pct'].to_list()[0]))
+            st.write('Commission Fee : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'commission_fee_pct'].to_list()[0]))
+      except:
+        st.warning('Loading model database...')
 ####
     with placeholder_4.container():
       ph2col1, ph2col2, _ = st.columns([1,1,6])
