@@ -366,6 +366,7 @@ else:
       ### --- edit button --- ###
       if edit_mod_button: #or st.session_state['edit_mod_button_status']:
         #st.session_state['edit_mod_button_status'] = True
+        selected_row_model_name = selected_row[0]['model_name']
         with placeholder_4.container():
             edit_form_col1, _ = st.columns([2,1])
             with edit_form_col1:
@@ -391,21 +392,21 @@ else:
                 edt_commission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, 
                                                          value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'commission_fee_pct'].to_list()[0], 
                                                          format='%1.3f')
-                edit_param_button = st.form_submit_button("Edit")
-                if edit_param_button:
-                  with st.expander('Model Update', expanded=True):
-                    st.write('{}'.format(edt_agent_name))
-                    st.write('{}'.format(edt_agent_gamma))
-                    st.write('{}'.format(edt_agent_epsilon))
-                    st.write('{}'.format(edt_agent_epsilon_dec))
-                    st.write('{}'.format(edt_agent_epsilon_end))
-                    st.write('{}'.format(edt_agent_lr))
-                    st.write('{}'.format(edt_initial_balance))
-                    st.write('{}'.format(edt_trading_size_pct))
-                    st.write('{}'.format(edt_commission_fee_pct))
-                  st.success('Edit parameters successful!')
-                  time.sleep(3)
-                  #st.experimental_rerun()
+                edit_param_button = st.form_submit_button('Edit')
+              if edit_param_button:
+                with st.expander('Model Update', expanded=True):
+                  st.write('{}'.format(edt_agent_name))
+                  st.write('{}'.format(edt_agent_gamma))
+                  st.write('{}'.format(edt_agent_epsilon))
+                  st.write('{}'.format(edt_agent_epsilon_dec))
+                  st.write('{}'.format(edt_agent_epsilon_end))
+                  st.write('{}'.format(edt_agent_lr))
+                  st.write('{}'.format(edt_initial_balance))
+                  st.write('{}'.format(edt_trading_size_pct))
+                  st.write('{}'.format(edt_commission_fee_pct))
+                st.success('Edit parameters successful!')
+                time.sleep(3)
+                #st.experimental_rerun()
 ######
       ### --- delete button --- ###
       if del_mod_button or st.session_state['del_mod_button_status']:
