@@ -487,11 +487,13 @@ else:
           #adv_trading_size_pct = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trading_size_pct'].to_list()[0]
           #adv_commission_fee_pct = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'commission_fee_pct'].to_list()[0]
           ################################################
+          download_model_gcs(save_username=st.session_state['username'],
+                             ag_name=selected_advice_model)
           
           generate_advice(ag_df_price_advice=df_price,
                     save_username=st.session_state['username'],
                     ag_name=selected_advice_model,
-                    ag_quote=stock_name):
+                    ag_quote=stock_name)
   ######################################################################################################
 ##
   ######_DEVELOP_MODEL_MENU_##########################################
