@@ -326,7 +326,6 @@ else:
 ####
     with placeholder_2.container():
       st.write('#### Model Management')
-      #model_for_grid = pd.DataFrame(model_db.fetch({'username':st.session_state['username']}).items)
       shuffle_col = ['model_name','stock_quote','start_date','end_date','episode_trained','initial_balance','trading_size_pct','commission_fee_pct','gamma',]
       model_grid = model_frame_u.loc[:,shuffle_col]
       gb = GridOptionsBuilder.from_dataframe(model_grid)
@@ -363,7 +362,7 @@ else:
       with ph2col2:
         del_mod_button = st.button('Delete')
 ######
-      ######_EDIT_BUTTON_######
+      ######_EDIT_BUTTON_######################################################
       if edit_mod_button or st.session_state['edit_mod_button_status']:
         st.session_state['edit_mod_button_status'] = True
         selected_row_model_name = selected_row[0]['model_name']
@@ -394,6 +393,7 @@ else:
                                                          value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'commission_fee_pct'].to_list()[0], 
                                                          format='%1.3f')
                 edit_param_button = st.form_submit_button('Edit')
+            ######_<FORM>_EDIT_BUTTON_######################################################
             if edit_param_button:
               key_to_update = model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'key'].to_list()[0]
               update_dict = {'model_name':edt_agent_name,
@@ -407,24 +407,17 @@ else:
                             'commission_fee_pct':edt_commission_fee_pct,
                             'episode_trained':0}
               model_db.update(updates=update_dict, key=key_to_update)
-              
-              #with st.expander('Model Update', expanded=True):
-                #st.write('{}'.format(edt_agent_name))
-                #st.write('{}'.format(edt_agent_gamma))
-                #st.write('{}'.format(edt_agent_epsilon))
-                #st.write('{}'.format(edt_agent_epsilon_dec))
-                #st.write('{}'.format(edt_agent_epsilon_end))
-                #st.write('{}'.format(edt_agent_lr))
-                #st.write('{}'.format(edt_initial_balance))
-                #st.write('{}'.format(edt_trading_size_pct))
-                #st.write('{}'.format(edt_commission_fee_pct))
-              #st.success('Edit parameters successful!')
-              #st.session_state['edit_mod_button_status'] = False
-              #time.sleep(3)
-              #st.success('Edit 222 parameters successful!')
-              #st.experimental_rerun()
+              st.session_state['edit_mod_button_status'] = False
+              st.success('Edit parameters successful!')
+              with st.form('after edit ok'):
+                st.info('This model needs to be re-trained in "Develop Model" menu', icon="ℹ️")
+                edit_ok_button = st.form_submit_button('OK')
+              if edit_ok_button:
+                time.sleep(2)
+                st.experimental_rerun()
+      #####################################################################
 ######
-      ######_DELETE_BUTTON_######
+      ######_DELETE_BUTTON_################################################
       if del_mod_button or st.session_state['del_mod_button_status']:
         st.session_state['del_mod_button_status'] = True
         with placeholder_4.container():
@@ -444,20 +437,20 @@ else:
               elif make_sure_radio == 'No':
                 st.session_state['del_mod_button_status'] = False
                 st.experimental_rerun()
-  ####### ---------------------- #######
-
-  ### --- GENERATE ADVICE MENU --- ###
+      ########################################################################
+  
+  ######_GENERATE_ADVICE_MENU_################################################
   if advice_b or advice_side_b or st.session_state['advice_b_status']:
     placeholder_2.empty()
     placeholder_3.empty()
     placeholder_4.empty()
     with placeholder_2.container():
         st.markdown("### Generate Investment Advice 📈")
-        selected_model = st.selectbox('Choose your model',
-                                      options=['BBL_01', 'BBL_02', 'PTT_07'])
+        model_options = model_frame_u.loc[:,'model_name']
+        selected_advice_model = st.selectbox('Choose your model',options=model_options)
         generate_advice_button = st.button('Generate Advice')
         if generate_advice_button:
-          stock_name = 'BBL'
+          stock_name = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'stock_quote'].to_list()[0]
           start_date = ( datetime.date.today() - datetime.timedelta(days=180) )
           end_date = datetime.date.today()
           stock_code = stock_name + '.BK'
@@ -467,7 +460,43 @@ else:
                                 progress=True)
           df_price.drop(columns=['Adj Close','Volume'] , inplace=True)
           last_price = df_price['Close'][-1]
-          #### ----- ####
+          ########
+          adv_agent_name = selected_advice_model
+          adv_agent_gamma = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'gamma'].to_list()[0]
+          adv_agent_epsilon = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_start'].to_list()[0]
+          adv_agent_epsilon_dec = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_decline'].to_list()[0]
+          adv_agent_epsilon_end = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_min'].to_list()[0]
+          adv_agent_lr = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'learning_rate'].to_list()[0]
+          adv_initial_balance = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'initial_balance'].to_list()[0]
+          adv_trading_size_pct = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trading_size_pct'].to_list()[0]
+          adv_commission_fee_pct = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'commission_fee_pct'].to_list()[0]
+          #####_ALTAIR_CHART_#########################
+          #####_PRICE_LINE_#####
+          base = alt.Chart(df_price.reset_index()).encode(
+            x = alt.X('Date'),
+            y = alt.Y('Close', title='Price  (THB)', 
+                      scale=alt.Scale(domain=[df_price['Close'].min()-2, df_price['Close'].max()+2])),
+            tooltip=[alt.Tooltip('Date', title='Date'),alt.Tooltip('Close', title='Price (THB)')] )
+          #####_ACTION_OVERLAY_#####
+          base2 = alt.Chart(df_price.reset_index()).encode(
+            x = alt.X('Date') ,
+            y = alt.Y('Close', title='Price  (THB)', scale=alt.Scale(domain=[df_price['Close'].min()-2, df_price['Close'].max()+2])),
+                            color = alt.Color('pos', 
+                                              scale=alt.Scale(domain=['Buy','Sell'],range=['green','red']),
+                                             legend=alt.Legend(title="Model Advice")),
+            tooltip=[alt.Tooltip('Date', title='Date'),
+                     alt.Tooltip('Close', title='Price (THB)'),
+                     alt.Tooltip('pos', title='Action')] )
+          #####_LAYERED_CHART_#####
+          layer1 = base.mark_line()
+          layer2 = base2.mark_circle(size=50).transform_filter(alt.FieldEqualPredicate(field='expos', equal=True))
+          bundle3 = alt.layer(layer1,layer2).configure_axis(labelFontSize=16,titleFontSize=18)
+          
+          ########## NEED pos and expos column ##########
+          df_price['pos'] = pos_list
+          df_price['expos'] = expos_list
+          
+          #### ------------------------------ ####
           pos_list = []
           for i in range(len(df_price)):
             rand_num = np.random.randn()
@@ -533,8 +562,9 @@ else:
             st.success('#### BUY {} at current price of {} THB per share'.format('BBL',last_price) )
           else:
             st.error('#### SELL {} at current price of {} THB per share'.format('BBL',last_price) )
-
-  ### --- DEVELOP MODEL MENU --- ###
+  ######################################################################################################
+##
+  ######_DEVELOP_MODEL_MENU_##########################################
   if model_b or model_side_b or st.session_state['model_b_status']:
     placeholder_2.empty()
     placeholder_3.empty()
@@ -543,84 +573,81 @@ else:
       tab_list = ["Select Dataset 📈", "Set Parameters 💡", "Train Model 🚀", "Test Model 🧪", "Save Model 💾","Train2"]
       select_data_tab, set_para_tab, train_tab, test_tab, save_tab, train_tab2 = st.tabs(tab_list)
       with select_data_tab:
-          st.header("Select stock and time period 📈")
-          stock_name = st.selectbox('Select your Stock', options=stock_list, index=86)
-          company_name = stock_df[stock_df['symbol']==stock_name]['company_name'].to_string(index=False)
-          market_name = stock_df[stock_df['symbol']==stock_name]['market'].to_string(index=False)
-          industry_name = stock_df[stock_df['symbol']==stock_name]['industry'].to_string(index=False)
-          sector_name = stock_df[stock_df['symbol']==stock_name]['sector'].to_string(index=False)
-          with st.expander('Company Information', expanded=True):
-            st.write('{}'.format(company_name))
-            st.write('Market: {}'.format(market_name))
-            st.write('Industry: {}'.format(industry_name))
-            st.write('Sector: {}'.format(sector_name))
-          start_date = st.date_input("Select start date: ",
-                                     (datetime.date.today()-datetime.timedelta(days=365)),
-                                    on_change=on_change_date_select)
-          end_date = st.date_input("Select end date: ",
-                                   datetime.date.today(),
+        st.header("Select stock and time period 📈")
+        stock_name = st.selectbox('Select your Stock', options=stock_list, index=86)
+        company_name = stock_df[stock_df['symbol']==stock_name]['company_name'].to_string(index=False)
+        market_name = stock_df[stock_df['symbol']==stock_name]['market'].to_string(index=False)
+        industry_name = stock_df[stock_df['symbol']==stock_name]['industry'].to_string(index=False)
+        sector_name = stock_df[stock_df['symbol']==stock_name]['sector'].to_string(index=False)
+        with st.expander('Company Information', expanded=True):
+          st.write('{}'.format(company_name))
+          st.write('Market: {}'.format(market_name))
+          st.write('Industry: {}'.format(industry_name))
+          st.write('Sector: {}'.format(sector_name))
+        start_date = st.date_input("Select start date: ",
+                                   (datetime.date.today()-datetime.timedelta(days=365)),
                                   on_change=on_change_date_select)
-          select_data_menu_holder = st.empty()
-          select_data_chart_holder = st.empty()
-          split_data_chart_holder = st.empty()
-          success_box_holder = st.empty()
-          select_data_slider_holder = st.empty()
-          with select_data_menu_holder.container():
-            col_observe_b, col_describe = st.columns([1,3])
-            with col_observe_b:
-              observe_button = st.button('View Dataset 🔍', on_click=on_click_observe_b)
-############  
-          if observe_button or st.session_state['observe_button_status']:
-            #st.session_state['observe_button_status'] = True
-            stock_code = stock_name + '.BK'
-            df_price = yf.download(stock_code, start=start_date, end=end_date, progress=True)
-            df_price.drop(columns=['Adj Close','Volume'] , inplace=True)
-            df_length = df_price['Close'].count()
-            with col_describe:
-              st.write('This dataset contains {} days of historical prices'.format(df_length))
-            alt_price_range = (alt.Chart(df_price['Close'].reset_index()).mark_line().encode(
-              x = alt.X('Date'),
-              y = alt.Y('Close',
-                        title='Price  (THB)',
-                        scale=alt.Scale(domain=[df_price['Close'].min()-2, df_price['Close'].max()+2])),
-              tooltip=[alt.Tooltip('Date', title='Date'),
-                       alt.Tooltip('Close', title='Price (THB)')]).configure_axis(labelFontSize=14,titleFontSize=16))
-            with select_data_chart_holder.container():
-              st.altair_chart(alt_price_range.interactive(), use_container_width=True)
-              with st.form('split_slider'):
-####################
-                  split_point = st.slider('Select the split point between Train set and Test set:', 0, int(df_length), int(df_length/2))
-                  ##########
-                  train_size_pct = (split_point/df_length)*100
-                  test_size_pct = 100-train_size_pct
-                  df_price['split'] = 'split'
-                  df_price.loc[:split_point, 'split'] = 'Train set'
-                  df_price.loc[split_point:, 'split'] = 'Test set'
-                  df_price_train = df_price[:split_point]
-                  df_price_test = df_price[split_point:]
-                  train_prices = df_price_train['Close'].to_numpy()
-                  test_prices = df_price_test['Close'].to_numpy()
-                  ##########
-                  alt_split = (alt.Chart(df_price.reset_index()).mark_line().encode(
-                    x = alt.X('Date'),
-                    y = alt.Y('Close',
-                              title='Price  (THB)',
-                              scale=alt.Scale(domain=[df_price['Close'].min()-2, df_price['Close'].max()+2])),
-                    color = alt.Color('split',
-                                      scale=alt.Scale(domain=['Train set','Test set'],range=['#4682b4','orange']),
-                                      legend=alt.Legend(title="Dataset")),
-                    tooltip=[alt.Tooltip('Date', title='Date'),
-                             alt.Tooltip('Close', title='Price (THB)'),
-                             alt.Tooltip('split', title='Dataset')]).configure_axis(labelFontSize=14,titleFontSize=16))
-####################
-                  split_button = st.form_submit_button("Split dataset ✂️", on_click=on_click_split_b)
-            ##### ---------- #####
+        end_date = st.date_input("Select end date: ",
+                                 datetime.date.today(),
+                                on_change=on_change_date_select)
+        select_data_menu_holder = st.empty()
+        select_data_chart_holder = st.empty()
+        split_data_chart_holder = st.empty()
+        success_box_holder = st.empty()
+        select_data_slider_holder = st.empty()
+        with select_data_menu_holder.container():
+          col_observe_b, col_describe = st.columns([1,3])
+          with col_observe_b:
+            observe_button = st.button('View Dataset 🔍', on_click=on_click_observe_b)
+########
+        if observe_button or st.session_state['observe_button_status']:
+          #st.session_state['observe_button_status'] = True
+          stock_code = stock_name + '.BK'
+          df_price = yf.download(stock_code, start=start_date, end=end_date, progress=True)
+          df_price.drop(columns=['Adj Close','Volume'] , inplace=True)
+          df_length = df_price['Close'].count()
+          
+          with col_describe:
+            st.write('This dataset contains {} days of historical prices'.format(df_length))
+          alt_price_range = (alt.Chart(df_price['Close'].reset_index()).mark_line().encode(
+            x = alt.X('Date'),
+            y = alt.Y('Close',
+                      title='Price  (THB)',
+                      scale=alt.Scale(domain=[df_price['Close'].min()-2, df_price['Close'].max()+2])),
+            tooltip=[alt.Tooltip('Date', title='Date'),
+                     alt.Tooltip('Close', title='Price (THB)')]).configure_axis(labelFontSize=14,titleFontSize=16))
+          
+          with select_data_chart_holder.container():
+            st.altair_chart(alt_price_range.interactive(), use_container_width=True)
+            with st.form('split_slider'):
+              split_point = st.slider('Select the split point between Train set and Test set:', 0, int(df_length), int(df_length/2))
+              ##############################
+              train_size_pct = (split_point/df_length)*100
+              test_size_pct = 100-train_size_pct
+              df_price['split'] = 'split'
+              df_price.loc[:split_point, 'split'] = 'Train set'
+              df_price.loc[split_point:, 'split'] = 'Test set'
+              df_price_train = df_price[:split_point]
+              df_price_test = df_price[split_point:]
+              train_prices = df_price_train['Close'].to_numpy()
+              test_prices = df_price_test['Close'].to_numpy()
+              ##############################
+              alt_split = (alt.Chart(df_price.reset_index()).mark_line().encode(
+                x = alt.X('Date'),
+                y = alt.Y('Close',
+                          title='Price  (THB)',
+                          scale=alt.Scale(domain=[df_price['Close'].min()-2,
+                                                  df_price['Close'].max()+2])),
+                color = alt.Color('split',
+                                  scale=alt.Scale(domain=['Train set','Test set'],range=['#4682b4','orange']),
+                                  legend=alt.Legend(title="Dataset")),
+                tooltip=[alt.Tooltip('Date', title='Date'),
+                         alt.Tooltip('Close', title='Price (THB)'),
+                         alt.Tooltip('split', title='Dataset')]).configure_axis(labelFontSize=14,titleFontSize=16))
+              ##############################
+              split_button = st.form_submit_button("Split dataset ✂️", on_click=on_click_split_b)
+
               if split_button or st.session_state['split_button_status']:
-                ##########
-
-                #alt_split#
-
-                ##########
                 with split_data_chart_holder.container():
                   st.altair_chart(alt_split.interactive(), use_container_width=True)
                   st.write('Dataset will be split into {} records ({:.2f}%) as training set and {} records ({:.2f}%) as test set'.format(
