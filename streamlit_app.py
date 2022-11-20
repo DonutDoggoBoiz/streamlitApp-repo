@@ -455,7 +455,7 @@ else:
           st.write('##### End Date : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'end_date'].to_list()[0]))
           st.write('##### Episode Trained : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'episode_trained'].to_list()[0]))
           st.write('##### Train Profit/Loss : {:+,.2f} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trained_result'].to_list()[0]))
-          st.write('##### Test Profit/Loss : {+,.2f} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'test_result'].to_list()[0]))
+          st.write('##### Test Profit/Loss : {:+,.2f} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'test_result'].to_list()[0]))
           st.write('##### Initial Balance : {:,} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'initial_balance'].to_list()[0]))
           st.write('##### Trading Size : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trading_size_pct'].to_list()[0]))
           st.write('##### Commission Fee : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'commission_fee_pct'].to_list()[0]))
