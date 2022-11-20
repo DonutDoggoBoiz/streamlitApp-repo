@@ -443,13 +443,6 @@ def generate_advice(ag_df_price_advice,
     window_size = 5
     adv_episodes = 1
 
-    ### --- Trading parameters
-    #initial_balance = ag_ini_bal
-    #trading_size_pct = ag_trade_size_pct
-    #commission_fee_pct = ag_com_fee_pct
-    #trade_size = (trading_size_pct/100) * initial_balance
-    #commission_fee = (commission_fee_pct/100) * 1.07
-    
     ### --- History Dict
     action_history_dict = {}
     position_history_dict = {}
@@ -488,10 +481,9 @@ def generate_advice(ag_df_price_advice,
         # initiate episodial variables
         action_history = []
         position_history = []
-        exposure_history = []
+        plot_history = []
 
         trade_exposure = False
-        last_buy = []
 
         #####_MOVING_PRICE_WINDOW_#########################
         while not done:
@@ -501,18 +493,22 @@ def generate_advice(ag_df_price_advice,
             if action == 1: # buy
                 position = 'Buy'
                 if trade_exposure == False:
-                    last_buy.append(advice_prices[current_tick])
-                    trade_exposure = True 
+                    trade_exposure = True
+                    plot_history.append(trade_exposure)
+                elif trade_exposure == True:
+                    plot_history.append(False)
 
             elif action == 0: # sell
                 position = 'Sell'
                 if trade_exposure == True:
+                    plot_history.append(trade_exposure)
                     trade_exposure = False
+                elif trade_exposure == False:
+                    plot_history.append(trade_exposure)
                     
             #####_APPEND_HISTORY_LIST_#####
             action_history.append(action)
             position_history.append(position)
-            exposure_history.append(trade_exposure)
             
             if current_tick == end_tick:
                 done = True
@@ -523,7 +519,7 @@ def generate_advice(ag_df_price_advice,
             if done:
                 advice_df_dict = {'Close':ag_df_price_advice[5:]['Close'].to_list(),
                                  'position':position_history,
-                                 'exposure':exposure_history}
+                                  'plot':plot_history}
                 advice_df = pd.DataFrame(advice_df_dict, index=ag_df_price_advice[5:].index)
         #####_END_OF_PRICE_WINDOW_#########################
     #####_END_LOOP_##############################
@@ -552,7 +548,7 @@ def generate_advice(ag_df_price_advice,
                  alt.Tooltip('position', title='Advice')] )
     #####_LAYERED_CHART_#####
     layer1 = base.mark_line()
-    layer2 = base2.mark_circle(size=50).transform_filter(alt.FieldEqualPredicate(field='exposure',equal=True))
+    layer2 = base2.mark_circle(size=50).transform_filter(alt.FieldEqualPredicate(field='plot',equal=True))
     bundle = alt.layer(layer1,layer2).configure_axis(labelFontSize=16,titleFontSize=18)
     #####_SHOW_ADVICE_CHART_#####
     st.altair_chart(bundle, use_container_width=True)
