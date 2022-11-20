@@ -311,7 +311,7 @@ else:
     with placeholder_2.container():
       with st.form('change_name'):
         st.write('##### Change Name')
-        new_name = st.text_input('Your new name', type='password', placeholder=str(st.session_state['name']))
+        new_name = st.text_input('Your new name', placeholder=str(st.session_state['name']))
         change_name_button = st.form_submit_button('Change Name')
         if change_name_button:
           if len(new_name) <= 0:
