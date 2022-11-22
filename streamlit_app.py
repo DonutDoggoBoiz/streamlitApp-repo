@@ -226,7 +226,7 @@ if st.session_state['login_status'] == False:
               login_func()
               time.sleep(3)
               st.experimental_rerun()
-####
+              
     ######_SIGN_UP_BUTTON_######
     if register_button_top or st.session_state['show_register_form']:
       st.session_state['show_register_form'] = True
@@ -252,11 +252,11 @@ if st.session_state['login_status'] == False:
               time.sleep(3)
               st.experimental_rerun()
             else: st.warning("Username already exists. Please enter a new username")
-####
+              
     #####_SIGN_IN_BUTTON_######
     if login_button_top:
       st.session_state['show_register_form'] = False
-      rerun()
+      st.experimental_rerun()
       
 #########_POST_LOGIN_#############################################
 else:
@@ -277,11 +277,11 @@ else:
   manage_model_side_b = st.sidebar.button('Manage Model', key='model_manage_side', on_click=on_click_model_manage_b)
   model_side_b = st.sidebar.button('Develop Model', key='model_side_b', on_click=on_click_model_b)
   advice_side_b = st.sidebar.button('Generate Advice', key='advice_side_b', on_click=on_click_advice_b)
-##
+  
   ######_WELCOME_NOTE_######
   welcome_note_holder = st.empty()
   with welcome_note_holder.container():
-      st.write('### Welcome, {}'.format(st.session_state['name']) )
+    st.write('### Welcome, {}'.format(st.session_state['name']) )
 
   ######_MAIN_MENU_######
   menuholder = st.empty()
@@ -302,11 +302,9 @@ else:
   placeholder_2 = st.empty()
   placeholder_3 = st.empty()
   placeholder_4 = st.empty()
-
-##
+  
   ######_MANAGE_ACCOUNT_MENU_######
   if user_manage_b or user_manage_side_b or st.session_state['user_manage_b_status']:
-    
     #####_CHANGE_NAME_FORM_#####
     with placeholder_2.container():
       with st.form('change_name'):
@@ -346,10 +344,10 @@ else:
               with st.spinner('Processing...'):
                 time.sleep(2)
               st.experimental_rerun()
-##
+              
   ######_MANAGE_MODEL_MENU_######
   if model_manage_b or manage_model_side_b or st.session_state['model_manage_b_status']:
-####
+    ######_GRID_VIEWER_######
     with placeholder_2.container():
       st.write('#### Model Management')
       shuffle_col = ['model_name','stock_quote','start_date','end_date','episode_trained','initial_balance','trading_size_pct','commission_fee_pct','gamma',]
@@ -364,7 +362,8 @@ else:
         selected_row = grid_response['selected_rows']
       except:
         st.warning('Loading model database...')
-####
+        
+    ######_SEE_MODEL_DETAIL_BUTTON_######
     with placeholder_3.container():
       view_model_detail = st.button('See Model Detail')
       if view_model_detail:
@@ -379,14 +378,15 @@ else:
             st.write('Initial Balance : {:,} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'initial_balance'].to_list()[0]))
             st.write('Trading Size : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'trading_size_pct'].to_list()[0]))
             st.write('Commission Fee : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'commission_fee_pct'].to_list()[0]))
-####
+            
+    ######_EDIT_AND_DELETE_BUTTON_######
     with placeholder_4.container():
       ph2col1, ph2col2, _ = st.columns([1,1,6])
       with ph2col1:
         edit_mod_button = st.button('Edit')
       with ph2col2:
         del_mod_button = st.button('Delete')
-######
+        
       ######_EDIT_BUTTON_######################################################
       if edit_mod_button or st.session_state['edit_mod_button_status']:
         st.session_state['edit_mod_button_status'] = True
@@ -471,21 +471,21 @@ else:
         model_options = model_frame_u.loc[:,'model_name']
         selected_advice_model = st.selectbox('Choose your model',options=model_options)
         with st.expander('Model Information:'):
-          st.write('##### Model Name : {}'.format(selected_advice_model))
-          st.write('##### Stock Quote : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'stock_quote'].to_list()[0]))
-          st.write('##### Start Date : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'start_date'].to_list()[0]))
-          st.write('##### End Date : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'end_date'].to_list()[0]))
-          st.write('##### Episode Trained : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'episode_trained'].to_list()[0]))
-          st.write('##### Train Profit/Loss : {:+,.2f} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trained_result'].to_list()[0]))
-          st.write('##### Test Profit/Loss : {:+,.2f} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'test_result'].to_list()[0]))
-          st.write('##### Initial Balance : {:,} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'initial_balance'].to_list()[0]))
-          st.write('##### Trading Size : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trading_size_pct'].to_list()[0]))
-          st.write('##### Commission Fee : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'commission_fee_pct'].to_list()[0]))
-          st.write('##### Gamma : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'gamma'].to_list()[0]))
-          st.write('##### Epsilon Start: {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_start'].to_list()[0]))
-          st.write('##### Epsilon Decline rate : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_decline'].to_list()[0]))
-          st.write('##### Epsilon Minimum : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_min'].to_list()[0]))
-          st.write('##### Learning Rate : {:.3f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'learning_rate'].to_list()[0]))
+          st.write(' Model Name : {}'.format(selected_advice_model))
+          st.write(' Stock Quote : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'stock_quote'].to_list()[0]))
+          st.write(' Start Date : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'start_date'].to_list()[0]))
+          st.write(' End Date : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'end_date'].to_list()[0]))
+          st.write(' Episode Trained : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'episode_trained'].to_list()[0]))
+          st.write(' Train Profit/Loss : {:+,.2f} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trained_result'].to_list()[0]))
+          st.write(' Test Profit/Loss : {:+,.2f} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'test_result'].to_list()[0]))
+          st.write(' Initial Balance : {:,} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'initial_balance'].to_list()[0]))
+          st.write(' Trading Size : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trading_size_pct'].to_list()[0]))
+          st.write(' Commission Fee : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'commission_fee_pct'].to_list()[0]))
+          st.write(' Gamma : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'gamma'].to_list()[0]))
+          st.write(' Epsilon Start: {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_start'].to_list()[0]))
+          st.write(' Epsilon Decline rate : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_decline'].to_list()[0]))
+          st.write(' Epsilon Minimum : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_min'].to_list()[0]))
+          st.write(' Learning Rate : {:.3f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'learning_rate'].to_list()[0]))
           
         generate_advice_button = st.button('Generate Advice')
         #####_GENERATE_ADVICE_BUTTON_#####
@@ -604,7 +604,7 @@ else:
         select_model_radio = st.radio('Which model do you want to train?',
                                       options=['New Model', 'Existing Model'],
                                       horizontal=True)
-########
+        ######_RADIO_NEW_MODEL_######
         if select_model_radio == 'New Model':
           with st.form('set_param_new_model'):
             _l, col1_set_para, _r = st.columns([1,7,1])
@@ -651,7 +651,8 @@ else:
                   model_db.put(model_param_dict)
                   update_model_frame_u()
                   st.success('Create Model Successful!')
-########
+                  
+        ######_RADIO_EXISTING_MODEL_######
         if select_model_radio == 'Existing Model':
           with st.form('select_existing_model'):
             ex_model_list = model_frame_u['model_name'].sort_values(ascending=True)
@@ -669,7 +670,7 @@ else:
             nm_trading_size_pct = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'trading_size_pct'])
             nm_commission_fee_pct = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'commission_fee_pct'])
             ####################################
-            info_trade_size_nom = nm_initial_balance * nm_trading_size_pct
+            info_trade_size_nom = nm_initial_balance * (nm_trading_size_pct/100)
             ex_select_exist_model = st.form_submit_button('Select Model')
                 
             if ex_select_exist_model:
@@ -687,7 +688,7 @@ else:
                 st.write("Trading size (%):  {}%".format(nm_trading_size_pct))
                 st.write("Trading size (THB):  {:,}".format(info_trade_size_nom))
                 st.write("Commission fee:  {:.3f}%".format(nm_commission_fee_pct))
-########
+                
         with st.form('train_form'):
           st.write('How many episodes to train?')
           t_form_col1 , t_form_col2 = st.columns(2)
@@ -712,20 +713,19 @@ else:
                           ag_train_episode=xtrain_episodes)
               st.success('Training DONE!')
 ################################################################################################################
-######
       ######_TEST_TAB_######
       with test_tab:
-          st.header("Test your model on test set 🧪")
-          test_button = st.button("Start Testing 🏹")
-          if test_button:
-              st.session_state['test_button_status'] = True
-              st.write("Test Result")
-              #test_model()
-              if st.session_state['test_button_status']:
-                #test_result()
-                st.write('test report: ---')
-                st.write('parameters: ---')
-                st.write('train_episodes: ---')
+        st.header("Test your model on test set 🧪")
+        test_button = st.button("Start Testing 🏹")
+        if test_button:
+          st.session_state['test_button_status'] = True
+          st.write("Test Result")
+          #test_model()
+          if st.session_state['test_button_status']:
+            #test_result()
+            st.write('test report: ---')
+            st.write('parameters: ---')
+            st.write('train_episodes: ---')
 ######################################################################################################
 ######
       ######_SAVE_TAB_######
@@ -756,8 +756,8 @@ else:
                                                                                'trading_size_pct'].values)))
               st.write("Trading size (THB):  {:,}".format(int(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,
                                                                                 'initial_balance'].values)*
-                                                          float(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,
-                                                                                  'trading_size_pct'].values)
+                                                         (float(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,
+                                                                                  'trading_size_pct'].values)/100)
                                                          )
                       )
               st.write("Commission fee:  {:.3f}%".format(float(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,
