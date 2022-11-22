@@ -256,7 +256,7 @@ def train_model(ag_df_price_train,
     alt_acc_bal_hist = alt.Chart(account_balance_history_df.iloc[:,-1].reset_index()
                               ).encode(x = alt.X('Date'),
                                        y = alt.Y(account_balance_history_df.columns[-1], 
-                                                 title='Rewards', 
+                                                 title='Account Balance (THB)', 
                                                  scale=alt.Scale(domain=[account_balance_history_df.iloc[:,-1].min()-10000,
                                                                          account_balance_history_df.iloc[:,-1].max()+10000])),
                                        tooltip=[alt.Tooltip('Date', title='Date'),
