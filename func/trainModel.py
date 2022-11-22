@@ -155,7 +155,7 @@ def train_model(ag_df_price_train,
         ### --- start episode --- ###
         #st.write("--- Episode " + str(i+1) + " / " + str(n_episodes) + ' ---' )
         with train_log_expander:
-            st.write("--- Episode " + str(i+1) + " / " + str(n_episodes) + ' ---' )
+            st.write("--- Episode " + str(i+1) + " / " + str(n_episodes) + 'training...')
 
         # slider window
         start_tick = window_size
@@ -222,10 +222,10 @@ def train_model(ag_df_price_train,
             ### --- end of 1 episode --- ###
             if done:
                 with train_log_expander:
-                    #st.write("--- Episode {} of {} done | Total Reward: {:.2f} | Account_Balance: {:.2f}".format(
-                        #i+1, n_episodes,acc_reward, account_balance))
-                    st.write("--- Episode {} of {} done | Total Reward: {:.2f} | Account_Balance: {:.2f} THB | Profit/Loss: {:+.2f} THB".format(
-                        i+1, n_episodes,acc_reward, account_balance, account_balance-initial_balance))
+                    #st.write("--- Episode {} of {} done | Total Reward: {:.2f} | Account_Balance: {:,.2f} THB | Profit/Loss: {:+,.2f} THB".format(
+                        #i+1, n_episodes,acc_reward, account_balance, account_balance-initial_balance))
+                    st.write("--- Episode {} of {} done | Total Reward: {:.2f} | Profit/Loss: {:+,.2f} THB".format(
+                        i+1, n_episodes,acc_reward, account_balance-initial_balance))
 
                 acc_reward_history_dict['episode_'+str(i+1)] = acc_reward_history
                 action_history_dict['episode_'+str(i+1)] = action_history
@@ -237,6 +237,7 @@ def train_model(ag_df_price_train,
                 all_eps_history.append([(i+1),agent.epsilon])
                 ### --- start next episode --- ###
     ### --- end of training --- ###
+    st.success('Training DONE!')
     st.write('Reward History of last episode')
     acc_reward_history_df = pd.DataFrame(acc_reward_history_dict, index=ag_df_price_train[5:-1].index)
     alt_acc_reward = alt.Chart(acc_reward_history_df.iloc[:,-1].reset_index()
@@ -303,11 +304,9 @@ def test_model(ag_df_price_test,
     trade_exposure_history_dict = {}
     account_balance_history_dict = {}
     
-    train_log_expander = st.expander('Training Logs',expanded=True)
+    test_log_expander = st.expander('Testing Logs',expanded=True)
     ## --- loop through episodes
     for i in range(n_episodes):
-        ### --- start episode --- ###
-        #st.write("--- Episode " + str(i+1) + " / " + str(n_episodes) + ' ---' )
         with train_log_expander:
             st.write("--- Episode " + str(i+1) + " / " + str(n_episodes) + ' ---' )
 
@@ -344,21 +343,28 @@ def test_model(ag_df_price_test,
                 acc_reward += reward
                 if trade_exposure == False:
                     last_buy.append(test_prices[current_tick])
-                    trade_exposure = True 
+                    trade_exposure = True
+                st.write("Step: {} | Buy at: {} | Reward: {:+,.2f} | Profit/Loss: {:+,.2f}".format(current_tick-4,
+                                                                                                   test_prices[current_tick],
+                                                                                                   reward,
+                                                                                                   account_balance-initial_balance))
 
             elif action == 0: # sell
                 reward = test_prices[current_tick] - test_prices[current_tick+1]
                 acc_reward += reward
                 if trade_exposure == True:
-                  return_pct = (test_prices[current_tick] - last_buy[-1]) / last_buy[-1]
-                  market_value = (return_pct+1) * trade_size
-                  nom_return = return_pct * trade_size
-                  real_return = (return_pct * trade_size) - (market_value * commission_fee) - (trade_size * commission_fee)
-                  account_balance += real_return
-                  nom_return_history.append([int(current_tick),nom_return])
-                  real_return_history.append([int(current_tick),real_return])
-                  trade_exposure = False
-
+                    return_pct = (test_prices[current_tick] - last_buy[-1]) / last_buy[-1]
+                    market_value = (return_pct+1) * trade_size
+                    nom_return = return_pct * trade_size
+                    real_return = (return_pct * trade_size) - (market_value * commission_fee) - (trade_size * commission_fee)
+                    account_balance += real_return
+                    nom_return_history.append([int(current_tick),nom_return])
+                    real_return_history.append([int(current_tick),real_return])
+                    trade_exposure = False
+                st.write("Step: {} | Sell at: {} | Reward: {:+,.2f} | Profit/Loss: {:+,.2f}".format(current_tick-4,
+                                                                                                   test_prices[current_tick],
+                                                                                                   reward,
+                                                                                                   account_balance-initial_balance))
             done = True if current_tick == end_tick else False
 
             current_tick += 1
@@ -373,13 +379,11 @@ def test_model(ag_df_price_test,
 
             ### --- end of 1 episode --- ###
             if done:
-                with train_log_expander:
-                    #st.write("--- Episode {} of {} done | Total Reward: {:.2f} | Account_Balance: {:.2f}".format(
-                        #i+1, n_episodes,acc_reward, account_balance))
-                    #st.write("--- Episode {} of {} done | Total Reward: {:.2f} | Account_Balance: {:,.2f} THB | Profit/Loss: {+:.2f} THB".format(
-                        #i+1, n_episodes,acc_reward, account_balance, account_balance-initial_balance))
-                    st.write("--- Episode {} of {} done | Total Reward: {:+,.2f} | Profit/Loss: {:+,.2f} THB".format(
-                        i+1, n_episodes, acc_reward, account_balance-initial_balance))
+                with test_log_expander:
+                    st.success('Testing DONE!')
+                    st.write('Testing result')
+                    st.write("--- Total Reward: {:+,.2f} | Net Profit/Loss: {:+,.2f} THB".format(acc_reward,
+                                                                                             account_balance-initial_balance))
 
                 acc_reward_history_dict['episode_'+str(i+1)] = acc_reward_history
                 action_history_dict['episode_'+str(i+1)] = action_history
@@ -391,7 +395,7 @@ def test_model(ag_df_price_test,
                 all_eps_history.append([(i+1),agent.epsilon])
                 ### --- start next episode --- ###
     ### --- end of training --- ###
-    st.write('Reward History of last episode')
+    st.write('Reward History')
     acc_reward_history_df = pd.DataFrame(acc_reward_history_dict, index=ag_df_price_test[5:-1].index)
     alt_acc_reward = alt.Chart(acc_reward_history_df.iloc[:,-1].reset_index()
                               ).encode(x = alt.X('Date'),
@@ -405,12 +409,12 @@ def test_model(ag_df_price_test,
     st.altair_chart(alt_acc_reward.mark_line().interactive().configure_axis(labelFontSize=14,titleFontSize=16),
                     use_container_width=True)
     
-    st.write('Account Balance History of last episode')
+    st.write('Account Balance History)
     account_balance_history_df = pd.DataFrame(account_balance_history_dict, index=ag_df_price_test[5:-1].index)
     alt_acc_bal_hist = alt.Chart(account_balance_history_df.iloc[:,-1].reset_index()
                               ).encode(x = alt.X('Date'),
                                        y = alt.Y(account_balance_history_df.columns[-1], 
-                                                 title='Rewards', 
+                                                 title='Account Balance (THB)', 
                                                  scale=alt.Scale(domain=[account_balance_history_df.iloc[:,-1].min()-10000,
                                                                          account_balance_history_df.iloc[:,-1].max()+10000])),
                                        tooltip=[alt.Tooltip('Date', title='Date'),
