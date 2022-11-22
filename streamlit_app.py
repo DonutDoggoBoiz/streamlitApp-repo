@@ -347,9 +347,12 @@ else:
               
   ######_MANAGE_MODEL_MENU_######
   if model_manage_b or manage_model_side_b or st.session_state['model_manage_b_status']:
+    st.write('#### Model Management')
+    if len(model_frame_u) <= 0:
+      st.warning("You don't have any model to ") #<-----------------
     ######_GRID_VIEWER_######
     with placeholder_2.container():
-      st.write('#### Model Management')
+      #st.write('#### Model Management')
       shuffle_col = ['model_name','stock_quote','start_date','end_date','episode_trained','initial_balance','trading_size_pct','commission_fee_pct','gamma',]
       model_grid = model_frame_u.loc[:,shuffle_col]
       gb = GridOptionsBuilder.from_dataframe(model_grid)
@@ -418,6 +421,7 @@ else:
                                                          value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'commission_fee_pct'].to_list()[0], 
                                                          format='%1.3f')
                 edit_param_button = st.form_submit_button('Edit')
+                
             ######_<FORM>_EDIT_BUTTON_######################################################
             if edit_param_button:
               key_to_update = model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'key'].to_list()[0]
@@ -462,58 +466,59 @@ else:
               elif make_sure_radio == 'No':
                 st.session_state['del_mod_button_status'] = False
                 st.experimental_rerun()
-      ########################################################################
+########################################################################
   
   ######_GENERATE_ADVICE_MENU_################################################
   if advice_b or advice_side_b or st.session_state['advice_b_status']:
     with placeholder_2.container():
-        st.markdown("### Generate Investment Advice 📈")
-        model_options = model_frame_u.loc[:,'model_name']
-        selected_advice_model = st.selectbox('Choose your model',options=model_options)
-        with st.expander('Model Information:'):
-          st.write(' Model Name : {}'.format(selected_advice_model))
-          st.write(' Stock Quote : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'stock_quote'].to_list()[0]))
-          st.write(' Start Date : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'start_date'].to_list()[0]))
-          st.write(' End Date : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'end_date'].to_list()[0]))
-          st.write(' Episode Trained : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'episode_trained'].to_list()[0]))
-          st.write(' Train Profit/Loss : {:+,.2f} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trained_result'].to_list()[0]))
-          st.write(' Test Profit/Loss : {:+,.2f} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'test_result'].to_list()[0]))
-          st.write(' Initial Balance : {:,} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'initial_balance'].to_list()[0]))
-          st.write(' Trading Size : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trading_size_pct'].to_list()[0]))
-          st.write(' Commission Fee : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'commission_fee_pct'].to_list()[0]))
-          st.write(' Gamma : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'gamma'].to_list()[0]))
-          st.write(' Epsilon Start: {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_start'].to_list()[0]))
-          st.write(' Epsilon Decline rate : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_decline'].to_list()[0]))
-          st.write(' Epsilon Minimum : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_min'].to_list()[0]))
-          st.write(' Learning Rate : {:.3f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'learning_rate'].to_list()[0]))
-          
+      st.markdown("### Generate Investment Advice 📈")
+      model_options = model_frame_u.loc[:,'model_name']
+      selected_advice_model = st.selectbox('Choose your model',options=model_options)
+      with st.expander('Model Information:'):
+        st.write(' Model Name : {}'.format(selected_advice_model))
+        st.write(' Stock Quote : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'stock_quote'].to_list()[0]))
+        st.write(' Start Date : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'start_date'].to_list()[0]))
+        st.write(' End Date : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'end_date'].to_list()[0]))
+        st.write(' Episode Trained : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'episode_trained'].to_list()[0]))
+        st.write(' Train Profit/Loss : {:+,.2f} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trained_result'].to_list()[0]))
+        st.write(' Test Profit/Loss : {:+,.2f} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'test_result'].to_list()[0]))
+        st.write(' Initial Balance : {:,} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'initial_balance'].to_list()[0]))
+        st.write(' Trading Size : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trading_size_pct'].to_list()[0]))
+        st.write(' Commission Fee : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'commission_fee_pct'].to_list()[0]))
+        st.write(' Gamma : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'gamma'].to_list()[0]))
+        st.write(' Epsilon Start: {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_start'].to_list()[0]))
+        st.write(' Epsilon Decline rate : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_decline'].to_list()[0]))
+        st.write(' Epsilon Minimum : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_min'].to_list()[0]))
+        st.write(' Learning Rate : {:.3f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'learning_rate'].to_list()[0]))
+        
         generate_advice_button = st.button('Generate Advice')
-        #####_GENERATE_ADVICE_BUTTON_#####
-        if generate_advice_button:
-          stock_name = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'stock_quote'].to_list()[0]
-          start_date = ( datetime.date.today() - datetime.timedelta(days=180) )
-          end_date = datetime.date.today()
-          stock_code = stock_name + '.BK'
-          df_price = yf.download(stock_code,
-                                start=start_date,
-                                end=end_date,
-                                progress=True)
-          with st.spinner('Generating advice...'):
-            download_model_gcs(save_username=st.session_state['username'],
-                               ag_name=selected_advice_model)
-          
-            generate_advice(ag_df_price_advice=df_price,
-                            save_username=st.session_state['username'],
-                            ag_name=selected_advice_model,
-                            ag_quote=stock_name)
-  ######################################################################################################
-##
+        
+      #####_GENERATE_ADVICE_BUTTON_#####
+      if generate_advice_button:
+        stock_name = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'stock_quote'].to_list()[0]
+        start_date = ( datetime.date.today() - datetime.timedelta(days=180) )
+        end_date = datetime.date.today()
+        stock_code = stock_name + '.BK'
+        df_price = yf.download(stock_code,
+                              start=start_date,
+                              end=end_date,
+                              progress=True)
+        with st.spinner('Generating advice...'):
+          download_model_gcs(save_username=st.session_state['username'],
+                             ag_name=selected_advice_model)
+
+          generate_advice(ag_df_price_advice=df_price,
+                          save_username=st.session_state['username'],
+                          ag_name=selected_advice_model,
+                          ag_quote=stock_name)
+######################################################################################################
+
   ######_DEVELOP_MODEL_MENU_##########################################
   if model_b or model_side_b or st.session_state['model_b_status']:
     with placeholder_3.container():
       tab_list = ["Select Dataset 📈", "Train Model 🚀", "Test Model 🧪", "Save Model 💾"]
       select_data_tab, train_tab, test_tab, save_tab = st.tabs(tab_list)
-######
+      
       ######_SELECT_DATA_TAB_######
       with select_data_tab:
         st.write("#### Select stock and time period 📈")
@@ -544,7 +549,6 @@ else:
             observe_button = st.button('View Dataset 🔍', on_click=on_click_observe_b)
 ########
         if observe_button or st.session_state['observe_button_status']:
-          #st.session_state['observe_button_status'] = True
           stock_code = stock_name + '.BK'
           df_price = yf.download(stock_code, start=start_date, end=end_date, progress=True)
           df_price.drop(columns=['Adj Close','Volume'] , inplace=True)
@@ -654,6 +658,7 @@ else:
                   
         ######_RADIO_EXISTING_MODEL_######
         if select_model_radio == 'Existing Model':
+          
           with st.form('select_existing_model'):
             ex_model_list = model_frame_u['model_name'].sort_values(ascending=True)
             ex_to_train_model = st.selectbox('Select your existing model',
