@@ -349,168 +349,177 @@ else:
   if model_manage_b or manage_model_side_b or st.session_state['model_manage_b_status']:
     st.write('#### Model Management')
     if len(model_frame_u) <= 0:
-      st.warning("You don't have any model to ") #<-----------------
+      _warning = "You don't have any created model. you can make a new one in "+"Develop Model "+"menu.")
+      st.warning(_warning)
+      
+    else: #len(model_frame_u) > 0
     ######_GRID_VIEWER_######
-    with placeholder_2.container():
-      #st.write('#### Model Management')
-      shuffle_col = ['model_name','stock_quote','start_date','end_date','episode_trained','initial_balance','trading_size_pct','commission_fee_pct','gamma',]
-      model_grid = model_frame_u.loc[:,shuffle_col]
-      gb = GridOptionsBuilder.from_dataframe(model_grid)
-      gb.configure_selection('single', use_checkbox=True, pre_selected_rows=[0])
-      gridoptions = gb.build()
-      try:
-        grid_response = AgGrid(model_grid,
-                               fit_columns_on_grid_load=False,
-                               gridOptions=gridoptions)
-        selected_row = grid_response['selected_rows']
-      except:
-        st.warning('Loading model database...')
-        
-    ######_SEE_MODEL_DETAIL_BUTTON_######
-    with placeholder_3.container():
-      view_model_detail = st.button('See Model Detail')
-      if view_model_detail:
-        selected_row_model_name = selected_row[0]['model_name']
-        with st.expander('Model information:',expanded=True):
-            st.write('Name : {}'.format(selected_row_model_name))
-            st.write('Gamma : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'gamma'].to_list()[0]))
-            st.write('Epsilon : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_start'].to_list()[0]))
-            st.write('Epsilon decline : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_decline'].to_list()[0]))
-            st.write('Epsilon minimum : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_min'].to_list()[0]))
-            st.write('Learning Rate : {:.3f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'learning_rate'].to_list()[0]))
-            st.write('Initial Balance : {:,} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'initial_balance'].to_list()[0]))
-            st.write('Trading Size : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'trading_size_pct'].to_list()[0]))
-            st.write('Commission Fee : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'commission_fee_pct'].to_list()[0]))
-            
-    ######_EDIT_AND_DELETE_BUTTON_######
-    with placeholder_4.container():
-      ph2col1, ph2col2, _ = st.columns([1,1,6])
-      with ph2col1:
-        edit_mod_button = st.button('Edit')
-      with ph2col2:
-        del_mod_button = st.button('Delete')
-        
-      ######_EDIT_BUTTON_######################################################
-      if edit_mod_button or st.session_state['edit_mod_button_status']:
-        st.session_state['edit_mod_button_status'] = True
-        selected_row_model_name = selected_row[0]['model_name']
-        with placeholder_4.container():
-            edit_form_col1, _ = st.columns([2,1])
-            with edit_form_col1:
-              with st.form('edit parameter form'):
-                st.write("##### Model parameters")
-                edt_agent_name = st.text_input("Model name: ", placeholder=str(selected_row[0]['model_name']),
-                                              value=selected_row_model_name)
-                edt_agent_gamma = st.slider("Gamma: ", min_value=0.00, max_value=1.00, 
-                                            value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'gamma'].to_list()[0] )
-                edt_agent_epsilon = st.slider("Starting epsilon (random walk probability): ", min_value=0.00, max_value=1.00, 
-                                              value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_start'].to_list()[0] )
-                edt_agent_epsilon_dec = st.select_slider("Epsilon decline rate (random walk probability decline): ",
-                                                     options=[0.001,0.002,0.005,0.010], 
-                                                         value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_decline'].to_list()[0] )
-                edt_agent_epsilon_end = st.slider("Minimum epsilon: ", min_value=0.01, max_value=0.10, 
-                                                  value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_min'].to_list()[0] )
-                edt_agent_lr = st.select_slider("Learning rate: ", options=[0.001, 0.002, 0.005, 0.010], 
-                                                value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'learning_rate'].to_list()[0] )
-                st.write("##### Trading parameters")
-                edt_initial_balance = st.number_input("Initial account balance (THB):", min_value=0, step=1000, 
-                                                      value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'initial_balance'].to_list()[0] )
-                edt_trading_size_pct = st.slider("Trading size as a percentage of initial account balance (%):", min_value=0, max_value=100, 
-                                                 value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'trading_size_pct'].to_list()[0] )
-                edt_commission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, 
-                                                         value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'commission_fee_pct'].to_list()[0], 
-                                                         format='%1.3f')
-                edit_param_button = st.form_submit_button('Edit')
-                
-            ######_<FORM>_EDIT_BUTTON_######################################################
-            if edit_param_button:
-              key_to_update = model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'key'].to_list()[0]
-              update_dict = {'model_name':edt_agent_name,
-                            'gamma':edt_agent_gamma,
-                            'epsilon_start':edt_agent_epsilon,
-                            'epsilon_decline':edt_agent_epsilon_dec,
-                            'epsilon_min':edt_agent_epsilon_end,
-                            'learning_rate':edt_agent_lr,
-                            'initial_balance':edt_initial_balance,
-                            'trading_size_pct':edt_trading_size_pct,
-                            'commission_fee_pct':edt_commission_fee_pct,
-                            'episode_trained':0}
-              model_db.update(updates=update_dict, key=key_to_update)
-              st.session_state['edit_mod_button_status'] = False
-              st.success('Edit parameters successful! ✔️')
-              with st.form('after edit ok'):
-                st.info('You can re-trained this model in "Develop Model" menu', icon="ℹ️")
-                edit_ok_button = st.form_submit_button('OK')
-              if edit_ok_button:
-                time.sleep(2)
-                st.experimental_rerun()
-      #####################################################################
-######
-      ######_DELETE_BUTTON_################################################
-      if del_mod_button or st.session_state['del_mod_button_status']:
-        st.session_state['del_mod_button_status'] = True
-        with placeholder_4.container():
-          with st.form('del_make_sure'):
-            st.write('Are you sure?')
-            make_sure_radio = st.radio('Please confirm your choice:', options=('No', 'Yes') )
-            confirm_button = st.form_submit_button('Confirm')
-            if confirm_button:
-              if make_sure_radio == 'Yes':
-                st.session_state['del_mod_button_status'] = False
-                selected_model_name = selected_row[0]['model_name']
-                key_to_del = model_frame_u.loc[model_frame_u['model_name']==selected_model_name,'key'].to_list()[0]
-                model_db.delete(key_to_del)
-                st.error('Model {} has been successfully deleted'.format(selected_model_name))
-                time.sleep(3)
-                st.experimental_rerun()
-              elif make_sure_radio == 'No':
-                st.session_state['del_mod_button_status'] = False
-                st.experimental_rerun()
+      with placeholder_2.container():
+        #st.write('#### Model Management')
+        shuffle_col = ['model_name','stock_quote','start_date','end_date','episode_trained','initial_balance','trading_size_pct','commission_fee_pct','gamma',]
+        model_grid = model_frame_u.loc[:,shuffle_col]
+        gb = GridOptionsBuilder.from_dataframe(model_grid)
+        gb.configure_selection('single', use_checkbox=True, pre_selected_rows=[0])
+        gridoptions = gb.build()
+        try:
+          grid_response = AgGrid(model_grid,
+                                 fit_columns_on_grid_load=False,
+                                 gridOptions=gridoptions)
+          selected_row = grid_response['selected_rows']
+        except:
+          st.warning('Loading model database...')
+
+      ######_SEE_MODEL_DETAIL_BUTTON_######
+      with placeholder_3.container():
+        view_model_detail = st.button('See Model Detail')
+        if view_model_detail:
+          selected_row_model_name = selected_row[0]['model_name']
+          with st.expander('Model information:',expanded=True):
+              st.write('Name : {}'.format(selected_row_model_name))
+              st.write('Gamma : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'gamma'].to_list()[0]))
+              st.write('Epsilon : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_start'].to_list()[0]))
+              st.write('Epsilon decline : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_decline'].to_list()[0]))
+              st.write('Epsilon minimum : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_min'].to_list()[0]))
+              st.write('Learning Rate : {:.3f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'learning_rate'].to_list()[0]))
+              st.write('Initial Balance : {:,} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'initial_balance'].to_list()[0]))
+              st.write('Trading Size : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'trading_size_pct'].to_list()[0]))
+              st.write('Commission Fee : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'commission_fee_pct'].to_list()[0]))
+
+      ######_EDIT_AND_DELETE_BUTTON_######
+      with placeholder_4.container():
+        ph2col1, ph2col2, _ = st.columns([1,1,6])
+        with ph2col1:
+          edit_mod_button = st.button('Edit')
+        with ph2col2:
+          del_mod_button = st.button('Delete')
+
+        ######_EDIT_BUTTON_######################################################
+        if edit_mod_button or st.session_state['edit_mod_button_status']:
+          st.session_state['edit_mod_button_status'] = True
+          selected_row_model_name = selected_row[0]['model_name']
+          with placeholder_4.container():
+              edit_form_col1, _ = st.columns([2,1])
+              with edit_form_col1:
+                with st.form('edit parameter form'):
+                  st.write("##### Model parameters")
+                  edt_agent_name = st.text_input("Model name: ", placeholder=str(selected_row[0]['model_name']),
+                                                value=selected_row_model_name)
+                  edt_agent_gamma = st.slider("Gamma: ", min_value=0.00, max_value=1.00, 
+                                              value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'gamma'].to_list()[0] )
+                  edt_agent_epsilon = st.slider("Starting epsilon (random walk probability): ", min_value=0.00, max_value=1.00, 
+                                                value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_start'].to_list()[0] )
+                  edt_agent_epsilon_dec = st.select_slider("Epsilon decline rate (random walk probability decline): ",
+                                                       options=[0.001,0.002,0.005,0.010], 
+                                                           value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_decline'].to_list()[0] )
+                  edt_agent_epsilon_end = st.slider("Minimum epsilon: ", min_value=0.01, max_value=0.10, 
+                                                    value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_min'].to_list()[0] )
+                  edt_agent_lr = st.select_slider("Learning rate: ", options=[0.001, 0.002, 0.005, 0.010], 
+                                                  value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'learning_rate'].to_list()[0] )
+                  st.write("##### Trading parameters")
+                  edt_initial_balance = st.number_input("Initial account balance (THB):", min_value=0, step=1000, 
+                                                        value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'initial_balance'].to_list()[0] )
+                  edt_trading_size_pct = st.slider("Trading size as a percentage of initial account balance (%):", min_value=0, max_value=100, 
+                                                   value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'trading_size_pct'].to_list()[0] )
+                  edt_commission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, 
+                                                           value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'commission_fee_pct'].to_list()[0], 
+                                                           format='%1.3f')
+                  edit_param_button = st.form_submit_button('Edit')
+
+              ######_<FORM>_EDIT_BUTTON_######################################################
+              if edit_param_button:
+                key_to_update = model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'key'].to_list()[0]
+                update_dict = {'model_name':edt_agent_name,
+                              'gamma':edt_agent_gamma,
+                              'epsilon_start':edt_agent_epsilon,
+                              'epsilon_decline':edt_agent_epsilon_dec,
+                              'epsilon_min':edt_agent_epsilon_end,
+                              'learning_rate':edt_agent_lr,
+                              'initial_balance':edt_initial_balance,
+                              'trading_size_pct':edt_trading_size_pct,
+                              'commission_fee_pct':edt_commission_fee_pct,
+                              'episode_trained':0}
+                model_db.update(updates=update_dict, key=key_to_update)
+                st.session_state['edit_mod_button_status'] = False
+                st.success('Edit parameters successful! ✔️')
+                with st.form('after edit ok'):
+                  st.info('You can re-trained this model in "Develop Model" menu', icon="ℹ️")
+                  edit_ok_button = st.form_submit_button('OK')
+                if edit_ok_button:
+                  time.sleep(2)
+                  st.experimental_rerun()
+        #####################################################################
+  ######
+        ######_DELETE_BUTTON_################################################
+        if del_mod_button or st.session_state['del_mod_button_status']:
+          st.session_state['del_mod_button_status'] = True
+          with placeholder_4.container():
+            with st.form('del_make_sure'):
+              st.write('Are you sure?')
+              make_sure_radio = st.radio('Please confirm your choice:', options=('No', 'Yes') )
+              confirm_button = st.form_submit_button('Confirm')
+              if confirm_button:
+                if make_sure_radio == 'Yes':
+                  st.session_state['del_mod_button_status'] = False
+                  selected_model_name = selected_row[0]['model_name']
+                  key_to_del = model_frame_u.loc[model_frame_u['model_name']==selected_model_name,'key'].to_list()[0]
+                  model_db.delete(key_to_del)
+                  st.error('Model {} has been successfully deleted'.format(selected_model_name))
+                  time.sleep(3)
+                  st.experimental_rerun()
+                elif make_sure_radio == 'No':
+                  st.session_state['del_mod_button_status'] = False
+                  st.experimental_rerun()
 ########################################################################
   
   ######_GENERATE_ADVICE_MENU_################################################
   if advice_b or advice_side_b or st.session_state['advice_b_status']:
-    with placeholder_2.container():
-      st.markdown("### Generate Investment Advice 📈")
-      model_options = model_frame_u.loc[:,'model_name']
-      selected_advice_model = st.selectbox('Choose your model',options=model_options)
-      with st.expander('Model Information:'):
-        st.write(' Model Name : {}'.format(selected_advice_model))
-        st.write(' Stock Quote : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'stock_quote'].to_list()[0]))
-        st.write(' Start Date : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'start_date'].to_list()[0]))
-        st.write(' End Date : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'end_date'].to_list()[0]))
-        st.write(' Episode Trained : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'episode_trained'].to_list()[0]))
-        st.write(' Train Profit/Loss : {:+,.2f} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trained_result'].to_list()[0]))
-        st.write(' Test Profit/Loss : {:+,.2f} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'test_result'].to_list()[0]))
-        st.write(' Initial Balance : {:,} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'initial_balance'].to_list()[0]))
-        st.write(' Trading Size : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trading_size_pct'].to_list()[0]))
-        st.write(' Commission Fee : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'commission_fee_pct'].to_list()[0]))
-        st.write(' Gamma : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'gamma'].to_list()[0]))
-        st.write(' Epsilon Start: {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_start'].to_list()[0]))
-        st.write(' Epsilon Decline rate : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_decline'].to_list()[0]))
-        st.write(' Epsilon Minimum : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_min'].to_list()[0]))
-        st.write(' Learning Rate : {:.3f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'learning_rate'].to_list()[0]))
-        
-        generate_advice_button = st.button('Generate Advice')
-        
-      #####_GENERATE_ADVICE_BUTTON_#####
-      if generate_advice_button:
-        stock_name = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'stock_quote'].to_list()[0]
-        start_date = ( datetime.date.today() - datetime.timedelta(days=180) )
-        end_date = datetime.date.today()
-        stock_code = stock_name + '.BK'
-        df_price = yf.download(stock_code,
-                              start=start_date,
-                              end=end_date,
-                              progress=True)
-        with st.spinner('Generating advice...'):
-          download_model_gcs(save_username=st.session_state['username'],
-                             ag_name=selected_advice_model)
+    st.markdown("#### Generate Investment Advice 📈")
+    if len(model_frame_u) <= 0:
+      _warning = "You don't have any created model. you can make a new one in "+"Develop Model "+"menu.")
+      st.warning(_warning)
+    else: #len(model_frame_u) > 0
+      with placeholder_2.container():
+        #st.markdown("#### Generate Investment Advice 📈")
+        model_options = model_frame_u.loc[:,'model_name']
+        selected_advice_model = st.selectbox('Choose your model',options=model_options)
+        with st.expander('Model Information:'):
+          st.write(' Model Name : {}'.format(selected_advice_model))
+          st.write(' Stock Quote : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'stock_quote'].to_list()[0]))
+          st.write(' Start Date : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'start_date'].to_list()[0]))
+          st.write(' End Date : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'end_date'].to_list()[0]))
+          st.write(' Episode Trained : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'episode_trained'].to_list()[0]))
+          st.write(' Train Profit/Loss : {:+,.2f} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trained_result'].to_list()[0]))
+          st.write(' Test Profit/Loss : {:+,.2f} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'test_result'].to_list()[0]))
+          st.write(' Initial Balance : {:,} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'initial_balance'].to_list()[0]))
+          st.write(' Trading Size (%): {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trading_size_pct'].to_list()[0]))
+          st.write(' Trading Size (THB): {:.2f} THB'.format( (model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'initial_balance'].to_list()[0])*
+                                                           ((model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trading_size_pct'].to_list()[0])/100)))
+          st.write(' Commission Fee : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'commission_fee_pct'].to_list()[0]))
+          st.write(' Gamma : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'gamma'].to_list()[0]))
+          st.write(' Epsilon Start: {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_start'].to_list()[0]))
+          st.write(' Epsilon Decline rate : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_decline'].to_list()[0]))
+          st.write(' Epsilon Minimum : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_min'].to_list()[0]))
+          st.write(' Learning Rate : {:.3f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'learning_rate'].to_list()[0]))
 
-          generate_advice(ag_df_price_advice=df_price,
-                          save_username=st.session_state['username'],
-                          ag_name=selected_advice_model,
-                          ag_quote=stock_name)
+          generate_advice_button = st.button('Generate Advice')
+
+        #####_GENERATE_ADVICE_BUTTON_#####
+        if generate_advice_button:
+          stock_name = model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'stock_quote'].to_list()[0]
+          start_date = ( datetime.date.today() - datetime.timedelta(days=180) )
+          end_date = datetime.date.today()
+          stock_code = stock_name + '.BK'
+          df_price = yf.download(stock_code,
+                                start=start_date,
+                                end=end_date,
+                                progress=True)
+          with st.spinner('Generating advice...'):
+            download_model_gcs(save_username=st.session_state['username'],
+                               ag_name=selected_advice_model)
+            generate_advice(ag_df_price_advice=df_price,
+                            save_username=st.session_state['username'],
+                            ag_name=selected_advice_model,
+                            ag_quote=stock_name)
 ######################################################################################################
 
   ######_DEVELOP_MODEL_MENU_##########################################
@@ -658,7 +667,9 @@ else:
                   
         ######_RADIO_EXISTING_MODEL_######
         if select_model_radio == 'Existing Model':
-          
+          if len(model_frame_u) <= 0:
+            _warning = "You don't have any created model. Please select "+"New Model "+"option to make a new one."
+            st.warning(_warning)
           with st.form('select_existing_model'):
             ex_model_list = model_frame_u['model_name'].sort_values(ascending=True)
             ex_to_train_model = st.selectbox('Select your existing model',
