@@ -769,7 +769,7 @@ else:
             st.write('How many episodes to train?')
             t_form_col1 , t_form_col2 = st.columns(2)
             with t_form_col1:
-              xtrain_episodes = st.number_input('Number of training episodes:', value=2, step=1, min_value=0, disabled=not(train_allowed))
+              xtrain_episodes = st.number_input('Number of training episodes:', value=2, step=1, min_value=0, disabled=not(st.session_state['train_allowed']))
             with t_form_col2:
               st.write('  ')
               st.write('  ')
