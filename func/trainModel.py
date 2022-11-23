@@ -364,6 +364,8 @@ def test_model(ag_df_price_test,
     action_history_dict = {}
     trade_exposure_history_dict = {}
     account_balance_history_dict = {}
+    net_pl_history_dict = {}
+    net_pl_pct_history_dict = {}
     
     agent_check = False
     
@@ -399,6 +401,8 @@ def test_model(ag_df_price_test,
             account_balance_history = []
             nom_return_history = []
             real_return_history = []
+            net_pl_history = []
+            net_pl_pct_history = []
 
             acc_reward = 0
             account_balance = initial_balance
@@ -448,6 +452,8 @@ def test_model(ag_df_price_test,
                 action_history.append(action)
                 trade_exposure_history.append(trade_exposure)
                 account_balance_history.append(account_balance)
+                net_pl_history.append(account_balance-initial_balance)
+                net_pl_pct_history.append((100*(account_balance-initial_balance))/initial_balance)
 
                 ### --- end of 1 episode --- ###
                 if done:
@@ -461,6 +467,8 @@ def test_model(ag_df_price_test,
                     action_history_dict['episode_'+str(i+1)] = action_history
                     trade_exposure_history_dict['episode_'+str(i+1)] = trade_exposure_history
                     account_balance_history_dict['episode_'+str(i+1)] = account_balance_history
+                    net_pl_history_dict['episode_'+str(i+1)] = net_pl_history
+                    net_pl_pct_history_dict['episode_'+str(i+1)] = net_pl_pct_history
 
                     all_acc_reward_history.append([(i+1),acc_reward])
                     all_balance_history.append([(i+1),account_balance])
@@ -482,7 +490,7 @@ def test_model(ag_df_price_test,
                                                     alt.Tooltip(acc_reward_history_df.columns[-1], title='Reward (pts)')])
         st.altair_chart(alt_acc_reward.mark_line().interactive().configure_axis(labelFontSize=14,titleFontSize=16),
                         use_container_width=True)
-
+        ######################################
         st.write('Account Balance History')
         account_balance_history_df = pd.DataFrame(account_balance_history_dict, index=ag_df_price_test[5:-1].index)
         alt_acc_bal_hist = alt.Chart(account_balance_history_df.iloc[:,-1].reset_index()
@@ -495,7 +503,34 @@ def test_model(ag_df_price_test,
                                                       alt.Tooltip(account_balance_history_df.columns[-1], title='Account Balance (THB)')])
         st.altair_chart(alt_acc_bal_hist.mark_line().interactive().configure_axis(labelFontSize=14,titleFontSize=16),
                         use_container_width=True)
-        
+        ######################################
+        st.write('Net Profit/Loss History')
+        net_pl_history_df = pd.DataFrame(net_pl_history_dict, index=ag_df_price_train[5:-1].index)
+        alt_net_pl_hist = alt.Chart(net_pl_history_df.iloc[:,-1].reset_index()
+                                   ).encode(x = alt.X('Date'),
+                                            y = alt.Y(net_pl_history_df.columns[-1],
+                                                       title='Profit/Loss (THB)',
+                                                       scale=alt.Scale(domain=[net_pl_history_df.iloc[:,-1].min()-10000,
+                                                                               net_pl_history_df.iloc[:,-1].max()+10000])),
+                                             tooltip=[alt.Tooltip('Date', title='Date'),
+                                                      alt.Tooltip(net_pl_history_df.columns[-1], title='Profit/Loss (THB)')]
+                                            )
+        st.altair_chart(alt_net_pl_hist.mark_line().interactive().configure_axis(labelFontSize=14,titleFontSize=16),
+                        use_container_width=True)
+        ######################################
+        net_pl_pct_history_df = pd.DataFrame(net_pl_pct_history_dict, index=ag_df_price_train[5:-1].index)
+        alt_net_pl_pct_hist = alt.Chart(net_pl_pct_history_df.iloc[:,-1].reset_index()
+                                   ).encode(x = alt.X('Date'),
+                                            y = alt.Y(net_pl_pct_history_df.columns[-1],
+                                                       title='Profit/Loss (%)',
+                                                       scale=alt.Scale(domain=[net_pl_pct_history_df.iloc[:,-1].min()-2,
+                                                                               net_pl_pct_history_df.iloc[:,-1].max()+2])),
+                                             tooltip=[alt.Tooltip('Date', title='Date'),
+                                                      alt.Tooltip(net_pl_pct_history_df.columns[-1], title='Profit/Loss (%)')]
+                                            )
+        st.altair_chart(alt_net_pl_pct_hist.mark_line().interactive().configure_axis(labelFontSize=14,titleFontSize=16),
+                        use_container_width=True)
+        ######################################
         result_test_pl = account_balance_history_dict['episode_1'][-1] - initial_balance
         return result_test_pl
 #END###### ---------------TEST_MODEL--------------- ##########
