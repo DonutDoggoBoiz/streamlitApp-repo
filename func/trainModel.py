@@ -266,21 +266,22 @@ def train_model(ag_df_price_train,
     ### --- end of training --- ###
     st.success('Training DONE!')
     ################################################
-    st.write('Reward History of last episode')
+    st.write('#####     ----- Train Result (last episode)-----')
+    st.write('Reward History')
     acc_reward_history_df = pd.DataFrame(acc_reward_history_dict, index=ag_df_price_train[5:-1].index)
     alt_acc_reward = alt.Chart(acc_reward_history_df.iloc[:,-1].reset_index()
                               ).encode(x = alt.X('Date'),
                                        y = alt.Y(acc_reward_history_df.columns[-1], 
-                                                 title='Rewards', 
+                                                 title='Reward (pts)', 
                                                  scale=alt.Scale(domain=[acc_reward_history_df.iloc[:,-1].min()-2,
                                                                          acc_reward_history_df.iloc[:,-1].max()+2])),
                                        tooltip=[alt.Tooltip('Date', title='Date'),
-                                                alt.Tooltip(acc_reward_history_df.columns[-1], title='Rewards')]
+                                                alt.Tooltip(acc_reward_history_df.columns[-1], title='Reward (pts)')]
                                       )
     st.altair_chart(alt_acc_reward.mark_line().interactive().configure_axis(labelFontSize=14,titleFontSize=16),
                     use_container_width=True)
     ################################################
-    st.write('Account Balance History of last episode')
+    st.write('Account Balance History')
     account_balance_history_df = pd.DataFrame(account_balance_history_dict, index=ag_df_price_train[5:-1].index)
     alt_acc_bal_hist = alt.Chart(account_balance_history_df.iloc[:,-1].reset_index()
                                 ).encode(x = alt.X('Date'),
@@ -289,12 +290,12 @@ def train_model(ag_df_price_train,
                                                    scale=alt.Scale(domain=[account_balance_history_df.iloc[:,-1].min()-10000,
                                                                            account_balance_history_df.iloc[:,-1].max()+10000])),
                                          tooltip=[alt.Tooltip('Date', title='Date'),
-                                                  alt.Tooltip(account_balance_history_df.columns[-1], title='Account Balance')]
+                                                  alt.Tooltip(round(account_balance_history_df.columns[-1],2), title='Account Balance (THB)')]
                                         )
     st.altair_chart(alt_acc_bal_hist.mark_line().interactive().configure_axis(labelFontSize=14,titleFontSize=16),
                     use_container_width=True)
     ################################################
-    st.write('Net Profit/Loss History of last episode')
+    st.write('Net Profit/Loss History')
     net_pl_history_df = pd.DataFrame(net_pl_history_dict, index=ag_df_price_train[5:-1].index)
     alt_net_pl_hist = alt.Chart(net_pl_history_df.iloc[:,-1].reset_index()
                                ).encode(x = alt.X('Date'),
@@ -303,12 +304,12 @@ def train_model(ag_df_price_train,
                                                    scale=alt.Scale(domain=[net_pl_history_df.iloc[:,-1].min()-10000,
                                                                            net_pl_history_df.iloc[:,-1].max()+10000])),
                                          tooltip=[alt.Tooltip('Date', title='Date'),
-                                                  alt.Tooltip(net_pl_history_df.columns[-1], title='Profit/Loss (THB)')]
+                                                  alt.Tooltip(round(net_pl_history_df.columns[-1],2), title='Profit/Loss (THB)')]
                                         )
     st.altair_chart(alt_net_pl_hist.mark_line().interactive().configure_axis(labelFontSize=14,titleFontSize=16),
                     use_container_width=True)
     ################################################
-    st.write('Net Profit/Loss (%) History of last episode')
+    st.write('Net Profit/Loss (%) History')
     net_pl_pct_history_df = pd.DataFrame(net_pl_pct_history_dict, index=ag_df_price_train[5:-1].index)
     alt_net_pl_pct_hist = alt.Chart(net_pl_pct_history_df.iloc[:,-1].reset_index()
                                ).encode(x = alt.X('Date'),
@@ -317,13 +318,13 @@ def train_model(ag_df_price_train,
                                                    scale=alt.Scale(domain=[net_pl_pct_history_df.iloc[:,-1].min()-2,
                                                                            net_pl_pct_history_df.iloc[:,-1].max()+2])),
                                          tooltip=[alt.Tooltip('Date', title='Date'),
-                                                  alt.Tooltip(net_pl_pct_history_df.columns[-1], title='Profit/Loss (%)')]
+                                                  alt.Tooltip(round(net_pl_pct_history_df.columns[-1]), title='Profit/Loss (%)')]
                                         )
     st.altair_chart(alt_net_pl_pct_hist.mark_line().interactive().configure_axis(labelFontSize=14,titleFontSize=16),
                     use_container_width=True)
     ################################################
     eps_trained = n_episodes
-    result_train_pl = account_balance_history_dict[n_episodes] - initial_balance
+    result_train_pl = account_balance_history_dict['episode_'+str(n_episodes)] - initial_balance
 #END###### ---------------TRAIN_MODEL--------------- ##########
 
 ########## ---------------TEST_MODEL--------------- ##########
@@ -468,16 +469,17 @@ def test_model(ag_df_price_test,
         ### --- end of training --- ###
         st.success('Testing DONE!')
         ######################################
+        st.write('#####     ----- Test Result -----')
         st.write('Reward History')
         acc_reward_history_df = pd.DataFrame(acc_reward_history_dict, index=ag_df_price_test[5:-1].index)
         alt_acc_reward = alt.Chart(acc_reward_history_df.iloc[:,-1].reset_index()
                                   ).encode(x = alt.X('Date'),
                                            y = alt.Y(acc_reward_history_df.columns[-1], 
-                                                     title='Rewards',
+                                                     title='Reward (pts)',
                                                      scale=alt.Scale(domain=[acc_reward_history_df.iloc[:,-1].min()-2,
                                                                              acc_reward_history_df.iloc[:,-1].max()+2])),
                                            tooltip=[alt.Tooltip('Date', title='Date'),
-                                                    alt.Tooltip(acc_reward_history_df.columns[-1], title='Rewards')])
+                                                    alt.Tooltip(round(acc_reward_history_df.columns[-1],2), title='Reward (pts)')])
         st.altair_chart(alt_acc_reward.mark_line().interactive().configure_axis(labelFontSize=14,titleFontSize=16),
                         use_container_width=True)
 
@@ -490,7 +492,7 @@ def test_model(ag_df_price_test,
                                                        scale=alt.Scale(domain=[account_balance_history_df.iloc[:,-1].min()-10000,
                                                                                account_balance_history_df.iloc[:,-1].max()+10000])),
                                              tooltip=[alt.Tooltip('Date', title='Date'),
-                                                      alt.Tooltip(account_balance_history_df.columns[-1], title='Account Balance')])
+                                                      alt.Tooltip(round(account_balance_history_df.columns[-1],2), title='Account Balance (THB)')])
         st.altair_chart(alt_acc_bal_hist.mark_line().interactive().configure_axis(labelFontSize=14,titleFontSize=16),
                         use_container_width=True)
         
