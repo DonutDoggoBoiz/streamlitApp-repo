@@ -358,7 +358,7 @@ else:
               
   ######_MANAGE_MODEL_MENU_######
   if model_manage_b or manage_model_side_b or st.session_state['model_manage_b_status']:
-    st.write('#### Model Management')
+    st.header('##### Model Management')
     if len(model_frame_u) <= 0:
       _warning = "You don't have any created model."
       _info = 'You can create a new model in '+'"Develop Model "'+'menu.'
@@ -486,7 +486,7 @@ else:
   
   ######_GENERATE_ADVICE_MENU_################################################
   if advice_b or advice_side_b or st.session_state['advice_b_status']:
-    st.markdown("#### Generate Investment Advice 📈")
+    st.header("##### Generate Investment Advice 📈")
     if len(model_frame_u) <= 0:
       _warning = "You don't have any created model."
       _info = 'You can create a new model in '+'"Develop Model "'+'menu.'
