@@ -100,6 +100,24 @@ class Agent():
 
     def load_model(self):
         self.q_eval = load_model(self.model_file)
+########## ---------------DETA_FUNCTION--------------- ##########
+def deta_update_train(username, deta_key):
+    deta = Deta(deta_key)
+    model_db = deta.Base("model_db")
+    model_frame = pd.DataFrame(model_db.fetch({'username':username},{'model_name':agent.model_file_name}).items)
+    key_to_update = model_frame['key'].to_list()[0]
+    update_dict = {'episode_trained':eps_trained,
+                   'trained_result':result_train_pl}
+    model_db.update(updated=update_dict, key=key_to_update)
+    
+def deta_update_test(username, deta_key):
+    deta = Deta(deta_key)
+    model_db = deta.Base("model_db")
+    model_frame = pd.DataFrame(model_db.fetch({'username':username},{'model_name':agent.model_file_name}).items)
+    key_to_update = model_frame['key'].to_list()[0]
+    update_dict = {'test_result':result_test_pl}
+    model_db.update(updated=update_dict, key=key_to_update)
+########## ---------------TRAIN_MODEL--------------- ##########
         
 ########## ---------------TRAIN_MODEL--------------- ##########
 def train_model(ag_df_price_train,
@@ -113,7 +131,7 @@ def train_model(ag_df_price_train,
                ag_trade_size_pct,
                ag_com_fee_pct,
                ag_train_episode):
-    global agent
+    global agent, eps_trained, result_train_pl
     ### --- environment parameters
     action_space = 2      # consist of 0(Sell) , 1(Buy)
     window_size = 5      # n-days of prices used as observation or state
@@ -138,6 +156,8 @@ def train_model(ag_df_price_train,
     action_history_dict = {}
     trade_exposure_history_dict = {}
     account_balance_history_dict = {}
+    net_pl_history_dict = {}
+    net_pl_pct_history_dict = {}
 
     agent = Agent(gamma=ag_gamma,
                   epsilon=ag_eps,
@@ -154,7 +174,6 @@ def train_model(ag_df_price_train,
     ## --- loop through episodes
     for i in range(n_episodes):
         ### --- start episode --- ###
-        #st.write("--- Episode " + str(i+1) + " / " + str(n_episodes) + ' ---' )
         with train_log_expander:
             st.write("--- Episode " + str(i+1) + " / " + str(n_episodes) + 'training...')
 
@@ -173,6 +192,9 @@ def train_model(ag_df_price_train,
         action_history = []
         trade_exposure_history = []
         account_balance_history = []
+        net_pl_history = []
+        net_pl_pct_history = []
+        
         nom_return_history = []
         real_return_history = []
 
@@ -219,6 +241,8 @@ def train_model(ag_df_price_train,
             action_history.append(action)
             trade_exposure_history.append(trade_exposure)
             account_balance_history.append(account_balance)
+            net_pl_history.append(account_balance-initial_balance)
+            net_pl_pct_history.append((100*(account_balance-initial_balance))/initial_balance)
 
             ### --- end of 1 episode --- ###
             if done:
@@ -232,6 +256,8 @@ def train_model(ag_df_price_train,
                 action_history_dict['episode_'+str(i+1)] = action_history
                 trade_exposure_history_dict['episode_'+str(i+1)] = trade_exposure_history
                 account_balance_history_dict['episode_'+str(i+1)] = account_balance_history
+                net_pl_history_dict['episode_'+str(i+1)] = net_pl_history
+                new_pl_pct_history_dict['episode_'+str(i+1)] = net_pl_pct_history
 
                 all_acc_reward_history.append([(i+1),acc_reward])
                 all_balance_history.append([(i+1),account_balance])
@@ -239,7 +265,7 @@ def train_model(ag_df_price_train,
                 ### --- start next episode --- ###
     ### --- end of training --- ###
     st.success('Training DONE!')
-    ########################
+    ################################################
     st.write('Reward History of last episode')
     acc_reward_history_df = pd.DataFrame(acc_reward_history_dict, index=ag_df_price_train[5:-1].index)
     alt_acc_reward = alt.Chart(acc_reward_history_df.iloc[:,-1].reset_index()
@@ -253,7 +279,7 @@ def train_model(ag_df_price_train,
                                       )
     st.altair_chart(alt_acc_reward.mark_line().interactive().configure_axis(labelFontSize=14,titleFontSize=16),
                     use_container_width=True)
-    
+    ################################################
     st.write('Account Balance History of last episode')
     account_balance_history_df = pd.DataFrame(account_balance_history_dict, index=ag_df_price_train[5:-1].index)
     alt_acc_bal_hist = alt.Chart(account_balance_history_df.iloc[:,-1].reset_index()
@@ -267,9 +293,37 @@ def train_model(ag_df_price_train,
                                         )
     st.altair_chart(alt_acc_bal_hist.mark_line().interactive().configure_axis(labelFontSize=14,titleFontSize=16),
                     use_container_width=True)
-    
+    ################################################
+    st.write('Net Profit/Loss History of last episode')
+    net_pl_history_df = pd.DataFrame(net_pl_history_dict, index=ag_df_price_train[5:-1].index)
+    alt_net_pl_hist = alt.Chart(net_pl_history_df.iloc[:,-1].reset_index()
+                               ).encode(x = alt.X('Date'),
+                                        y = alt.Y(net_pl_history_df.columns[-1],
+                                                   title='Profit/Loss (THB)',
+                                                   scale=alt.Scale(domain=[net_pl_history_df.iloc[:,-1].min()-10000,
+                                                                           net_pl_history_df.iloc[:,-1].max()+10000])),
+                                         tooltip=[alt.Tooltip('Date', title='Date'),
+                                                  alt.Tooltip(net_pl_history_df.columns[-1], title='Profit/Loss (THB)')]
+                                        )
+    st.altair_chart(alt_net_pl_hist.mark_line().interactive().configure_axis(labelFontSize=14,titleFontSize=16),
+                    use_container_width=True)
+    ################################################
+    st.write('Net Profit/Loss (%) History of last episode')
+    net_pl_pct_history_df = pd.DataFrame(net_pl_pct_history_dict, index=ag_df_price_train[5:-1].index)
+    alt_net_pl_pct_hist = alt.Chart(net_pl_pct_history_df.iloc[:,-1].reset_index()
+                               ).encode(x = alt.X('Date'),
+                                        y = alt.Y(net_pl_pct_history_df.columns[-1],
+                                                   title='Profit/Loss (%)',
+                                                   scale=alt.Scale(domain=[net_pl_pct_history_df.iloc[:,-1].min()-2,
+                                                                           net_pl_pct_history_df.iloc[:,-1].max()+2])),
+                                         tooltip=[alt.Tooltip('Date', title='Date'),
+                                                  alt.Tooltip(net_pl_pct_history_df.columns[-1], title='Profit/Loss (%)')]
+                                        )
+    st.altair_chart(alt_net_pl_pct_hist.mark_line().interactive().configure_axis(labelFontSize=14,titleFontSize=16),
+                    use_container_width=True)
+    ################################################
+    eps_trained = n_episodes
     result_train_pl = account_balance_history_dict[n_episodes] - initial_balance
-    return result_train_pl
 #END###### ---------------TRAIN_MODEL--------------- ##########
 
 ########## ---------------TEST_MODEL--------------- ##########
