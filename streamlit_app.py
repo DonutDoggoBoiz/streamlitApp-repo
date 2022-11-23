@@ -182,27 +182,10 @@ def on_click_model_b():
 
       #########_DEVELOP_MODEL_TAB_#########
 def on_click_observe_b():
-  global df_price, df_length
   st.session_state['observe_button_status'] = True
-  ############################################################
-  stock_code = stock_name + '.BK'
-  df_price = yf.download(stock_code, start=start_date, end=end_date, progress=True)
-  df_price.drop(columns=['Adj Close','Volume'] , inplace=True)
-  df_length = df_price['Close'].count()
   
 def on_click_split_b():
-  global train_size_pct, test_size_pct, df_price_train, df_price_test, train_prices, test_prices
   st.session_state['split_button_status'] = True
-  ############################################################
-  train_size_pct = (split_point/df_length)*100
-  test_size_pct = 100-train_size_pct
-  df_price['split'] = 'split'
-  df_price.loc[:split_point, 'split'] = 'Train set'
-  df_price.loc[split_point:, 'split'] = 'Test set'
-  df_price_train = df_price[:split_point]
-  df_price_test = df_price[split_point:]
-  train_prices = df_price_train['Close'].to_numpy()
-  test_prices = df_price_test['Close'].to_numpy()
     
 def on_click_select_exist_model_b():
   st.session_state['xselect_exist_model_button_status'] = True
@@ -652,10 +635,10 @@ else:
           with col_observe_b:
             observe_button = st.button('View Dataset 🔍', on_click=on_click_observe_b)
         if observe_button or st.session_state['observe_button_status']:
-          #stock_code = stock_name + '.BK'
-          #df_price = yf.download(stock_code, start=start_date, end=end_date, progress=True)
-          #df_price.drop(columns=['Adj Close','Volume'] , inplace=True)
-          #df_length = df_price['Close'].count()
+          stock_code = stock_name + '.BK'
+          df_price = yf.download(stock_code, start=start_date, end=end_date, progress=True)
+          df_price.drop(columns=['Adj Close','Volume'] , inplace=True)
+          df_length = df_price['Close'].count()
           
           with col_describe:
             st.write('This dataset contains {} days of historical prices'.format(df_length))
@@ -673,15 +656,15 @@ else:
               st.write('This dataset contains {} days of historical prices'.format(df_length))
               split_point = st.slider('Select the split point between Train set and Test set:', 0, int(df_length), int(df_length/2))
               ##############################
-              #train_size_pct = (split_point/df_length)*100
-              #test_size_pct = 100-train_size_pct
-              #df_price['split'] = 'split'
-              #df_price.loc[:split_point, 'split'] = 'Train set'
-              #df_price.loc[split_point:, 'split'] = 'Test set'
-              #df_price_train = df_price[:split_point]
-              #df_price_test = df_price[split_point:]
-              #train_prices = df_price_train['Close'].to_numpy()
-              #test_prices = df_price_test['Close'].to_numpy()
+              train_size_pct = (split_point/df_length)*100
+              test_size_pct = 100-train_size_pct
+              df_price['split'] = 'split'
+              df_price.loc[:split_point, 'split'] = 'Train set'
+              df_price.loc[split_point:, 'split'] = 'Test set'
+              df_price_train = df_price[:split_point]
+              df_price_test = df_price[split_point:]
+              train_prices = df_price_train['Close'].to_numpy()
+              test_prices = df_price_test['Close'].to_numpy()
               ##############################
               alt_split = (alt.Chart(df_price.reset_index()).mark_line().encode(
                 x = alt.X('Date'),
