@@ -103,14 +103,23 @@ def on_click_logout():
   st.session_state['login_status'] = False
   st.session_state['username'] = None
   st.session_state['name'] = None
+  st.session_state['sess_model_name'] = None
+  st.session_state['sign_in_b_disable'] = True
+  st.session_state['sign_up_b_disable'] = False
   st.session_state['show_register_form'] = False
+  st.session_state['model_manage_b_status'] = False  
+  st.session_state['del_mod_button_status'] = False
+  st.session_state['edit_mod_button_status'] = False
   st.session_state['model_b_status'] = False
-  st.session_state['advice_b_status'] = False
-  st.session_state['user_manage_b_status'] = False
   st.session_state['observe_button_status'] = False
   st.session_state['split_button_status'] = False
   st.session_state['train_button_status'] = False
   st.session_state['test_button_status'] = False
+  st.session_state['show_save_box'] = False
+  st.session_state['xselect_exist_model_button_status'] = False
+  st.session_state['advice_b_status'] = False
+  st.session_state['user_manage_b_status'] = False
+  
 
       #########_POST_LOGIN_#########
 def on_click_home():
