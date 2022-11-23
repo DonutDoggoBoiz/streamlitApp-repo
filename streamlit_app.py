@@ -69,7 +69,7 @@ if 'train_button_status' not in st.session_state:
 if 'train_allowed' not in st.session_state:
   st.session_state['train_allowed'] = False
 if 'test_allowed' not in st.session_state:
-  st.session_state['train_allowed'] = False
+  st.session_state['test_allowed'] = False
 if 'save_allowed' not in st.session_state:
   st.session_state['train_allowed'] = False
 if 'test_button_status' not in st.session_state:
