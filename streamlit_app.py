@@ -765,7 +765,7 @@ else:
                             ag_com_fee_pct=nm_commission_fee_pct,
                             ag_train_episode=xtrain_episodes)
                 deta_update_train(username=st.session_state['username'],
-                                  deta_key=st.session_state['deta_key'])
+                                  deta_key=st.secrets["deta_key"])
                 update_model_frame_u()
                 _info = 'Please proceed to "Test Model 🧪" tab to test your model'
                 st.info(_info, icon="ℹ️")
@@ -797,7 +797,7 @@ else:
                      ag_com_fee_pct=nm_commission_fee_pct,
                      ag_train_episode=xtrain_episodes)
           deta_update_test(username=st.session_state['username'],
-                           deta_key=st.session_state['deta_key'])
+                           deta_key=st.secrets["deta_key"])
           update_model_frame_u()
           _info = 'Please proceed to "Save Model 💾" tab to save your model'
           st.info(_info, icon="ℹ️")
