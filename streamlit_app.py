@@ -658,9 +658,16 @@ else:
               ##############################
               train_size_pct = (split_point/df_length)*100
               test_size_pct = 100-train_size_pct
-              df_price['split'] = 'split'
-              df_price.loc[:split_point, 'split'] = 'Train set'
-              df_price.loc[split_point:, 'split'] = 'Test set'
+              split_list = []
+              for i in range(split_point):
+                split_list.append('Train set')
+              for i in range(df_length-split_point):
+                split_list.append('Test set')
+              #df_price['split'] = 'split'
+              #df_price.loc[:split_point, 'split'] = 'Train set'
+              #df_price.loc[split_point:, 'split'] = 'Test set'
+              df_price['split'] = split_list
+              ##########
               df_price_train = df_price[:split_point]
               df_price_test = df_price[split_point:]
               train_prices = df_price_train['Close'].to_numpy()
