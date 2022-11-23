@@ -104,7 +104,7 @@ class Agent():
 def deta_update_train(username, deta_key):
     deta = Deta(deta_key)
     model_db = deta.Base("model_db")
-    model_frame = pd.DataFrame(model_db.fetch({'username':username},{'model_name':agent.model_file_name}).items)
+    model_frame = pd.DataFrame(model_db.fetch([{'username':username},{'model_name':agent.model_file_name}]).items)
     key_to_update = model_frame['key'].to_list()[0]
     update_dict = {'episode_trained':eps_trained,
                    'trained_result':result_train_pl}
