@@ -799,7 +799,7 @@ else:
       ######_TEST_TAB_######
       with test_tab:
         st.write("#### Test your model on test set 🧪")
-        test_button = st.button("Start Testing 🏹", disabled=not(st.session_state['test_allowed']), on_click=on_clicl_save_allowed)
+        test_button = st.button("Start Testing 🏹", disabled=not(st.session_state['test_allowed']), on_click=on_click_save_allowed)
         if test_button:
           test_model(ag_df_price_test=df_price_test,
                      ag_name=nm_agent_name,
