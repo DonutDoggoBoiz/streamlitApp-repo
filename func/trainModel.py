@@ -379,7 +379,7 @@ def test_model(ag_df_price_test,
         test_log_expander = st.expander('Testing Logs',expanded=True)
         ## --- loop through episodes
         for i in range(n_episodes):
-            with train_log_expander:
+            with test_log_expander:
                 st.write("--- Episode " + str(i+1) + " / " + str(n_episodes) + ' ---' )
 
             # slider window
