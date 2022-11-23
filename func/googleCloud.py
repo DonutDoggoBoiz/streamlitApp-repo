@@ -26,6 +26,6 @@ def download_model_gcs(save_username, ag_name):
     gcs_blob = bucket.blob(gcs_path)
     local_path = 'model/'+str(save_username)+'_'+str(ag_name)+'.h5'
     gcs_blob.download_to_filename(local_path)
-    st.success('Download model from GCS DONE!')
+    #st.success('Download model from GCS DONE!')
   except:
     st.error('ERROR: download_model_gcs')
