@@ -27,6 +27,15 @@ name_list = user_frame['name'].values.tolist()
 stock_db = deta.Base("stock_db")
 stock_df = pd.DataFrame(stock_db.fetch().items)
 stock_list = stock_df['symbol'].sort_values(ascending=True)
+
+param_help_dict = {'gamma':'Gamma dictates how intense should your model consider future rewards. (higher gamma = more intense)',
+                  'eps':'Epsilon represents a propability that your model will make decision randomly. (exploration mode)',
+                  'eps_dec':'Decreasing rate of epsilon at each step of training. (gradually shift your model towards exploitation mode',
+                  'eps_min':'Minimum epsilon possible.',
+                  'lr':'How big shoud your model adjusts its formula and variables during training phase.',
+                  'ini_bal':'Starting balance of investment account',
+                  'trade_size_pct':'Model will buy and sell as a percentage of Initial account balance.',
+                  'com_fee':'Percentage of commission fee for each trade.'}
 ###############################################################
 
 #########_SESSION_STATE_####################################
@@ -468,23 +477,31 @@ else:
                   st.write("##### Model parameters")
                   edt_agent_name = st.text_input("Model name: ", placeholder=str(selected_row[0]['model_name']),
                                                 value=selected_row_model_name)
-                  edt_agent_gamma = st.slider("Gamma: ", min_value=0.00, max_value=1.00, 
+                  edt_agent_gamma = st.slider("Gamma: ", min_value=0.00, max_value=1.00,
+                                              help=param_help_dict['gamma'],
                                               value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'gamma'].to_list()[0] )
-                  edt_agent_epsilon = st.slider("Starting epsilon (random walk probability): ", min_value=0.00, max_value=1.00, 
+                  edt_agent_epsilon = st.slider("Starting epsilon (random walk probability): ", min_value=0.00, max_value=1.00,
+                                                help=param_help_dict['eps'],
                                                 value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_start'].to_list()[0] )
                   edt_agent_epsilon_dec = st.select_slider("Epsilon decline rate (random walk probability decline): ",
-                                                       options=[0.001,0.002,0.005,0.010], 
+                                                           help=param_help_dict['eps_dec'],
+                                                           options=[0.001,0.002,0.005,0.010],
                                                            value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_decline'].to_list()[0] )
-                  edt_agent_epsilon_end = st.slider("Minimum epsilon: ", min_value=0.01, max_value=0.10, 
+                  edt_agent_epsilon_end = st.slider("Minimum epsilon: ", min_value=0.01, max_value=0.10,
+                                                    help=param_help_dict['eps_min'],
                                                     value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_min'].to_list()[0] )
-                  edt_agent_lr = st.select_slider("Learning rate: ", options=[0.001, 0.002, 0.005, 0.010], 
+                  edt_agent_lr = st.select_slider("Learning rate: ", options=[0.001, 0.002, 0.005, 0.010],
+                                                  help=param_help_dict['lr'],
                                                   value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'learning_rate'].to_list()[0] )
                   st.write("##### Trading parameters")
-                  edt_initial_balance = st.number_input("Initial account balance (THB):", min_value=0, step=1000, 
+                  edt_initial_balance = st.number_input("Initial account balance (THB):", min_value=0, step=1000,
+                                                        help=param_help_dict['ini_bal'],
                                                         value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'initial_balance'].to_list()[0] )
-                  edt_trading_size_pct = st.slider("Trading size as a percentage of initial account balance (%):", min_value=0, max_value=100, 
+                  edt_trading_size_pct = st.slider("Trading size as a percentage of initial account balance (%):", min_value=0, max_value=100,
+                                                   help=param_help_dict['trade_size_pct'],
                                                    value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'trading_size_pct'].to_list()[0] )
-                  edt_commission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, 
+                  edt_commission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001,
+                                                           help=param_help_dict['com_fee'],
                                                            value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'commission_fee_pct'].to_list()[0], 
                                                            format='%1.3f')
                   edit_param_button = st.form_submit_button('Edit')
@@ -501,7 +518,9 @@ else:
                               'initial_balance':edt_initial_balance,
                               'trading_size_pct':edt_trading_size_pct,
                               'commission_fee_pct':edt_commission_fee_pct,
-                              'episode_trained':0}
+                              'episode_trained':0,
+                              'trained_result':0,
+                              'test_result':0}
                 model_db.update(updates=update_dict, key=key_to_update)
                 st.session_state['edit_mod_button_status'] = False
                 st.success('Edit parameters successful! ✔️')
