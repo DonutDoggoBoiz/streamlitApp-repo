@@ -11,8 +11,6 @@ from tensorflow import keras
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.models import load_model
 ##### ---------------------------------------- #####
-deta = Deta(st.secrets["deta_key"])
-model_db = deta.Base("model_db")
 
 ##### ------------ REPLAY BUFFER OBJECT ------------ #####
 class ReplayBuffer():
@@ -444,7 +442,9 @@ def test_model(ag_df_price_test,
 #END###### ---------------TEST_MODEL--------------- ##########
 
 ########## ---------------SAVE_MODEL--------------- ##########
-def save_model_local(save_username):
+def save_model_local(save_username, deta_key):
+    deta = Deta(deta_key)
+    model_db = deta.Base("model_db")
     _model_frame_u = pd.DataFrame(model_db.fetch({'username':save_username}))
     key_to_update = _model_frame_u.loc[_model_frame_u['model_name']==agent.model_file_name, 'key'].to_list()[0]
     update_dict = {'episode_trained':ep_trained,
