@@ -192,17 +192,17 @@ def on_click_observe_b():
   
 def on_click_split_b():
   global train_size_pct, test_size_pct, df_price_train, df_price_test, train_prices, test_prices
-    st.session_state['split_button_status'] = True
-    ############################################################
-    train_size_pct = (split_point/df_length)*100
-    test_size_pct = 100-train_size_pct
-    df_price['split'] = 'split'
-    df_price.loc[:split_point, 'split'] = 'Train set'
-    df_price.loc[split_point:, 'split'] = 'Test set'
-    df_price_train = df_price[:split_point]
-    df_price_test = df_price[split_point:]
-    train_prices = df_price_train['Close'].to_numpy()
-    test_prices = df_price_test['Close'].to_numpy()
+  st.session_state['split_button_status'] = True
+  ############################################################
+  train_size_pct = (split_point/df_length)*100
+  test_size_pct = 100-train_size_pct
+  df_price['split'] = 'split'
+  df_price.loc[:split_point, 'split'] = 'Train set'
+  df_price.loc[split_point:, 'split'] = 'Test set'
+  df_price_train = df_price[:split_point]
+  df_price_test = df_price[split_point:]
+  train_prices = df_price_train['Close'].to_numpy()
+  test_prices = df_price_test['Close'].to_numpy()
     
 def on_click_select_exist_model_b():
   st.session_state['xselect_exist_model_button_status'] = True
