@@ -772,17 +772,17 @@ else:
                                                  options=ex_model_list)
                 ex_agent_name = ex_to_train_model
                 ######### TEST REUSE VARIABLE ######
-                nm_agent_name = ex_to_train_model
-                nm_agent_gamma = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'gamma'])
-                nm_agent_epsilon = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'epsilon_start'])
-                nm_agent_epsilon_dec = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'epsilon_decline'])
-                nm_agent_epsilon_end = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'epsilon_min'])
-                nm_agent_lr = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'learning_rate'])
-                nm_initial_balance = int(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'initial_balance'])
-                nm_trading_size_pct = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'trading_size_pct'])
-                nm_commission_fee_pct = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'commission_fee_pct'])
+                ex_agent_name = ex_to_train_model
+                ex_agent_gamma = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'gamma'])
+                ex_agent_epsilon = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'epsilon_start'])
+                ex_agent_epsilon_dec = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'epsilon_decline'])
+                ex_agent_epsilon_end = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'epsilon_min'])
+                ex_agent_lr = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'learning_rate'])
+                ex_initial_balance = int(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'initial_balance'])
+                ex_trading_size_pct = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'trading_size_pct'])
+                ex_commission_fee_pct = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'commission_fee_pct'])
                 ####################################
-                info_trade_size_nom = nm_initial_balance * (nm_trading_size_pct/100)
+                info_trade_size_nom = ex_initial_balance * (ex_trading_size_pct/100)
                 ex_select_exist_model = st.form_submit_button('Select Model', on_click=on_click_train_allowed)
 
                 if ex_select_exist_model:
@@ -790,18 +790,18 @@ else:
                   st.session_state['sess_model_name'] = nm_agent_name
                   with st.expander('Model Information', expanded=True):
                     st.write("##### Model Parameters")
-                    st.write("Model name: {}".format(nm_agent_name))
-                    st.write("Gamma: {:.2f}".format(nm_agent_gamma))
-                    st.write("Starting epsilon: {:.2f}".format(nm_agent_epsilon))
-                    st.write("Epsilon decline rate: {:.4f}".format(nm_agent_epsilon_dec))
-                    st.write("Minimum epsilon: {:.2f}".format(nm_agent_epsilon_end))
-                    st.write("Learning rate: {:.4f}".format(nm_agent_lr))
+                    st.write("Model name: {}".format(ex_agent_name))
+                    st.write("Gamma: {:.2f}".format(ex_agent_gamma))
+                    st.write("Starting epsilon: {:.2f}".format(ex_agent_epsilon))
+                    st.write("Epsilon decline rate: {:.4f}".format(ex_agent_epsilon_dec))
+                    st.write("Minimum epsilon: {:.2f}".format(ex_agent_epsilon_end))
+                    st.write("Learning rate: {:.4f}".format(ex_agent_lr))
                     st.write('  ')
                     st.write("##### Trading Parameters")
-                    st.write("Initial account balance:  {:,} ฿".format(nm_initial_balance))
-                    st.write("Trading size (%):  {}%".format(nm_trading_size_pct))
+                    st.write("Initial account balance:  {:,} ฿".format(ex_initial_balance))
+                    st.write("Trading size (%):  {}%".format(ex_trading_size_pct))
                     st.write("Trading size (THB):  {:,}".format(info_trade_size_nom))
-                    st.write("Commission fee:  {:.3f}%".format(nm_commission_fee_pct))
+                    st.write("Commission fee:  {:.3f}%".format(ex_commission_fee_pct))
 
           with st.form('train_form'):
             st.write('How many episodes to train?')
@@ -813,7 +813,7 @@ else:
               st.write('  ')
               xtrain_button = st.form_submit_button("Start Training 🏃", disabled=not(st.session_state['train_allowed']), on_click=on_click_test_allowed)
             if xtrain_button:
-              if select_model_radio == 'New Model' or select_model_radio == 'Existing Model':
+              if select_model_radio == 'New Model':
                 train_model(ag_df_price_train=df_price_train,
                             ag_name=nm_agent_name,
                             ag_gamma=nm_agent_gamma,
@@ -824,6 +824,19 @@ else:
                             ag_ini_bal=nm_initial_balance,
                             ag_trade_size_pct=nm_trading_size_pct,
                             ag_com_fee_pct=nm_commission_fee_pct,
+                            ag_train_episode=xtrain_episodes)
+                
+              elif select_model_radio == 'Existing Model':
+                train_model(ag_df_price_train=df_price_train,
+                            ag_name=ex_agent_name,
+                            ag_gamma=ex_agent_gamma,
+                            ag_eps=ex_agent_epsilon,
+                            ag_eps_dec=ex_agent_epsilon_dec,
+                            ag_eps_min=ex_agent_epsilon_end,
+                            ag_lr=ex_agent_lr,
+                            ag_ini_bal=ex_initial_balance,
+                            ag_trade_size_pct=ex_trading_size_pct,
+                            ag_com_fee_pct=ex_commission_fee_pct,
                             ag_train_episode=xtrain_episodes)
                 deta_update_train(username=st.session_state['username'],
                                   deta_key=st.secrets["deta_key"])
@@ -839,17 +852,18 @@ else:
         st.write("#### Test your model on test set 🧪")
         test_button = st.button("Start Testing 🏹", disabled=not(st.session_state['test_allowed']), on_click=on_click_save_allowed)
         if test_button:
-          test_model(ag_df_price_test=df_price_test,
-                     ag_name=nm_agent_name,
-                     ag_gamma=nm_agent_gamma,
-                     ag_eps=nm_agent_epsilon,
-                     ag_eps_dec=nm_agent_epsilon_dec,
-                     ag_eps_min=nm_agent_epsilon_end,
-                     ag_lr=nm_agent_lr,
-                     ag_ini_bal=nm_initial_balance,
-                     ag_trade_size_pct=nm_trading_size_pct,
-                     ag_com_fee_pct=nm_commission_fee_pct,
-                     ag_train_episode=xtrain_episodes)
+          with st.spinner('Testing Model ...'):
+            test_model(ag_df_price_test=df_price_test,
+                       ag_name=nm_agent_name,
+                       ag_gamma=nm_agent_gamma,
+                       ag_eps=nm_agent_epsilon,
+                       ag_eps_dec=nm_agent_epsilon_dec,
+                       ag_eps_min=nm_agent_epsilon_end,
+                       ag_lr=nm_agent_lr,
+                       ag_ini_bal=nm_initial_balance,
+                       ag_trade_size_pct=nm_trading_size_pct,
+                       ag_com_fee_pct=nm_commission_fee_pct,
+                       ag_train_episode=xtrain_episodes)
           deta_update_test(username=st.session_state['username'],
                            deta_key=st.secrets["deta_key"])
           update_model_frame_u()
