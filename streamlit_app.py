@@ -358,17 +358,18 @@ else:
               
   ######_MANAGE_MODEL_MENU_######
   if model_manage_b or manage_model_side_b or st.session_state['model_manage_b_status']:
-    st.header('##### Model Management')
     if len(model_frame_u) <= 0:
-      _warning = "You don't have any created model."
-      _info = 'You can create a new model in '+'"Develop Model "'+'menu.'
-      st.warning(_warning)
-      st.info(_info, icon="ℹ️")
+      with placeholder_2.container():
+        st.write('#### Model Management')
+        _warning = "You don't have any created model."
+        _info = 'You can create a new model in '+'"Develop Model "'+'menu.'
+        st.warning(_warning)
+        st.info(_info, icon="ℹ️")
       
     else: #len(model_frame_u) > 0
     ######_GRID_VIEWER_######
       with placeholder_2.container():
-        #st.write('#### Model Management')
+        st.write('#### Model Management')
         shuffle_col = ['model_name','stock_quote','start_date','end_date','episode_trained','initial_balance','trading_size_pct','commission_fee_pct','gamma',]
         model_grid = model_frame_u.loc[:,shuffle_col]
         gb = GridOptionsBuilder.from_dataframe(model_grid)
@@ -486,15 +487,16 @@ else:
   
   ######_GENERATE_ADVICE_MENU_################################################
   if advice_b or advice_side_b or st.session_state['advice_b_status']:
-    st.header("##### Generate Investment Advice 📈")
     if len(model_frame_u) <= 0:
-      _warning = "You don't have any created model."
-      _info = 'You can create a new model in '+'"Develop Model "'+'menu.'
-      st.warning(_warning)
-      st.info(_info, icon="ℹ️")
+      with placeholder_2.container():
+        st.write("#### Generate Investment Advice 📈")
+        _warning = "You don't have any created model."
+        _info = 'You can create a new model in '+'"Develop Model "'+'menu.'
+        st.warning(_warning)
+        st.info(_info, icon="ℹ️")
     else: #len(model_frame_u) > 0
       with placeholder_2.container():
-        #st.markdown("#### Generate Investment Advice 📈")
+        st.write("#### Generate Investment Advice 📈")
         model_options = model_frame_u.loc[:,'model_name']
         selected_advice_model = st.selectbox('Choose your model',options=model_options)
         with st.expander('Model Information:'):
