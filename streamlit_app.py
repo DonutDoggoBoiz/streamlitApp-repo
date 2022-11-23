@@ -66,6 +66,12 @@ if 'split_button_status' not in st.session_state:
   st.session_state['split_button_status'] = False
 if 'train_button_status' not in st.session_state:
   st.session_state['train_button_status'] = False
+if 'train_allowed' not in st.session_state:
+  st.session_state['train_allowed'] = False
+if 'test_allowed' not in st.session_state:
+  st.session_state['train_allowed'] = False
+if 'save_allowed' not in st.session_state:
+  st.session_state['train_allowed'] = False
 if 'test_button_status' not in st.session_state:
   st.session_state['test_button_status'] = False
 if 'show_save_box' not in st.session_state:
@@ -163,6 +169,20 @@ def on_click_split_b():
     
 def on_click_select_exist_model_b():
   st.session_state['xselect_exist_model_button_status'] = True
+
+def on_click_train_allowed():
+  st.session_state['train_allowed'] = True
+
+def on_click_test_allowed():
+  st.session_state['test_allowed'] = True
+
+def on_click_save_allowed():
+  st.session_state['save_allowed'] = True
+  
+def on_click_reset_allowed():
+  st.session_state['train_allowed'] = False
+  st.session_state['test_allowed'] = False
+  st.session_state['save_allowed'] = False
   
 def on_click_show_save_box():
   st.session_state['show_save_box'] = True
@@ -545,9 +565,9 @@ else:
       tab_list = ["Select Dataset 📈", "Train Model 🚀", "Test Model 🧪", "Save Model 💾"]
       select_data_tab, train_tab, test_tab, save_tab = st.tabs(tab_list)
       
-      train_allowed = False
-      test_allowed = False
-      save_allowed = False
+      #train_allowed = False
+      #test_allowed = False
+      #save_allowed = False
       
       ######_SELECT_DATA_TAB_######
       with select_data_tab:
@@ -697,7 +717,8 @@ else:
                     st.success('Create Model Successful!')
                     _info = 'You can set episodes and start training in a box below'
                     st.info(_info, icon="ℹ️")
-                    train_allowed = True
+                    #train_allowed = True
+                    st.session_state['train_allowed'] = True
 
           ######_RADIO_EXISTING_MODEL_######
           if select_model_radio == 'Existing Model':
@@ -724,10 +745,10 @@ else:
                 nm_commission_fee_pct = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'commission_fee_pct'])
                 ####################################
                 info_trade_size_nom = nm_initial_balance * (nm_trading_size_pct/100)
-                ex_select_exist_model = st.form_submit_button('Select Model')
+                ex_select_exist_model = st.form_submit_button('Select Model', on_click=on_click_train_allowed)
 
                 if ex_select_exist_model:
-                  train_allowed = True
+                  #train_allowed = True
                   st.session_state['sess_model_name'] = nm_agent_name
                   with st.expander('Model Information', expanded=True):
                     st.write("##### Model Parameters")
@@ -752,7 +773,7 @@ else:
             with t_form_col2:
               st.write('  ')
               st.write('  ')
-              xtrain_button = st.form_submit_button("Start Training 🏃", disabled=not(train_allowed))
+              xtrain_button = st.form_submit_button("Start Training 🏃", disabled=not(st.session_state['train_allowed']), on_click=on_click_test_allowed)
             if xtrain_button:
               if select_model_radio == 'New Model' or select_model_radio == 'Existing Model':
                 train_model(ag_df_price_train=df_price_train,
@@ -771,21 +792,14 @@ else:
                 update_model_frame_u()
                 _info = 'Please proceed to "Test Model 🧪" tab to test your model'
                 st.info(_info, icon="ℹ️")
-                test_allowed = True
+                #test_allowed = True
                   #st.warning('Please create or select existing model to train.')
               
 ################################################################################################################
       ######_TEST_TAB_######
       with test_tab:
         st.write("#### Test your model on test set 🧪")
-        #if st.session_state['observe_button_status'] == False:
-          #st.warning('No dataset detected.')
-          #st.info('Please select dataset in "Select Dataset 📈" tab', icon="ℹ️")
-        #elif st.session_state['split_button_status'] == False:
-          #st.warning('No splited dataset detected.')
-          #st.info('Please split your dataset in "Select Dataset 📈" tab', icon="ℹ️")
-        #else:
-        test_button = st.button("Start Testing 🏹", disabled=not(test_allowed))
+        test_button = st.button("Start Testing 🏹", disabled=not(st.session_state['test_allowed']), on_click=on_clicl_save_allowed)
         if test_button:
           test_model(ag_df_price_test=df_price_test,
                      ag_name=nm_agent_name,
@@ -803,13 +817,13 @@ else:
           update_model_frame_u()
           _info = 'Please proceed to "Save Model 💾" tab to save your model'
           st.info(_info, icon="ℹ️")
-          save_allowed = True
+          #save_allowed = True
 ######################################################################################################
 ######
       ######_SAVE_TAB_######
       with save_tab:
         st.write("#### Save your model")
-        save_model_button = st.button('Save 💾', disabled=not(save_allowed), on_click=on_click_show_save_box)
+        save_model_button = st.button('Save 💾', disabled=not(st.session_state['save_allowed']), on_click=on_click_show_save_box)
         if st.session_state['show_save_box'] == True:
           model_name_sv = st.session_state['sess_model_name']
           with st.form('save model'):
@@ -859,9 +873,7 @@ else:
               st.success('Save model successful')
               time.sleep(1)
               st.info('You can use your model at "Generate Advice" menu', icon="ℹ️")
-              st.session_state['show_save_box'] == False
-              train_allowed = False
-              test_allowed = False
-              save_allowed = False
+              st.session_state['show_save_box'] = False
+              on_click_reset_allowed()
               
 ######################################################################################################
