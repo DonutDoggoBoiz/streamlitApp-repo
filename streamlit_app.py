@@ -9,7 +9,7 @@ import altair as alt
 import numpy as np
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 
-from func.trainModel import train_model, test_model, save_model_local, generate_advice
+from func.trainModel import train_model, test_model, deta_update_train, deta_update_test, save_model_local, generate_advice
 from func.googleCloud import upload_model_gcs, download_model_gcs
 #################################################################################
 
@@ -613,7 +613,9 @@ else:
                   st.altair_chart(alt_split.interactive(), use_container_width=True)
                   st.write('Dataset will be split into {} records ({:.2f}%) as training set and {} records ({:.2f}%) as test set'.format(
                     split_point,train_size_pct,df_length-split_point,test_size_pct) )
-                  st.success('Your Datasets are ready! Please proceed to "Set Parameters" tab')
+                  st.success('Your Datasets are ready!')
+                  _info = 'Please proceed to "Train Model 🚀" tab to create/train a model'
+                  st.info(_info, icon="ℹ️")
 ######################################################################################################
       ######_TRAIN_TAB_######
       with train_tab:
@@ -669,6 +671,8 @@ else:
                   model_db.put(model_param_dict)
                   update_model_frame_u()
                   st.success('Create Model Successful!')
+                  _info = 'You can set episodes and start training in a box below'
+                  st.info(_info, icon="ℹ️")
                   
         ######_RADIO_EXISTING_MODEL_######
         if select_model_radio == 'Existing Model':
@@ -734,14 +738,18 @@ else:
                           ag_trade_size_pct=nm_trading_size_pct,
                           ag_com_fee_pct=nm_commission_fee_pct,
                           ag_train_episode=xtrain_episodes)
-              #st.success('Training DONE!')
+              deta_update_train(username=st.session_state['username'],
+                                deta_key=st.session_state['deta_key'])
+              update_model_frame_u()
+    
+        _info = 'Please proceed to "Test Model 🧪" tab to test your model'
+        st.info(_info, icon="ℹ️")
 ################################################################################################################
       ######_TEST_TAB_######
       with test_tab:
         st.header("Test your model on test set 🧪")
         test_button = st.button("Start Testing 🏹")
         if test_button:
-          #st.session_state['test_button_status'] = True
           test_model(ag_df_price_test=df_price_test,
                      ag_name=nm_agent_name,
                      ag_gamma=nm_agent_gamma,
@@ -753,6 +761,9 @@ else:
                      ag_trade_size_pct=nm_trading_size_pct,
                      ag_com_fee_pct=nm_commission_fee_pct,
                      ag_train_episode=xtrain_episodes)
+          deta_update_test(username=st.session_state['username'],
+                           deta_key=st.session_state['deta_key'])
+          update_model_frame_u()
 ######################################################################################################
 ######
       ######_SAVE_TAB_######
@@ -789,10 +800,19 @@ else:
                       )
               st.write("Commission fee:  {:.3f}%".format(float(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,
                                                                                  'commission_fee_pct'].values)))
+              st.write('  ')
+              st.write("##### Train Result")
+              st.write("Profit/Loss:  {:.2f}THB".format(float(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,'trained_result'].values)))
+              st.write("Profit/Loss (%):  {:+,.2f}%".format(100*float(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,'trained_result'].values)/
+                                                         int(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,'initial_balance'].values)))
+              st.write('  ')
+              st.write("##### Test Result")
+              st.write("Profit/Loss:  {:.2f}THB".format(float(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,'test_result'].values)))
+              st.write("Profit/Loss (%):  {:+,.2f}%".format(100*float(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,'test_result'].values)/
+                                                         int(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,'initial_balance'].values)))
             save_submit = st.form_submit_button('Confirm')
             if save_submit:
-              save_model_local(save_username=st.session_state['username'], 
-                               deta_key=st.secrets["deta_key"])
+              save_model_local(save_username=st.session_state['username'])
               upload_model_gcs(save_username=st.session_state['username'],
                                ag_name=model_name_sv)
               time.sleep(2)
