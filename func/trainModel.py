@@ -378,7 +378,7 @@ def test_model(ag_df_price_test,
         st.warning('Please train your model before testing it.')
     
     if agent_check == True:
-        test_log_expander = st.expander('Testing Logs',expanded=True)
+        test_log_expander = st.expander('Testing Logs',expanded=False)
         ## --- loop through episodes
         for i in range(n_episodes):
             with test_log_expander:
@@ -538,7 +538,7 @@ def save_model_local(save_username):
     try:
         path = 'model/'+str(save_username)+'_'+str(agent.model_file_name)+'.h5'
         agent.q_eval.save(path)
-        st.success('Save model on local DONE!')
+        #st.success('Save model on local DONE!')
     except:
         st.error('ERROR: save_model_local')
 #END###### ---------------SAVE_MODEL--------------- ##########
@@ -670,9 +670,10 @@ def generate_advice(ag_df_price_advice,
     st.write('#### Model advice: ')
     st.write('Date: {}'.format(datetime.date.today()))
     if advice_df['position'][-1] == 'Buy':
-        st.success('#### BUY {} at current price of {} THB per share'.format(ag_quote,advice_df['Close'][-1]))
+        st.success('#### BUY ')
+        st.write('##### Buy {} ant current price of {:.2f} THB per share'.format(ag_quote,advice_df['Close'][-1]))
     else:
-        st.error('#### SELL {} at current price of {} THB per share'.format(ag_quote,advice_df['Close'][-1]))
+        st.error('#### SELL {} at current price of {:.2f} THB per share'.format(ag_quote,advice_df['Close'][-1]))
         
                 
 
