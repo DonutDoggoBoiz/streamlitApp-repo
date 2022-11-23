@@ -324,7 +324,7 @@ def train_model(ag_df_price_train,
                     use_container_width=True)
     ################################################
     eps_trained = n_episodes
-    result_train_pl = account_balance_history_dict['episode_'+str(n_episodes)][-1] - initial_balance
+    result_train_pl = round((account_balance_history_dict['episode_'+str(n_episodes)][-1] - initial_balance
 #END###### ---------------TRAIN_MODEL--------------- ##########
 
 ########## ---------------TEST_MODEL--------------- ##########
@@ -531,7 +531,7 @@ def test_model(ag_df_price_test,
         st.altair_chart(alt_net_pl_pct_hist.mark_line().interactive().configure_axis(labelFontSize=14,titleFontSize=16),
                         use_container_width=True)
         ######################################
-        result_test_pl = account_balance_history_dict['episode_1'][-1] - initial_balance
+        result_test_pl = round((account_balance_history_dict['episode_1'][-1] - initial_balance), 2)
         return result_test_pl
 #END###### ---------------TEST_MODEL--------------- ##########
 
