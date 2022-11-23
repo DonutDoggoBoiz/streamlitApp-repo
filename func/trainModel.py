@@ -668,12 +668,12 @@ def generate_advice(ag_df_price_advice,
     
     #####_ADVICE_REPORT_#####
     st.write('#### Model advice: ')
-    st.write('Date: {}'.format(datetime.date.today()))
+    st.write('As of: {}'.format(datetime.date.today()))
     if advice_df['position'][-1] == 'Buy':
         st.success('#### BUY ')
-        st.write('##### Buy {} ant current price of {:.2f} THB per share'.format(ag_quote,advice_df['Close'][-1]))
+        st.write('###### Buy "{}" at current price of {:.2f} THB per share'.format(ag_quote,advice_df['Close'][-1]))
     else:
-        st.error('#### SELL {} at current price of {:.2f} THB per share'.format(ag_quote,advice_df['Close'][-1]))
+        st.error('###### SELL "{}" at current price of {:.2f} THB per share'.format(ag_quote,advice_df['Close'][-1]))
         
                 
 
