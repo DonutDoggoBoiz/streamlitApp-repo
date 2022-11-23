@@ -116,7 +116,7 @@ def deta_update_test(username, deta_key):
     model_frame = pd.DataFrame(model_db.fetch([{'username':username},{'model_name':agent.model_file_name}]).items)
     key_to_update = model_frame['key'].to_list()[0]
     update_dict = {'test_result':result_test_pl}
-    model_db.update(updated=update_dict, key=key_to_update)
+    model_db.update(updates=update_dict, key=key_to_update)
 ########## ---------------TRAIN_MODEL--------------- ##########
         
 ########## ---------------TRAIN_MODEL--------------- ##########
