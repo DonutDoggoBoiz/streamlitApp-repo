@@ -701,9 +701,9 @@ else:
           st.warning('No splited dataset detected.')
           st.info('Please split your dataset in "Select Dataset 📈" tab', icon="ℹ️")
         else:
-          #select_model_radio = st.radio('Which model do you want to train?',
-                                        #options=['New Model', 'Existing Model'],
-                                        #horizontal=True)
+          select_model_radio = st.radio('Which model do you want to train?',
+                                        options=['New Model', 'Existing Model'],
+                                        horizontal=True)
           #choice_new_model_button = st.button('New Model')
           #choice_ex_model_button = st.button('Existing Model')
           ######_RADIO_NEW_MODEL_######
