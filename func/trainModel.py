@@ -113,7 +113,7 @@ def train_model(ag_df_price_train,
                ag_trade_size_pct,
                ag_com_fee_pct,
                ag_train_episode):
-    global agent, ep_trained, result_train_pl
+    global agent
     ### --- environment parameters
     action_space = 2      # consist of 0(Sell) , 1(Buy)
     window_size = 5      # n-days of prices used as observation or state
@@ -240,9 +240,6 @@ def train_model(ag_df_price_train,
     ### --- end of training --- ###
     st.success('Training DONE!')
     ########################
-    ep_trained = n_episodes
-    result_train_pl = acc_reward_history_dict[ep_trained] - initial_balance
-    ########################
     st.write('Reward History of last episode')
     acc_reward_history_df = pd.DataFrame(acc_reward_history_dict, index=ag_df_price_train[5:-1].index)
     alt_acc_reward = alt.Chart(acc_reward_history_df.iloc[:,-1].reset_index()
@@ -270,6 +267,9 @@ def train_model(ag_df_price_train,
                                         )
     st.altair_chart(alt_acc_bal_hist.mark_line().interactive().configure_axis(labelFontSize=14,titleFontSize=16),
                     use_container_width=True)
+    
+    result_train_pl = account_balance_history_dict[n_episodes] - initial_balance
+    return result_train_pl
 #END###### ---------------TRAIN_MODEL--------------- ##########
 
 ########## ---------------TEST_MODEL--------------- ##########
@@ -413,7 +413,7 @@ def test_model(ag_df_price_test,
                     ### --- start next episode --- ###
         ### --- end of training --- ###
         st.success('Testing DONE!')
-        result_test_pl = account_balance_history_dict['episode_1'] - initial_balance
+        ######################################
         st.write('Reward History')
         acc_reward_history_df = pd.DataFrame(acc_reward_history_dict, index=ag_df_price_test[5:-1].index)
         alt_acc_reward = alt.Chart(acc_reward_history_df.iloc[:,-1].reset_index()
@@ -439,18 +439,13 @@ def test_model(ag_df_price_test,
                                                       alt.Tooltip(account_balance_history_df.columns[-1], title='Account Balance')])
         st.altair_chart(alt_acc_bal_hist.mark_line().interactive().configure_axis(labelFontSize=14,titleFontSize=16),
                         use_container_width=True)
+        
+        result_test_pl = account_balance_history_dict['episode_1'] - initial_balance
+        return result_test_pl
 #END###### ---------------TEST_MODEL--------------- ##########
 
 ########## ---------------SAVE_MODEL--------------- ##########
-def save_model_local(save_username, deta_key):
-    deta = Deta(deta_key)
-    model_db = deta.Base("model_db")
-    _model_frame_u = pd.DataFrame(model_db.fetch({'username':save_username}))
-    key_to_update = _model_frame_u.loc[_model_frame_u['model_name']==agent.model_file_name, 'key'].to_list()[0]
-    update_dict = {'episode_trained':ep_trained,
-                  'trained_result':result_train_pl,
-                  'test_result':result_test_pl}
-    model_db.update(updates=update_dict, key=key_to_update)
+def save_model_local(save_username):
     try:
         path = 'model/'+str(save_username)+'_'+str(agent.model_file_name)+'.h5'
         agent.q_eval.save(path)
