@@ -637,12 +637,11 @@ else:
         elif st.session_state['split_button_status'] == False:
           st.warning('No splited dataset detected.')
           st.info('Please split your dataset in "Select Dataset 📈" tab', icon="ℹ️")
-        
-        
         else:
           select_model_radio = st.radio('Which model do you want to train?',
                                         options=['New Model', 'Existing Model'],
                                         horizontal=True)
+          train_allowed = False
           ######_RADIO_NEW_MODEL_######
           if select_model_radio == 'New Model':
             with st.form('set_param_new_model'):
@@ -693,6 +692,7 @@ else:
                     st.success('Create Model Successful!')
                     _info = 'You can set episodes and start training in a box below'
                     st.info(_info, icon="ℹ️")
+                    train_allowed = True
 
           ######_RADIO_EXISTING_MODEL_######
           if select_model_radio == 'Existing Model':
@@ -722,6 +722,7 @@ else:
                 ex_select_exist_model = st.form_submit_button('Select Model')
 
                 if ex_select_exist_model:
+                  train_allowed = True
                   with st.expander('Model Information', expanded=True):
                     st.write("##### Model Parameters")
                     st.write("Model name: {}".format(nm_agent_name))
@@ -745,28 +746,26 @@ else:
             with t_form_col2:
               st.write('  ')
               st.write('  ')
-              xtrain_button = st.form_submit_button("Start Training 🏃")
+              xtrain_button = st.form_submit_button("Start Training 🏃", disabled=not(train_allowed))
             if xtrain_button:
               if select_model_radio == 'New Model' or select_model_radio == 'Existing Model':
-                try:
-                  train_model(ag_df_price_train=df_price_train,
-                              ag_name=nm_agent_name,
-                              ag_gamma=nm_agent_gamma,
-                              ag_eps=nm_agent_epsilon,
-                              ag_eps_dec=nm_agent_epsilon_dec,
-                              ag_eps_min=nm_agent_epsilon_end,
-                              ag_lr=nm_agent_lr,
-                              ag_ini_bal=nm_initial_balance,
-                              ag_trade_size_pct=nm_trading_size_pct,
-                              ag_com_fee_pct=nm_commission_fee_pct,
-                              ag_train_episode=xtrain_episodes)
-                  deta_update_train(username=st.session_state['username'],
-                                    deta_key=st.session_state['deta_key'])
-                  update_model_frame_u()
-                  _info = 'Please proceed to "Test Model 🧪" tab to test your model'
-                  st.info(_info, icon="ℹ️")
-                except:
-                  st.warning('Please create or select existing model to train.')
+                train_model(ag_df_price_train=df_price_train,
+                            ag_name=nm_agent_name,
+                            ag_gamma=nm_agent_gamma,
+                            ag_eps=nm_agent_epsilon,
+                            ag_eps_dec=nm_agent_epsilon_dec,
+                            ag_eps_min=nm_agent_epsilon_end,
+                            ag_lr=nm_agent_lr,
+                            ag_ini_bal=nm_initial_balance,
+                            ag_trade_size_pct=nm_trading_size_pct,
+                            ag_com_fee_pct=nm_commission_fee_pct,
+                            ag_train_episode=xtrain_episodes)
+                deta_update_train(username=st.session_state['username'],
+                                  deta_key=st.session_state['deta_key'])
+                update_model_frame_u()
+                _info = 'Please proceed to "Test Model 🧪" tab to test your model'
+                st.info(_info, icon="ℹ️")
+                  #st.warning('Please create or select existing model to train.')
               
 ################################################################################################################
       ######_TEST_TAB_######
