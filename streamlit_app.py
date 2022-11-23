@@ -182,10 +182,27 @@ def on_click_model_b():
 
       #########_DEVELOP_MODEL_TAB_#########
 def on_click_observe_b():
+  global df_price, df_length
   st.session_state['observe_button_status'] = True
+  ############################################################
+  stock_code = stock_name + '.BK'
+  df_price = yf.download(stock_code, start=start_date, end=end_date, progress=True)
+  df_price.drop(columns=['Adj Close','Volume'] , inplace=True)
+  df_length = df_price['Close'].count()
   
 def on_click_split_b():
+  global train_size_pct, test_size_pct, df_price_train, df_price_test, train_prices, test_prices
     st.session_state['split_button_status'] = True
+    ############################################################
+    train_size_pct = (split_point/df_length)*100
+    test_size_pct = 100-train_size_pct
+    df_price['split'] = 'split'
+    df_price.loc[:split_point, 'split'] = 'Train set'
+    df_price.loc[split_point:, 'split'] = 'Test set'
+    df_price_train = df_price[:split_point]
+    df_price_test = df_price[split_point:]
+    train_prices = df_price_train['Close'].to_numpy()
+    test_prices = df_price_test['Close'].to_numpy()
     
 def on_click_select_exist_model_b():
   st.session_state['xselect_exist_model_button_status'] = True
@@ -634,12 +651,11 @@ else:
           col_observe_b, col_describe = st.columns([1,3])
           with col_observe_b:
             observe_button = st.button('View Dataset 🔍', on_click=on_click_observe_b)
-########
         if observe_button or st.session_state['observe_button_status']:
-          stock_code = stock_name + '.BK'
-          df_price = yf.download(stock_code, start=start_date, end=end_date, progress=True)
-          df_price.drop(columns=['Adj Close','Volume'] , inplace=True)
-          df_length = df_price['Close'].count()
+          #stock_code = stock_name + '.BK'
+          #df_price = yf.download(stock_code, start=start_date, end=end_date, progress=True)
+          #df_price.drop(columns=['Adj Close','Volume'] , inplace=True)
+          #df_length = df_price['Close'].count()
           
           with col_describe:
             st.write('This dataset contains {} days of historical prices'.format(df_length))
@@ -657,15 +673,15 @@ else:
               st.write('This dataset contains {} days of historical prices'.format(df_length))
               split_point = st.slider('Select the split point between Train set and Test set:', 0, int(df_length), int(df_length/2))
               ##############################
-              train_size_pct = (split_point/df_length)*100
-              test_size_pct = 100-train_size_pct
-              df_price['split'] = 'split'
-              df_price.loc[:split_point, 'split'] = 'Train set'
-              df_price.loc[split_point:, 'split'] = 'Test set'
-              df_price_train = df_price[:split_point]
-              df_price_test = df_price[split_point:]
-              train_prices = df_price_train['Close'].to_numpy()
-              test_prices = df_price_test['Close'].to_numpy()
+              #train_size_pct = (split_point/df_length)*100
+              #test_size_pct = 100-train_size_pct
+              #df_price['split'] = 'split'
+              #df_price.loc[:split_point, 'split'] = 'Train set'
+              #df_price.loc[split_point:, 'split'] = 'Test set'
+              #df_price_train = df_price[:split_point]
+              #df_price_test = df_price[split_point:]
+              #train_prices = df_price_train['Close'].to_numpy()
+              #test_prices = df_price_test['Close'].to_numpy()
               ##############################
               alt_split = (alt.Chart(df_price.reset_index()).mark_line().encode(
                 x = alt.X('Date'),
@@ -770,38 +786,38 @@ else:
                 ex_model_list = model_frame_u['model_name'].sort_values(ascending=True)
                 ex_to_train_model = st.selectbox('Select your existing model',
                                                  options=ex_model_list)
-                ex_agent_name = ex_to_train_model
+                nm_agent_name = ex_to_train_model
                 ######### TEST REUSE VARIABLE ######
-                ex_agent_name = ex_to_train_model
-                ex_agent_gamma = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'gamma'])
-                ex_agent_epsilon = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'epsilon_start'])
-                ex_agent_epsilon_dec = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'epsilon_decline'])
-                ex_agent_epsilon_end = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'epsilon_min'])
-                ex_agent_lr = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'learning_rate'])
-                ex_initial_balance = int(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'initial_balance'])
-                ex_trading_size_pct = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'trading_size_pct'])
-                ex_commission_fee_pct = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'commission_fee_pct'])
+                nm_agent_name = ex_to_train_model
+                nm_agent_gamma = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'gamma'])
+                nm_agent_epsilon = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'epsilon_start'])
+                nm_agent_epsilon_dec = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'epsilon_decline'])
+                nm_agent_epsilon_end = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'epsilon_min'])
+                nm_agent_lr = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'learning_rate'])
+                nm_initial_balance = int(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'initial_balance'])
+                nm_trading_size_pct = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'trading_size_pct'])
+                nm_commission_fee_pct = float(model_frame_u.loc[model_frame_u['model_name']==ex_to_train_model,'commission_fee_pct'])
                 ####################################
-                info_trade_size_nom = ex_initial_balance * (ex_trading_size_pct/100)
+                info_trade_size_nom = nm_initial_balance * (nm_trading_size_pct/100)
                 ex_select_exist_model = st.form_submit_button('Select Model', on_click=on_click_train_allowed)
 
                 if ex_select_exist_model:
                   #train_allowed = True
-                  st.session_state['sess_model_name'] = ex_agent_name
+                  st.session_state['sess_model_name'] = nm_agent_name
                   with st.expander('Model Information', expanded=True):
                     st.write("##### Model Parameters")
-                    st.write("Model name: {}".format(ex_agent_name))
-                    st.write("Gamma: {:.2f}".format(ex_agent_gamma))
-                    st.write("Starting epsilon: {:.2f}".format(ex_agent_epsilon))
-                    st.write("Epsilon decline rate: {:.4f}".format(ex_agent_epsilon_dec))
-                    st.write("Minimum epsilon: {:.2f}".format(ex_agent_epsilon_end))
-                    st.write("Learning rate: {:.4f}".format(ex_agent_lr))
+                    st.write("Model name: {}".format(nm_agent_name))
+                    st.write("Gamma: {:.2f}".format(nm_agent_gamma))
+                    st.write("Starting epsilon: {:.2f}".format(nm_agent_epsilon))
+                    st.write("Epsilon decline rate: {:.4f}".format(nm_agent_epsilon_dec))
+                    st.write("Minimum epsilon: {:.2f}".format(nm_agent_epsilon_end))
+                    st.write("Learning rate: {:.4f}".format(nm_agent_lr))
                     st.write('  ')
                     st.write("##### Trading Parameters")
-                    st.write("Initial account balance:  {:,} ฿".format(ex_initial_balance))
-                    st.write("Trading size (%):  {}%".format(ex_trading_size_pct))
+                    st.write("Initial account balance:  {:,} ฿".format(nm_initial_balance))
+                    st.write("Trading size (%):  {}%".format(nm_trading_size_pct))
                     st.write("Trading size (THB):  {:,}".format(info_trade_size_nom))
-                    st.write("Commission fee:  {:.3f}%".format(ex_commission_fee_pct))
+                    st.write("Commission fee:  {:.3f}%".format(nm_commission_fee_pct))
 
           with st.form('train_form'):
             st.write('How many episodes to train?')
@@ -813,7 +829,7 @@ else:
               st.write('  ')
               xtrain_button = st.form_submit_button("Start Training 🏃", disabled=not(st.session_state['train_allowed']), on_click=on_click_test_allowed)
             if xtrain_button:
-              if select_model_radio == 'New Model':
+              if select_model_radio == 'New Model' or select_model_radio == 'Existing Model':
                 train_model(ag_df_price_train=df_price_train,
                             ag_name=nm_agent_name,
                             ag_gamma=nm_agent_gamma,
@@ -824,19 +840,6 @@ else:
                             ag_ini_bal=nm_initial_balance,
                             ag_trade_size_pct=nm_trading_size_pct,
                             ag_com_fee_pct=nm_commission_fee_pct,
-                            ag_train_episode=xtrain_episodes)
-                
-              elif select_model_radio == 'Existing Model':
-                train_model(ag_df_price_train=df_price_train,
-                            ag_name=ex_agent_name,
-                            ag_gamma=ex_agent_gamma,
-                            ag_eps=ex_agent_epsilon,
-                            ag_eps_dec=ex_agent_epsilon_dec,
-                            ag_eps_min=ex_agent_epsilon_end,
-                            ag_lr=ex_agent_lr,
-                            ag_ini_bal=ex_initial_balance,
-                            ag_trade_size_pct=ex_trading_size_pct,
-                            ag_com_fee_pct=ex_commission_fee_pct,
                             ag_train_episode=xtrain_episodes)
                 deta_update_train(username=st.session_state['username'],
                                   deta_key=st.secrets["deta_key"])
