@@ -798,7 +798,7 @@ else:
           deta_update_test(username=st.session_state['username'],
                            deta_key=st.session_state['deta_key'])
           update_model_frame_u()
-          _info = 'Please proceed to "Save 💾" tab to save your model'
+          _info = 'Please proceed to "Save Model 💾" tab to save your model'
           st.info(_info, icon="ℹ️")
           save_allowed = True
 ######################################################################################################
@@ -806,7 +806,7 @@ else:
       ######_SAVE_TAB_######
       with save_tab:
         st.write("#### Save your model")
-        save_model_button = st.button('Save 💾', ,disabled=not(save_allowed), on_click=on_click_show_save_box)
+        save_model_button = st.button('Save 💾', disabled=not(save_allowed), on_click=on_click_show_save_box)
         if st.session_state['show_save_box'] == True:
           model_name_sv = st.session_state['sess_model_name']
           with st.form('save model'):
