@@ -113,7 +113,7 @@ def deta_update_train(username, deta_key):
 def deta_update_test(username, deta_key):
     deta = Deta(deta_key)
     model_db = deta.Base("model_db")
-    model_frame = pd.DataFrame(model_db.fetch({'username':username},{'model_name':agent.model_file_name}).items)
+    model_frame = pd.DataFrame(model_db.fetch([{'username':username},{'model_name':agent.model_file_name}]).items)
     key_to_update = model_frame['key'].to_list()[0]
     update_dict = {'test_result':result_test_pl}
     model_db.update(updated=update_dict, key=key_to_update)
@@ -455,10 +455,11 @@ def test_model(ag_df_price_test,
 
                     ### --- end of 1 episode --- ###
                     if done:
-                        st.success('Testing DONE!')
-                        st.write('Testing result')
-                        st.write("--- Total Reward: {:+,.2f} | Net Profit/Loss: {:+,.2f} THB".format(acc_reward,
-                                                                                                 account_balance-initial_balance))
+                        st.write('Testing Summary')
+                        st.write("--- Total Reward: {:+,.2f}".format(acc_reward))
+                        st.write("--- Account Balance: {:+,.2f}".format(account_balance))
+                        st.write("--- Net Profit/Loss: {:+,.2f}".format(account_balance-initial_balance))
+                        st.write("--- Net Profit/Loss (%): {:+,.2f}%".format((100*(account_balance-initial_balance))/initial_balance))
 
                     acc_reward_history_dict['episode_'+str(i+1)] = acc_reward_history
                     action_history_dict['episode_'+str(i+1)] = action_history
