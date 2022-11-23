@@ -175,7 +175,7 @@ def train_model(ag_df_price_train,
     for i in range(n_episodes):
         ### --- start episode --- ###
         with train_log_expander:
-            st.write("--- Episode " + str(i+1) + " / " + str(n_episodes) + 'training...')
+            st.write("--- Episode " + str(i+1) + " / " + str(n_episodes) + ' training...')
 
         # slider window
         start_tick = window_size
@@ -257,7 +257,7 @@ def train_model(ag_df_price_train,
                 trade_exposure_history_dict['episode_'+str(i+1)] = trade_exposure_history
                 account_balance_history_dict['episode_'+str(i+1)] = account_balance_history
                 net_pl_history_dict['episode_'+str(i+1)] = net_pl_history
-                new_pl_pct_history_dict['episode_'+str(i+1)] = net_pl_pct_history
+                net_pl_pct_history_dict['episode_'+str(i+1)] = net_pl_pct_history
 
                 all_acc_reward_history.append([(i+1),acc_reward])
                 all_balance_history.append([(i+1),account_balance])
