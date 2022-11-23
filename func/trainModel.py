@@ -324,7 +324,7 @@ def train_model(ag_df_price_train,
                     use_container_width=True)
     ################################################
     eps_trained = n_episodes
-    result_train_pl = round((account_balance_history_dict['episode_'+str(n_episodes)][-1] - initial_balance
+    result_train_pl = round((account_balance_history_dict['episode_'+str(n_episodes)][-1] - initial_balance), 2)
 #END###### ---------------TRAIN_MODEL--------------- ##########
 
 ########## ---------------TEST_MODEL--------------- ##########
