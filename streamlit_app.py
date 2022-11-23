@@ -787,7 +787,7 @@ else:
 
                 if ex_select_exist_model:
                   #train_allowed = True
-                  st.session_state['sess_model_name'] = nm_agent_name
+                  st.session_state['sess_model_name'] = ex_agent_name
                   with st.expander('Model Information', expanded=True):
                     st.write("##### Model Parameters")
                     st.write("Model name: {}".format(ex_agent_name))
