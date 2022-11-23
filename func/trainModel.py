@@ -382,82 +382,79 @@ def test_model(ag_df_price_test,
         ## --- loop through episodes
         for i in range(n_episodes):
             with test_log_expander:
-                st.write("--- Episode " + str(i+1) + " / " + str(n_episodes) + ' ---' )
+                # slider window
+                start_tick = window_size
+                end_tick = len(test_prices) - 2 
+                current_tick = start_tick
+                done = False
 
-            # slider window
-            start_tick = window_size
-            end_tick = len(test_prices) - 2 
-            current_tick = start_tick
-            done = False
-
-            # bundle test_prices data into state and new_state
-            state = test_prices[ (current_tick - window_size) : current_tick ]
-            new_state = test_prices[ (current_tick - window_size) + 1 : current_tick+1 ]
-
-            # initiate episodial variables
-            acc_reward_history = []
-            action_history = []
-            trade_exposure_history = []
-            account_balance_history = []
-            nom_return_history = []
-            real_return_history = []
-            net_pl_history = []
-            net_pl_pct_history = []
-
-            acc_reward = 0
-            account_balance = initial_balance
-            trade_exposure = False
-            trade_exposure_ledger = []
-            last_buy = []
-    ########
-            while not done:
-                pred_action = agent.q_eval.predict(np.array([state]), verbose=0)
-                action = np.argmax(pred_action)
-
-                if action == 1: # buy
-                    reward = test_prices[current_tick+1] - test_prices[current_tick]
-                    acc_reward += reward
-                    if trade_exposure == False:
-                        last_buy.append(test_prices[current_tick])
-                        trade_exposure = True
-                    st.write("Step: {} | Buy at: {} | Reward: {:+,.2f} | Profit/Loss: {:+,.2f}".format(current_tick-4,
-                                                                                                       test_prices[current_tick],
-                                                                                                       reward,
-                                                                                                       account_balance-initial_balance))
-
-                elif action == 0: # sell
-                    reward = test_prices[current_tick] - test_prices[current_tick+1]
-                    acc_reward += reward
-                    if trade_exposure == True:
-                        return_pct = (test_prices[current_tick] - last_buy[-1]) / last_buy[-1]
-                        market_value = (return_pct+1) * trade_size
-                        nom_return = return_pct * trade_size
-                        real_return = (return_pct * trade_size) - (market_value * commission_fee) - (trade_size * commission_fee)
-                        account_balance += real_return
-                        nom_return_history.append([int(current_tick),nom_return])
-                        real_return_history.append([int(current_tick),real_return])
-                        trade_exposure = False
-                    st.write("Step: {} | Sell at: {} | Reward: {:+,.2f} | Profit/Loss: {:+,.2f}".format(current_tick-4,
-                                                                                                       test_prices[current_tick],
-                                                                                                       reward,
-                                                                                                       account_balance-initial_balance))
-                done = True if current_tick == end_tick else False
-
-                current_tick += 1
-                state = new_state
+                # bundle test_prices data into state and new_state
+                state = test_prices[ (current_tick - window_size) : current_tick ]
                 new_state = test_prices[ (current_tick - window_size) + 1 : current_tick+1 ]
 
-                # append history lists
-                acc_reward_history.append(acc_reward)
-                action_history.append(action)
-                trade_exposure_history.append(trade_exposure)
-                account_balance_history.append(account_balance)
-                net_pl_history.append(account_balance-initial_balance)
-                net_pl_pct_history.append((100*(account_balance-initial_balance))/initial_balance)
+                # initiate episodial variables
+                acc_reward_history = []
+                action_history = []
+                trade_exposure_history = []
+                account_balance_history = []
+                nom_return_history = []
+                real_return_history = []
+                net_pl_history = []
+                net_pl_pct_history = []
 
-                ### --- end of 1 episode --- ###
-                if done:
-                    with test_log_expander:
+                acc_reward = 0
+                account_balance = initial_balance
+                trade_exposure = False
+                trade_exposure_ledger = []
+                last_buy = []
+        ########
+                while not done:
+                    pred_action = agent.q_eval.predict(np.array([state]), verbose=0)
+                    action = np.argmax(pred_action)
+
+                    if action == 1: # buy
+                        reward = test_prices[current_tick+1] - test_prices[current_tick]
+                        acc_reward += reward
+                        if trade_exposure == False:
+                            last_buy.append(test_prices[current_tick])
+                            trade_exposure = True
+                        st.write("Step: {} | Buy at: {} | Reward: {:+,.2f} | Profit/Loss: {:+,.2f}".format(current_tick-4,
+                                                                                                           test_prices[current_tick],
+                                                                                                           reward,
+                                                                                                           account_balance-initial_balance))
+
+                    elif action == 0: # sell
+                        reward = test_prices[current_tick] - test_prices[current_tick+1]
+                        acc_reward += reward
+                        if trade_exposure == True:
+                            return_pct = (test_prices[current_tick] - last_buy[-1]) / last_buy[-1]
+                            market_value = (return_pct+1) * trade_size
+                            nom_return = return_pct * trade_size
+                            real_return = (return_pct * trade_size) - (market_value * commission_fee) - (trade_size * commission_fee)
+                            account_balance += real_return
+                            nom_return_history.append([int(current_tick),nom_return])
+                            real_return_history.append([int(current_tick),real_return])
+                            trade_exposure = False
+                        st.write("Step: {} | Sell at: {} | Reward: {:+,.2f} | Profit/Loss: {:+,.2f}".format(current_tick-4,
+                                                                                                           test_prices[current_tick],
+                                                                                                           reward,
+                                                                                                           account_balance-initial_balance))
+                    done = True if current_tick == end_tick else False
+
+                    current_tick += 1
+                    state = new_state
+                    new_state = test_prices[ (current_tick - window_size) + 1 : current_tick+1 ]
+
+                    # append history lists
+                    acc_reward_history.append(acc_reward)
+                    action_history.append(action)
+                    trade_exposure_history.append(trade_exposure)
+                    account_balance_history.append(account_balance)
+                    net_pl_history.append(account_balance-initial_balance)
+                    net_pl_pct_history.append((100*(account_balance-initial_balance))/initial_balance)
+
+                    ### --- end of 1 episode --- ###
+                    if done:
                         st.success('Testing DONE!')
                         st.write('Testing result')
                         st.write("--- Total Reward: {:+,.2f} | Net Profit/Loss: {:+,.2f} THB".format(acc_reward,
@@ -505,7 +502,7 @@ def test_model(ag_df_price_test,
                         use_container_width=True)
         ######################################
         st.write('Net Profit/Loss History')
-        net_pl_history_df = pd.DataFrame(net_pl_history_dict, index=ag_df_price_train[5:-1].index)
+        net_pl_history_df = pd.DataFrame(net_pl_history_dict, index=ag_df_price_test[5:-1].index)
         alt_net_pl_hist = alt.Chart(net_pl_history_df.iloc[:,-1].reset_index()
                                    ).encode(x = alt.X('Date'),
                                             y = alt.Y(net_pl_history_df.columns[-1],
@@ -518,7 +515,7 @@ def test_model(ag_df_price_test,
         st.altair_chart(alt_net_pl_hist.mark_line().interactive().configure_axis(labelFontSize=14,titleFontSize=16),
                         use_container_width=True)
         ######################################
-        net_pl_pct_history_df = pd.DataFrame(net_pl_pct_history_dict, index=ag_df_price_train[5:-1].index)
+        net_pl_pct_history_df = pd.DataFrame(net_pl_pct_history_dict, index=ag_df_price_test[5:-1].index)
         alt_net_pl_pct_hist = alt.Chart(net_pl_pct_history_df.iloc[:,-1].reset_index()
                                    ).encode(x = alt.X('Date'),
                                             y = alt.Y(net_pl_pct_history_df.columns[-1],
