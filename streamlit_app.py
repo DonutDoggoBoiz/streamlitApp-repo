@@ -644,8 +644,9 @@ else:
               if nm_create_model:
                 if len(nm_agent_name) <= 0:
                   st.warning('Please name your model')
-                elif (nm_agent_name in model_frame_u['model_name'].to_list()) == True:
-                  st.warning('Model name is already exist. Please type new model name')
+                elif len(model_frame_u) > 0:
+                  if (nm_agent_name in model_frame_u['model_name'].to_list()) == True:
+                    st.warning('Model name is already exist. Please type new model name')
                 else:
                   st.session_state['sess_model_name'] = nm_agent_name
                   model_param_dict = {'username': st.session_state['username'],
