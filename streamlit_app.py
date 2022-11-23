@@ -349,8 +349,8 @@ else:
   if model_manage_b or manage_model_side_b or st.session_state['model_manage_b_status']:
     st.write('#### Model Management')
     if len(model_frame_u) <= 0:
-      _warning = "You don't have any created model.
-      _info = "you can create a new model in "+"Develop Model "+"menu."
+      _warning = "You don't have any created model."
+      _info = 'You can create a new model in '+'"Develop Model "'+'menu.'
       st.warning(_warning)
       st.info(_info, icon="ℹ️")
       
@@ -477,8 +477,8 @@ else:
   if advice_b or advice_side_b or st.session_state['advice_b_status']:
     st.markdown("#### Generate Investment Advice 📈")
     if len(model_frame_u) <= 0:
-      _warning = "You don't have any created model.
-      _info = "you can create a new model in "+"Develop Model "+"menu."
+      _warning = "You don't have any created model."
+      _info = 'You can create a new model in '+'"Develop Model "'+'menu.'
       st.warning(_warning)
       st.info(_info, icon="ℹ️")
     else: #len(model_frame_u) > 0
@@ -672,8 +672,8 @@ else:
         ######_RADIO_EXISTING_MODEL_######
         if select_model_radio == 'Existing Model':
           if len(model_frame_u) <= 0:
-            _warning = "You don't have any created model.
-            _info = "select "+"New Model "+"option to create a new model."
+            _warning = "You don't have any created model."
+            _info = 'select '+'"New Model "'+'option to create a new model.'
             st.warning(_warning)
             st.info(_info, icon="ℹ️")
           with st.form('select_existing_model'):
