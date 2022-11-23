@@ -108,7 +108,7 @@ def deta_update_train(username, deta_key):
     key_to_update = model_frame['key'].to_list()[0]
     update_dict = {'episode_trained':eps_trained,
                    'trained_result':result_train_pl}
-    model_db.update(updated=update_dict, key=key_to_update)
+    model_db.update(updates=update_dict, key=key_to_update)
     
 def deta_update_test(username, deta_key):
     deta = Deta(deta_key)
