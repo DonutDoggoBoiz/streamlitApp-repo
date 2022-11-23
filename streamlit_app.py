@@ -741,9 +741,9 @@ else:
               deta_update_train(username=st.session_state['username'],
                                 deta_key=st.session_state['deta_key'])
               update_model_frame_u()
-    
-        _info = 'Please proceed to "Test Model 🧪" tab to test your model'
-        st.info(_info, icon="ℹ️")
+              _info = 'Please proceed to "Test Model 🧪" tab to test your model'
+              st.info(_info, icon="ℹ️")
+              
 ################################################################################################################
       ######_TEST_TAB_######
       with test_tab:
@@ -764,6 +764,8 @@ else:
           deta_update_test(username=st.session_state['username'],
                            deta_key=st.session_state['deta_key'])
           update_model_frame_u()
+          _info = 'Please proceed to "Save 💾" tab to save your model'
+          st.info(_info, icon="ℹ️")
 ######################################################################################################
 ######
       ######_SAVE_TAB_######
