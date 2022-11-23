@@ -15,7 +15,7 @@ def upload_model_gcs(save_username, ag_name):
     gcs_path = 'gcs_model/'+str(save_username)+'/'+str(ag_name)+'.h5'
     gcs_blob = bucket.blob(gcs_path)
     gcs_blob.upload_from_filename(local_path)
-    st.success('Upload to GCS DONE!')
+    #st.success('Upload to GCS DONE!')
   except:
     st.error('ERROR: upload_model_gcs')
 
