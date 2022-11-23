@@ -518,7 +518,7 @@ else:
           st.write(' Epsilon Minimum : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_min'].to_list()[0]))
           st.write(' Learning Rate : {:.3f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'learning_rate'].to_list()[0]))
 
-          generate_advice_button = st.button('Generate Advice')
+        generate_advice_button = st.button('Generate Advice')
 
         #####_GENERATE_ADVICE_BUTTON_#####
         if generate_advice_button:
@@ -859,5 +859,9 @@ else:
               st.success('Save model successful')
               time.sleep(1)
               st.info('You can use your model at "Generate Advice" menu', icon="ℹ️")
+              st.session_state['show_save_box'] == False
+              train_allowed = False
+              test_allowed = False
+              save_allowed = False
               
 ######################################################################################################
