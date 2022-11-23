@@ -642,6 +642,8 @@ else:
                                         options=['New Model', 'Existing Model'],
                                         horizontal=True)
           train_allowed = False
+          test_allowed = False
+          save_allowed = False
           ######_RADIO_NEW_MODEL_######
           if select_model_radio == 'New Model':
             with st.form('set_param_new_model'):
@@ -723,6 +725,7 @@ else:
 
                 if ex_select_exist_model:
                   train_allowed = True
+                  st.session_state['sess_model_name'] = nm_agent_name
                   with st.expander('Model Information', expanded=True):
                     st.write("##### Model Parameters")
                     st.write("Model name: {}".format(nm_agent_name))
@@ -742,7 +745,7 @@ else:
             st.write('How many episodes to train?')
             t_form_col1 , t_form_col2 = st.columns(2)
             with t_form_col1:
-              xtrain_episodes = st.number_input('Number of training episodes:', value=2, step=1, min_value=0)
+              xtrain_episodes = st.number_input('Number of training episodes:', value=2, step=1, min_value=0, disabled=not(train_allowed))
             with t_form_col2:
               st.write('  ')
               st.write('  ')
@@ -765,43 +768,45 @@ else:
                 update_model_frame_u()
                 _info = 'Please proceed to "Test Model 🧪" tab to test your model'
                 st.info(_info, icon="ℹ️")
+                test_allowed = True
                   #st.warning('Please create or select existing model to train.')
               
 ################################################################################################################
       ######_TEST_TAB_######
       with test_tab:
         st.write("#### Test your model on test set 🧪")
-        if st.session_state['observe_button_status'] == False:
-          st.warning('No dataset detected.')
-          st.info('Please select dataset in "Select Dataset 📈" tab', icon="ℹ️")
-        elif st.session_state['split_button_status'] == False:
-          st.warning('No splited dataset detected.')
-          st.info('Please split your dataset in "Select Dataset 📈" tab', icon="ℹ️")
-        else:
-          test_button = st.button("Start Testing 🏹")
-          if test_button:
-            test_model(ag_df_price_test=df_price_test,
-                       ag_name=nm_agent_name,
-                       ag_gamma=nm_agent_gamma,
-                       ag_eps=nm_agent_epsilon,
-                       ag_eps_dec=nm_agent_epsilon_dec,
-                       ag_eps_min=nm_agent_epsilon_end,
-                       ag_lr=nm_agent_lr,
-                       ag_ini_bal=nm_initial_balance,
-                       ag_trade_size_pct=nm_trading_size_pct,
-                       ag_com_fee_pct=nm_commission_fee_pct,
-                       ag_train_episode=xtrain_episodes)
-            deta_update_test(username=st.session_state['username'],
-                             deta_key=st.session_state['deta_key'])
-            update_model_frame_u()
-            _info = 'Please proceed to "Save 💾" tab to save your model'
-            st.info(_info, icon="ℹ️")
+        #if st.session_state['observe_button_status'] == False:
+          #st.warning('No dataset detected.')
+          #st.info('Please select dataset in "Select Dataset 📈" tab', icon="ℹ️")
+        #elif st.session_state['split_button_status'] == False:
+          #st.warning('No splited dataset detected.')
+          #st.info('Please split your dataset in "Select Dataset 📈" tab', icon="ℹ️")
+        #else:
+        test_button = st.button("Start Testing 🏹", disabled=not(test_allowed))
+        if test_button:
+          test_model(ag_df_price_test=df_price_test,
+                     ag_name=nm_agent_name,
+                     ag_gamma=nm_agent_gamma,
+                     ag_eps=nm_agent_epsilon,
+                     ag_eps_dec=nm_agent_epsilon_dec,
+                     ag_eps_min=nm_agent_epsilon_end,
+                     ag_lr=nm_agent_lr,
+                     ag_ini_bal=nm_initial_balance,
+                     ag_trade_size_pct=nm_trading_size_pct,
+                     ag_com_fee_pct=nm_commission_fee_pct,
+                     ag_train_episode=xtrain_episodes)
+          deta_update_test(username=st.session_state['username'],
+                           deta_key=st.session_state['deta_key'])
+          update_model_frame_u()
+          _info = 'Please proceed to "Save 💾" tab to save your model'
+          st.info(_info, icon="ℹ️")
+          save_allowed = True
 ######################################################################################################
 ######
       ######_SAVE_TAB_######
       with save_tab:
         st.write("#### Save your model")
-        save_model_button = st.button('Save 💾', on_click=on_click_show_save_box)
+        save_model_button = st.button('Save 💾', ,disabled=not(save_allowed), on_click=on_click_show_save_box)
         if st.session_state['show_save_box'] == True:
           model_name_sv = st.session_state['sess_model_name']
           with st.form('save model'):
