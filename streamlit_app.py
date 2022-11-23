@@ -349,8 +349,10 @@ else:
   if model_manage_b or manage_model_side_b or st.session_state['model_manage_b_status']:
     st.write('#### Model Management')
     if len(model_frame_u) <= 0:
-      _warning = "You don't have any created model. you can make a new one in "+"Develop Model "+"menu."
+      _warning = "You don't have any created model.
+      _info = "you can create a new model in "+"Develop Model "+"menu."
       st.warning(_warning)
+      st.info(_info, icon="ℹ️")
       
     else: #len(model_frame_u) > 0
     ######_GRID_VIEWER_######
@@ -475,8 +477,10 @@ else:
   if advice_b or advice_side_b or st.session_state['advice_b_status']:
     st.markdown("#### Generate Investment Advice 📈")
     if len(model_frame_u) <= 0:
-      _warning = "You don't have any created model. you can make a new one in "+"Develop Model "+"menu."
+      _warning = "You don't have any created model.
+      _info = "you can create a new model in "+"Develop Model "+"menu."
       st.warning(_warning)
+      st.info(_info, icon="ℹ️")
     else: #len(model_frame_u) > 0
       with placeholder_2.container():
         #st.markdown("#### Generate Investment Advice 📈")
@@ -668,8 +672,10 @@ else:
         ######_RADIO_EXISTING_MODEL_######
         if select_model_radio == 'Existing Model':
           if len(model_frame_u) <= 0:
-            _warning = "You don't have any created model. Please select "+"New Model "+"option to make a new one."
+            _warning = "You don't have any created model.
+            _info = "select "+"New Model "+"option to create a new model."
             st.warning(_warning)
+            st.info(_info, icon="ℹ️")
           with st.form('select_existing_model'):
             ex_model_list = model_frame_u['model_name'].sort_values(ascending=True)
             ex_to_train_model = st.selectbox('Select your existing model',
@@ -727,21 +733,25 @@ else:
                           ag_trade_size_pct=nm_trading_size_pct,
                           ag_com_fee_pct=nm_commission_fee_pct,
                           ag_train_episode=xtrain_episodes)
-              st.success('Training DONE!')
+              #st.success('Training DONE!')
 ################################################################################################################
       ######_TEST_TAB_######
       with test_tab:
         st.header("Test your model on test set 🧪")
         test_button = st.button("Start Testing 🏹")
         if test_button:
-          st.session_state['test_button_status'] = True
-          st.write("Test Result")
-          #test_model()
-          if st.session_state['test_button_status']:
-            #test_result()
-            st.write('test report: ---')
-            st.write('parameters: ---')
-            st.write('train_episodes: ---')
+          #st.session_state['test_button_status'] = True
+          test_model(ag_df_price_test=df_price_test,
+                     ag_name=nm_agent_name,
+                     ag_gamma=nm_agent_gamma,
+                     ag_eps=nm_agent_epsilon,
+                     ag_eps_dec=nm_agent_epsilon_dec,
+                     ag_eps_min=nm_agent_epsilon_end,
+                     ag_lr=nm_agent_lr,
+                     ag_ini_bal=nm_initial_balance,
+                     ag_trade_size_pct=nm_trading_size_pct,
+                     ag_com_fee_pct=nm_commission_fee_pct,
+                     ag_train_episode=xtrain_episodes)
 ######################################################################################################
 ######
       ######_SAVE_TAB_######
