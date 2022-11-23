@@ -543,6 +543,10 @@ else:
       tab_list = ["Select Dataset 📈", "Train Model 🚀", "Test Model 🧪", "Save Model 💾"]
       select_data_tab, train_tab, test_tab, save_tab = st.tabs(tab_list)
       
+      train_allowed = False
+      test_allowed = False
+      save_allowed = False
+      
       ######_SELECT_DATA_TAB_######
       with select_data_tab:
         st.write("#### Select stock and time period 📈")
@@ -641,9 +645,6 @@ else:
           select_model_radio = st.radio('Which model do you want to train?',
                                         options=['New Model', 'Existing Model'],
                                         horizontal=True)
-          train_allowed = False
-          test_allowed = False
-          save_allowed = False
           ######_RADIO_NEW_MODEL_######
           if select_model_radio == 'New Model':
             with st.form('set_param_new_model'):
