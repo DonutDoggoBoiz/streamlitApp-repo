@@ -88,14 +88,16 @@ if 'user_manage_b_status' not in st.session_state:
 def login_func():
   st.session_state['login_status'] = True
 
-def dis_login_button():
+def on_click_login_button():
   st.session_state['sign_in_b_disable'] = True
   st.session_state['sign_up_b_disable'] = False
   st.session_state['show_register_form'] = False
 
-def dis_regis_button():
+def on_click_regis_button():
   st.session_state['sign_in_b_disable'] = False
   st.session_state['sign_up_b_disable'] = True
+  st.session_state['show_register_form'] = True
+  
 
 def on_click_logout():
   st.session_state['login_status'] = False
@@ -197,11 +199,11 @@ if st.session_state['login_status'] == False:
     with top_holder_col1:
       login_button_top = st.button('Sign in',
                                    disabled=st.session_state['sign_in_b_disable'],
-                                   on_click=dis_login_button)
+                                   on_click=on_click_login_button)
     with top_holder_col3:
       register_button_top = st.button('Sign up',
                                       disabled=st.session_state['sign_up_b_disable'],
-                                      on_click=dis_regis_button)
+                                      on_click=on_click_regis_button)
     with pre_login_form_holder.container():
       login_form = st.form('Login')
       login_form.subheader('Login 📝')
@@ -229,13 +231,13 @@ if st.session_state['login_status'] == False:
               
     ######_SIGN_UP_BUTTON_######
     if register_button_top or st.session_state['show_register_form']:
-      st.session_state['show_register_form'] = True
+      #st.session_state['show_register_form'] = True
       with pre_login_form_holder.container():
         register_form = st.form('Register')
         register_form.subheader('Register 📝')
-        new_name = register_form.text_input('Name', placeholder='eg. Michael Burry')
-        new_username = register_form.text_input('Username', placeholder='eg. mikeburr1971')
-        new_password = register_form.text_input('Password', type='password', placeholder='your password')
+        new_name = register_form.text_input('Name', placeholder='eg. Michael Burry', max_chars=32)
+        new_username = register_form.text_input('Username', placeholder='eg. mikeburr1971', max_chars=32)
+        new_password = register_form.text_input('Password', type='password', placeholder='your password', max_chars=32)
         register_button = register_form.form_submit_button('Register')
         if register_button:
           if len(new_name) <= 0:
@@ -309,7 +311,7 @@ else:
     with placeholder_2.container():
       with st.form('change_name'):
         st.write('##### Change Name')
-        new_name = st.text_input('Your new name', placeholder=str(st.session_state['name']))
+        new_name = st.text_input('Your new name', placeholder=str(st.session_state['name']), max_chars=32)
         change_name_button = st.form_submit_button('Change Name')
         if change_name_button:
           if len(new_name) <= 0:
