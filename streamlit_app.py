@@ -780,7 +780,8 @@ else:
                                                                                  'commission_fee_pct'].values)))
             save_submit = st.form_submit_button('Confirm')
             if save_submit:
-              save_model_local(save_username=st.session_state['username'])
+              save_model_local(save_username=st.session_state['username'], 
+                               deta_key=st.secrets["deta_key"])
               upload_model_gcs(save_username=st.session_state['username'],
                                ag_name=model_name_sv)
               time.sleep(2)
