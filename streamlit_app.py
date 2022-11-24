@@ -495,7 +495,7 @@ else:
                                                 value=float(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_start'].to_list()[0]) )
                   edt_agent_epsilon_dec = st.select_slider("Epsilon decline rate (random walk probability decline): ",
                                                            help=param_help_dict['eps_dec'],
-                                                           options=[0.00025,0.0005,0.001,0.002,0.005,0.010],
+                                                           options=[0.000025,0.00005,0.0001,0.0002,0.0005,0.001],
                                                            value=float(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_decline'].to_list()[0]) )
                   edt_agent_epsilon_end = st.slider("Minimum epsilon: ", min_value=0.01, max_value=0.10, step=0.01,
                                                     help=param_help_dict['eps_min'],
@@ -752,7 +752,7 @@ else:
                 nm_agent_gamma = st.slider("Gamma: ", 0.00, 1.00, 0.00, help=param_help_dict['gamma'])
                 nm_agent_epsilon = st.slider("Starting epsilon (random walk probability): ", 0.00, 1.00, 1.00, help=param_help_dict['eps'])
                 nm_agent_epsilon_dec = st.select_slider("Epsilon decline rate (random walk probability decline):",
-                                                     options=[0.00025,0.0005,0.001,0.002,0.005,0.010], value=0.001, help=param_help_dict['eps_dec'])
+                                                     options=[0.000025,0.00005,0.0001,0.0002,0.0005,0.001], value=0.0001, help=param_help_dict['eps_dec'])
                 nm_agent_epsilon_end = st.slider("Minimum epsilon: ", 0.01, 0.10, 0.01, help=param_help_dict['eps_min'])
                 nm_agent_lr = st.select_slider("Learning rate: ", options=[0.00025, 0.0005, 0.001, 0.002, 0.005, 0.010], value=0.001,
                                                help=param_help_dict['lr'])
