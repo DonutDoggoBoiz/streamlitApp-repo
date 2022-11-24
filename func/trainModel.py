@@ -315,8 +315,8 @@ def train_model(ag_df_price_train,
                                ).encode(x = alt.X('Date'),
                                         y = alt.Y(net_pl_pct_history_df.columns[-1],
                                                    title='Profit/Loss (%)',
-                                                   scale=alt.Scale(domain=[net_pl_pct_history_df.iloc[:,-1].min()-2,
-                                                                           net_pl_pct_history_df.iloc[:,-1].max()+2])),
+                                                   scale=alt.Scale(domain=[net_pl_pct_history_df.iloc[:,-1].min()-1,
+                                                                           net_pl_pct_history_df.iloc[:,-1].max()+1])),
                                          tooltip=[alt.Tooltip('Date', title='Date'),
                                                   alt.Tooltip(net_pl_pct_history_df.columns[-1], title='Profit/Loss (%)')]
                                         )
@@ -521,8 +521,8 @@ def test_model(ag_df_price_test,
                                    ).encode(x = alt.X('Date'),
                                             y = alt.Y(net_pl_pct_history_df.columns[-1],
                                                        title='Profit/Loss (%)',
-                                                       scale=alt.Scale(domain=[net_pl_pct_history_df.iloc[:,-1].min()-2,
-                                                                               net_pl_pct_history_df.iloc[:,-1].max()+2])),
+                                                       scale=alt.Scale(domain=[net_pl_pct_history_df.iloc[:,-1].min()-1,
+                                                                               net_pl_pct_history_df.iloc[:,-1].max()+1])),
                                              tooltip=[alt.Tooltip('Date', title='Date'),
                                                       alt.Tooltip(net_pl_pct_history_df.columns[-1], title='Profit/Loss (%)')]
                                             )
