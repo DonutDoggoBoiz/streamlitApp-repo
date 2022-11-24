@@ -483,6 +483,7 @@ else:
               edit_form_col1, _ = st.columns([2,1])
               with edit_form_col1:
                 with st.form('edit parameter form'):
+                  
                   st.write("##### Model parameters")
                   edt_agent_name = st.text_input("Model name: ", placeholder=str(selected_row[0]['model_name']),
                                                 value=selected_row_model_name)
@@ -513,7 +514,7 @@ else:
                                                            help=param_help_dict['com_fee'],
                                                            value=float(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'commission_fee_pct'].to_list()[0]), 
                                                            format='%1.3f')
-                  edit_param_button = st.form_submit_button('Edit')
+                  edit_param_button = st.form_submit_button('Edit', disabled=not(st.session_state['edit_mod_button_status']) )
 
               ######_<FORM>_EDIT_BUTTON_######################################################
               if edit_param_button:
@@ -531,12 +532,12 @@ else:
                               'trained_result':0,
                               'test_result':0}
                 model_db.update(updates=update_dict, key=key_to_update)
-                st.session_state['edit_mod_button_status'] = False
-                st.success('Edit parameters successful! ✔️')
+                edit_allowed = False
                 ##########################################
                 st.session_state['edit_mod_button_status'] = False
                 ##########################################
                 with st.form('after edit ok'):
+                  st.success('Edit parameters successful! ✔️')
                   st.info('You can re-trained this model in "Develop Model" menu', icon="ℹ️")
                   edit_ok_button = st.form_submit_button('OK')
                 if edit_ok_button:
