@@ -93,7 +93,7 @@ class Agent():
         batch_index = np.arange(self.batch_size, dtype=np.int32)
         q_target[batch_index, actions] = rewards + self.gamma * np.max(q_next, axis=1)
         self.q_eval.train_on_batch(states, q_target)
-        self.epsilon = self.epsilon - self.eps_dec if self.epsilon > self.eps_min else self.eps_min  # 1.00 ---> eps_min
+        self.epsilon = self.epsilon * (1- self.eps_dec) if self.epsilon > self.eps_min else self.eps_min  # 1.00 ---> eps_min
 
     def save_model(self):
         self.q_eval.save(self.model_file)
@@ -661,7 +661,7 @@ def generate_advice(ag_df_price_advice,
                  alt.Tooltip('position', title='Advice')] )
     #####_LAYERED_CHART_#####
     layer1 = base.mark_line()
-    layer2 = base2.mark_circle(size=50).transform_filter(alt.FieldEqualPredicate(field='plot',equal=True))
+    layer2 = base2.mark_circle(size=55).transform_filter(alt.FieldEqualPredicate(field='plot',equal=True))
     bundle = alt.layer(layer1,layer2).configure_axis(labelFontSize=16,titleFontSize=18)
     #####_SHOW_ADVICE_CHART_#####
     st.altair_chart(bundle, use_container_width=True)
