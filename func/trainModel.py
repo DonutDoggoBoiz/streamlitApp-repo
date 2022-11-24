@@ -683,7 +683,8 @@ def generate_advice(ag_df_price_advice,
         st.success('#### BUY ')
         st.write('###### Buy "{}" at current price of {:.2f} THB per share'.format(ag_quote,advice_df['Close'][-1]))
     else:
-        st.error('###### SELL "{}" at current price of {:.2f} THB per share'.format(ag_quote,advice_df['Close'][-1]))
+        st.error('#### SELL ')
+        st.write('###### SELL "{}" at current price of {:.2f} THB per share'.format(ag_quote,advice_df['Close'][-1]))
         
                 
 
