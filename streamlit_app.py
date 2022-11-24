@@ -440,7 +440,6 @@ else:
         shuffle_col = ['model_name','stock_quote','start_date','end_date','episode_trained','initial_balance','trading_size_pct','commission_fee_pct','gamma',]
         model_grid = model_frame_u.loc[:,shuffle_col]
         gb = GridOptionsBuilder.from_dataframe(model_grid)
-        gb.configure_grid_options({'skipHeaderOnAutoSize': False})
         gb.configure_selection('single', use_checkbox=True, pre_selected_rows=[0])
         gridoptions = gb.build()
         with st.spinner('Loading model database...'):
