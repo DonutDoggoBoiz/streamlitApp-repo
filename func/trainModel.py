@@ -46,13 +46,23 @@ class ReplayBuffer():
         return states, actions, rewards, states_, terminal
 
 ##### ------------ BUILD DQN FUNCTION ------------ #####
+#def build_dqn(lr, n_actions, input_dims, fc1_dims, fc2_dims):   # this function will be call when we want to create a neural network
+    #model = keras.Sequential([
+        #keras.layers.Dense(fc1_dims, activation='relu'),
+        #keras.layers.Dense(fc2_dims, activation='relu'),
+        #keras.layers.Dense(n_actions, activation='linear')])
+    #model.compile(optimizer=Adam(learning_rate=lr), loss='mean_squared_error')
+    #return model
+
 def build_dqn(lr, n_actions, input_dims, fc1_dims, fc2_dims):   # this function will be call when we want to create a neural network
+    opt = tf.keras.optimizers.experimental.RMSprop(learning_rate=lr)
     model = keras.Sequential([
-        keras.layers.Dense(fc1_dims, activation='relu'),
-        keras.layers.Dense(fc2_dims, activation='relu'),
+        keras.layers.Dense(fc1_dims, activation='linear'),
+        keras.layers.Dense(fc2_dims, activation='linear'),
         keras.layers.Dense(n_actions, activation='linear')])
-    model.compile(optimizer=Adam(learning_rate=lr), loss='mean_squared_error')
+    model.compile(optimizer=opt, loss=tf.keras.losses.MeanSquaredError() )
     return model
+
 
   
 ##### ------------ BUILD DQN FUNCTION ------------ #####
