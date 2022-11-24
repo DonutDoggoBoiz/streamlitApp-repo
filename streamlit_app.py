@@ -486,32 +486,32 @@ else:
                   st.write("##### Model parameters")
                   edt_agent_name = st.text_input("Model name: ", placeholder=str(selected_row[0]['model_name']),
                                                 value=selected_row_model_name)
-                  edt_agent_gamma = st.slider("Gamma: ", min_value=0.00, max_value=1.00,
+                  edt_agent_gamma = st.slider("Gamma: ", min_value=0.00, max_value=1.00,step=0.01
                                               help=param_help_dict['gamma'],
-                                              value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'gamma'].to_list()[0] )
-                  edt_agent_epsilon = st.slider("Starting epsilon (random walk probability): ", min_value=0.00, max_value=1.00,
+                                              value=float(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'gamma'].to_list()[0]) )
+                  edt_agent_epsilon = st.slider("Starting epsilon (random walk probability): ", min_value=0.00, max_value=1.00, step=0.01
                                                 help=param_help_dict['eps'],
-                                                value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_start'].to_list()[0] )
+                                                value=float(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_start'].to_list()[0]) )
                   edt_agent_epsilon_dec = st.select_slider("Epsilon decline rate (random walk probability decline): ",
                                                            help=param_help_dict['eps_dec'],
                                                            options=[0.001,0.002,0.005,0.010],
-                                                           value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_decline'].to_list()[0] )
-                  edt_agent_epsilon_end = st.slider("Minimum epsilon: ", min_value=0.01, max_value=0.10,
+                                                           value=float(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_decline'].to_list()[0]) )
+                  edt_agent_epsilon_end = st.slider("Minimum epsilon: ", min_value=0.01, max_value=0.10, step=0.01
                                                     help=param_help_dict['eps_min'],
-                                                    value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_min'].to_list()[0] )
+                                                    value=float(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_min'].to_list()[0]) )
                   edt_agent_lr = st.select_slider("Learning rate: ", options=[0.001, 0.002, 0.005, 0.010],
                                                   help=param_help_dict['lr'],
-                                                  value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'learning_rate'].to_list()[0] )
+                                                  value=float(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'learning_rate'].to_list()[0]) )
                   st.write("##### Trading parameters")
                   edt_initial_balance = st.number_input("Initial account balance (THB):", min_value=0, step=1000,
                                                         help=param_help_dict['ini_bal'],
-                                                        value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'initial_balance'].to_list()[0] )
+                                                        value=int(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'initial_balance'].to_list()[0]) )
                   edt_trading_size_pct = st.slider("Trading size as a percentage of initial account balance (%):", min_value=0, max_value=100,
                                                    help=param_help_dict['trade_size_pct'],
-                                                   value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'trading_size_pct'].to_list()[0] )
+                                                   value=int(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'trading_size_pct'].to_list()[0]) )
                   edt_commission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001,
                                                            help=param_help_dict['com_fee'],
-                                                           value=model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'commission_fee_pct'].to_list()[0], 
+                                                           value=float(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'commission_fee_pct'].to_list()[0]), 
                                                            format='%1.3f')
                   edit_param_button = st.form_submit_button('Edit')
 
