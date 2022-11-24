@@ -489,7 +489,7 @@ else:
                   edt_agent_gamma = st.slider("Gamma: ", min_value=0.00, max_value=1.00,step=0.01,
                                               help=param_help_dict['gamma'],
                                               value=float(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'gamma'].to_list()[0]) )
-                  edt_agent_epsilon = st.slider("Starting epsilon (random walk probability): ", min_value=0.00, max_value=1.00, step=0.01
+                  edt_agent_epsilon = st.slider("Starting epsilon (random walk probability): ", min_value=0.00, max_value=1.00, step=0.01,
                                                 help=param_help_dict['eps'],
                                                 value=float(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_start'].to_list()[0]) )
                   edt_agent_epsilon_dec = st.select_slider("Epsilon decline rate (random walk probability decline): ",
