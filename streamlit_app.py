@@ -486,7 +486,7 @@ else:
                   st.write("##### Model parameters")
                   edt_agent_name = st.text_input("Model name: ", placeholder=str(selected_row[0]['model_name']),
                                                 value=selected_row_model_name)
-                  edt_agent_gamma = st.slider("Gamma: ", min_value=0.00, max_value=1.00,step=0.01
+                  edt_agent_gamma = st.slider("Gamma: ", min_value=0.00, max_value=1.00,step=0.01,
                                               help=param_help_dict['gamma'],
                                               value=float(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'gamma'].to_list()[0]) )
                   edt_agent_epsilon = st.slider("Starting epsilon (random walk probability): ", min_value=0.00, max_value=1.00, step=0.01
@@ -496,7 +496,7 @@ else:
                                                            help=param_help_dict['eps_dec'],
                                                            options=[0.001,0.002,0.005,0.010],
                                                            value=float(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_decline'].to_list()[0]) )
-                  edt_agent_epsilon_end = st.slider("Minimum epsilon: ", min_value=0.01, max_value=0.10, step=0.01
+                  edt_agent_epsilon_end = st.slider("Minimum epsilon: ", min_value=0.01, max_value=0.10, step=0.01,
                                                     help=param_help_dict['eps_min'],
                                                     value=float(model_frame_u.loc[model_frame_u['model_name']==selected_row_model_name,'epsilon_min'].to_list()[0]) )
                   edt_agent_lr = st.select_slider("Learning rate: ", options=[0.001, 0.002, 0.005, 0.010],
