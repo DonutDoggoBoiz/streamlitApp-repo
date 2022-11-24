@@ -30,12 +30,12 @@ stock_list = stock_df['symbol'].sort_values(ascending=True)
 
 param_help_dict = {'gamma':'Gamma dictates how intense should your model consider future rewards. (higher gamma = more intense)',
                   'eps':'Epsilon represents a propability that your model will make decision randomly. (exploration mode)',
-                  'eps_dec':'Decreasing rate of epsilon at each step of training. (gradually shift your model towards exploitation mode',
+                  'eps_dec':'Decreasing rate of epsilon at each step of training. (gradually shift your model towards exploitation mode)',
                   'eps_min':'Minimum epsilon possible.',
                   'lr':'How big shoud your model adjusts its formula and variables during training phase.',
                   'ini_bal':'Starting balance of investment account',
                   'trade_size_pct':'Model will buy and sell as a percentage of Initial account balance.',
-                  'com_fee':'Percentage of commission fee for each trade.'}
+                  'com_fee':'Percentage of commission fee for each trade. (VAT Included)'}
 ###############################################################
 
 #########_SESSION_STATE_####################################
@@ -188,6 +188,14 @@ def on_click_model_b():
   st.session_state['model_b_status'] = True
   st.session_state['advice_b_status'] = False
   on_click_empty_ph_123()
+
+def on_click_edit_model_b():
+  st.session_state['edit_mod_button_status'] = True
+  st.session_state['del_mod_button_status'] = False
+  
+def on_click_del_model_b():
+  st.session_state['edit_mod_button_status'] = False
+  st.session_state['del_mod_button_status'] = True
 
       #########_DEVELOP_MODEL_TAB_#########
 def on_click_observe_b():
@@ -432,15 +440,17 @@ else:
         shuffle_col = ['model_name','stock_quote','start_date','end_date','episode_trained','initial_balance','trading_size_pct','commission_fee_pct','gamma',]
         model_grid = model_frame_u.loc[:,shuffle_col]
         gb = GridOptionsBuilder.from_dataframe(model_grid)
+        gb.configure_grid_options({skipHeaderOnAutoSize: False})
         gb.configure_selection('single', use_checkbox=True, pre_selected_rows=[0])
         gridoptions = gb.build()
-        try:
-          grid_response = AgGrid(model_grid,
-                                 fit_columns_on_grid_load=False,
-                                 gridOptions=gridoptions)
-          selected_row = grid_response['selected_rows']
-        except:
-          st.warning('Loading model database...')
+        with st.spinner('Loading model database...'):
+          try:
+            grid_response = AgGrid(model_grid,
+                                   fit_columns_on_grid_load=False,
+                                   gridOptions=gridoptions)
+            selected_row = grid_response['selected_rows']
+          except:
+            st.warning('Loading model database...')
 
       ######_SEE_MODEL_DETAIL_BUTTON_######
       with placeholder_3.container():
@@ -462,13 +472,13 @@ else:
       with placeholder_4.container():
         ph2col1, ph2col2, _ = st.columns([1,1,6])
         with ph2col1:
-          edit_mod_button = st.button('Edit')
+          edit_mod_button = st.button('Edit', on_click=on_click_edit_model_b)
         with ph2col2:
-          del_mod_button = st.button('Delete')
+          del_mod_button = st.button('Delete', on_click=on_click_del_model_b)
 
         ######_EDIT_BUTTON_######################################################
         if edit_mod_button or st.session_state['edit_mod_button_status']:
-          st.session_state['edit_mod_button_status'] = True
+          #st.session_state['edit_mod_button_status'] = True
           selected_row_model_name = selected_row[0]['model_name']
           with placeholder_4.container():
               edit_form_col1, _ = st.columns([2,1])
@@ -524,6 +534,9 @@ else:
                 model_db.update(updates=update_dict, key=key_to_update)
                 st.session_state['edit_mod_button_status'] = False
                 st.success('Edit parameters successful! ✔️')
+                ##########################################
+                st.session_state['edit_mod_button_status'] = False
+                ##########################################
                 with st.form('after edit ok'):
                   st.info('You can re-trained this model in "Develop Model" menu', icon="ℹ️")
                   edit_ok_button = st.form_submit_button('OK')
@@ -534,7 +547,7 @@ else:
   ######
         ######_DELETE_BUTTON_################################################
         if del_mod_button or st.session_state['del_mod_button_status']:
-          st.session_state['del_mod_button_status'] = True
+          #st.session_state['del_mod_button_status'] = True
           with placeholder_4.container():
             with st.form('del_make_sure'):
               st.write('Are you sure?')
@@ -729,8 +742,6 @@ else:
           select_model_radio = st.radio('Which model do you want to train?',
                                         options=['New Model', 'Existing Model'],
                                         horizontal=True)
-          #choice_new_model_button = st.button('New Model')
-          #choice_ex_model_button = st.button('Existing Model')
           ######_RADIO_NEW_MODEL_######
           if select_model_radio == 'New Model':
             with st.form('set_param_new_model'):
@@ -738,18 +749,22 @@ else:
               with col1_set_para:
                 st.write("##### Model parameters")
                 nm_agent_name = st.text_input("Model name: ", max_chars=32, placeholder="eg. model_01")
-                nm_agent_gamma = st.slider("Gamma: ", 0.00, 1.00, 0.90)
-                nm_agent_epsilon = st.slider("Starting epsilon (random walk probability): ", 0.00, 1.00, 1.00)
+                nm_agent_gamma = st.slider("Gamma: ", 0.00, 1.00, 0.00, help=param_help_dict['gamma'])
+                nm_agent_epsilon = st.slider("Starting epsilon (random walk probability): ", 0.00, 1.00, 1.00, help=param_help_dict['eps'])
                 nm_agent_epsilon_dec = st.select_slider("Epsilon decline rate (random walk probability decline):",
-                                                     options=[0.001,0.002,0.005,0.010], value=0.001)
-                nm_agent_epsilon_end = st.slider("Minimum epsilon: ", 0.01, 0.10, 0.01)
-                nm_agent_lr = st.select_slider("Learning rate: ", options=[0.001, 0.002, 0.005, 0.010], value=0.001)
-
+                                                     options=[0.001,0.002,0.005,0.010], value=0.001, help=param_help_dict['eps_dec'])
+                nm_agent_epsilon_end = st.slider("Minimum epsilon: ", 0.01, 0.10, 0.01, help=param_help_dict['eps_min'])
+                nm_agent_lr = st.select_slider("Learning rate: ", options=[0.001, 0.002, 0.005, 0.010], value=0.001,
+                                               help=param_help_dict['lr'])
+                st.write('  ')
                 st.write("##### Trading parameters")
-                nm_initial_balance = st.number_input("Initial account balance (THB):", min_value=100000, step=10000, value=1000000)
-                nm_trading_size_pct = st.slider("Trading size as a percentage of initial account balance (%):", 0, 100, 10)
+                nm_initial_balance = st.number_input("Initial account balance (THB):", min_value=100000, step=10000, value=1000000,
+                                                     help=param_help_dict['ini_bal'])
+                nm_trading_size_pct = st.slider("Trading size as a percentage of initial account balance (%):", 0, 100, 50,
+                                                help=param_help_dict['trade_size_pct'])
                 nm_trade_size = nm_initial_balance * nm_trading_size_pct / 100
-                nm_commission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, value=0.157, format='%1.3f')
+                nm_commission_fee_pct = st.number_input("Commission fee (%):", min_value=0.000, step=0.001, value=0.157, format='%1.3f',
+                                                       help=param_help_dict['com_fee'])
                 nm_create_model = st.form_submit_button("Create Model")
             if nm_create_model:
               if len(nm_agent_name) <= 0:
