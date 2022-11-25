@@ -185,7 +185,8 @@ def train_model(ag_df_price_train,
     for i in range(n_episodes):
         ### --- start episode --- ###
         with train_log_expander:
-            st.write("--- Episode " + str(i+1) + " / " + str(n_episodes) + ' training...'+ 'eps: ' + str(agent.epsilon))
+            #st.write("--- Episode " + str(i+1) + " / " + str(n_episodes) + ' training... ')
+            st.write("--- Episode {} / {} training... eps: {:.5f}".format(i+1,n_episodes,agent.epsilon))
 
         # slider window
         start_tick = window_size
