@@ -530,7 +530,8 @@ else:
                               'commission_fee_pct':edt_commission_fee_pct,
                               'episode_trained':0,
                               'trained_result':0,
-                              'test_result':0}
+                              'test_result':0,
+                              'saved':False}
                 model_db.update(updates=update_dict, key=key_to_update)
                 edit_allowed = False
                 ##########################################
@@ -569,10 +570,10 @@ else:
   
   ######_GENERATE_ADVICE_MENU_################################################
   if advice_b or advice_side_b or st.session_state['advice_b_status']:
-    if len(model_frame_u) <= 0:
+    if len(model_frame_u[model_frame_u['saved']==True]) <= 0:
       with placeholder_2.container():
         st.write("#### Generate Investment Advice 📈")
-        _warning = "You don't have any created model."
+        _warning = "You don't have any saved model."
         _info = 'You can create a new model in '+'"Develop Model "'+'menu.'
         st.warning(_warning)
         st.info(_info, icon="ℹ️")
@@ -790,7 +791,8 @@ else:
                                       'learning_rate': nm_agent_lr,
                                       'initial_balance': nm_initial_balance,
                                       'trading_size_pct': nm_trading_size_pct,
-                                      'commission_fee_pct': nm_commission_fee_pct}
+                                      'commission_fee_pct': nm_commission_fee_pct,
+                                      'saved':False}
                   model_db.put(model_param_dict)
                   update_model_frame_u()
                   st.success('Create Model Successful!')
@@ -945,7 +947,12 @@ else:
                                                          int(model_frame_u.loc[model_frame_u['model_name']==model_name_sv,'initial_balance'].values)))
             save_submit = st.form_submit_button('Confirm')
             if save_submit:
+              key_to_update = model_frame_u.loc[model_frame_u['model_name']==st.session_state['sess_model_name'],'key'].to_list()[0]
+              dict_to_update = {'saved':True}
+              model_db.update(updates=dict_to_update, key=key_to_update)
+              
               save_model_local(save_username=st.session_state['username'])
+              
               upload_model_gcs(save_username=st.session_state['username'],
                                ag_name=model_name_sv)
               time.sleep(2)
