@@ -103,7 +103,7 @@ class Agent():
         batch_index = np.arange(self.batch_size, dtype=np.int32)
         q_target[batch_index, actions] = rewards + self.gamma * np.max(q_next, axis=1)
         self.q_eval.train_on_batch(states, q_target)
-        self.epsilon = self.epsilon * (1- self.eps_dec) if self.epsilon > self.eps_min else self.eps_min  # 1.00 ---> eps_min
+        self.epsilon = self.epsilon * (1 - self.eps_dec) if self.epsilon > self.eps_min else self.eps_min  # 1.00 ---> eps_min
 
     def save_model(self):
         self.q_eval.save(self.model_file)
