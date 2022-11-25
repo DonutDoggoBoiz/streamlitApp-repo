@@ -671,7 +671,7 @@ else:
           if end_date - start_date <= datetime.timedelta(days=0):
             st.error('Price Data not found. Please check start and end date')
           elif end_date - start_date < datetime.timedelta(days=60):
-            st.error('Price Date is too small. Please extend your date range')
+            st.warning('Price Data is too small. Please extend your date range')
           else:
             stock_code = stock_name + '.BK'
             df_price = yf.download(stock_code, start=start_date, end=end_date, progress=True)
