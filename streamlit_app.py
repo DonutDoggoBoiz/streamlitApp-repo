@@ -437,7 +437,7 @@ else:
     ######_GRID_VIEWER_######
       with placeholder_2.container():
         st.write('#### Model Management')
-        shuffle_col = ['model_name','stock_quote','start_date','end_date','episode_trained','initial_balance','trading_size_pct','commission_fee_pct','gamma',]
+        shuffle_col = ['model_name','stock_quote','start_date','end_date','episode_trained','initial_balance','trading_size_pct','commission_fee_pct','gamma','saved']
         model_grid = model_frame_u.loc[:,shuffle_col]
         gb = GridOptionsBuilder.from_dataframe(model_grid)
         gb.configure_selection('single', use_checkbox=True, pre_selected_rows=[0])
@@ -580,7 +580,7 @@ else:
     else: #len(model_frame_u) > 0
       with placeholder_2.container():
         st.write("#### Generate Investment Advice 📈")
-        model_options = model_frame_u.loc[:,'model_name']
+        model_options = model_frame_u.loc[model_frame_u['saved']==True,'model_name']
         selected_advice_model = st.selectbox('Choose your model',options=model_options)
         with st.expander('Model Information:'):
           st.write("##### Model Parameters")
