@@ -668,20 +668,16 @@ else:
           with col_observe_b:
             observe_button = st.button('View Dataset 🔍', on_click=on_click_observe_b)
         if observe_button or st.session_state['observe_button_status']:
-          #if end_date - start_date <= datetime.timedelta(days=0):
-            #st.error('Price Data not found. Please check start and end date')
-          #elif end_date - start_date <= datetime.timedelta(days=60):
-            #st.error('Price Date is too small. Please extend your date range')
-          try:
+          if end_date - start_date <= datetime.timedelta(days=0):
+            st.error('Price Data not found. Please check start and end date')
+          elif end_date - start_date < datetime.timedelta(days=60):
+            st.error('Price Date is too small. Please extend your date range')
+          else:
             stock_code = stock_name + '.BK'
             df_price = yf.download(stock_code, start=start_date, end=end_date, progress=True)
             df_price.drop(columns=['Adj Close','Volume'] , inplace=True)
             df_length = df_price['Close'].count()
-            go_to_split = True
-          except:
-            st.warning('No Price data found. Please try new date range')
-          
-          if go_to_split == True:
+            
             with col_describe:
               st.write('This dataset contains {} days of historical prices'.format(df_length))
             alt_price_range = (alt.Chart(df_price['Close'].reset_index()).mark_line().encode(
