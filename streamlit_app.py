@@ -592,12 +592,12 @@ else:
                                    fit_columns_on_grid_load=False,
                                    gridOptions=gridoptions)
             selected_row = grid_response['selected_rows']
+            selected_advice_model = selected_row[0]['model_name']
           except:
             st.warning('Loading model database...')
         ##################################
         #model_options = model_frame_u.loc[model_frame_u['saved']==True,'model_name']
         #selected_advice_model = st.selectbox('Choose your model',options=model_options)
-        selected_advice_model = selected_row[0]['model_name']
         see_advice_model_info = st.button('View More Information')
         if see_advice_model_info:
           with st.expander('Model Information:', expanded=True):
