@@ -580,37 +580,55 @@ else:
     else: #len(model_frame_u) > 0
       with placeholder_2.container():
         st.write("#### Generate Investment Advice 📈")
-        model_options = model_frame_u.loc[model_frame_u['saved']==True,'model_name']
-        selected_advice_model = st.selectbox('Choose your model',options=model_options)
-        with st.expander('Model Information:'):
-          st.write("##### Model Parameters")
-          st.write(' Model Name : {}'.format(selected_advice_model))
-          st.write(' Stock Quote : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'stock_quote'].to_list()[0]))
-          st.write(' Start Date : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'start_date'].to_list()[0]))
-          st.write(' End Date : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'end_date'].to_list()[0]))
-          st.write(' Episode Trained : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'episode_trained'].to_list()[0]))
-          st.write(' Gamma : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'gamma'].to_list()[0]))
-          st.write(' Epsilon Start: {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_start'].to_list()[0]))
-          st.write(' Epsilon Decline rate : {:.6f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_decline'].to_list()[0]))
-          st.write(' Epsilon Minimum : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_min'].to_list()[0]))
-          st.write(' Learning Rate : {:.5f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'learning_rate'].to_list()[0]))
-          st.write('  ')
-          st.write("##### Trading Parameters")
-          st.write(' Initial Balance : {:,} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'initial_balance'].to_list()[0]))
-          st.write(' Trading Size (%): {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trading_size_pct'].to_list()[0]))
-          st.write(' Trading Size (THB): {:.2f} THB'.format( (model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'initial_balance'].to_list()[0])*
-                                                           ((model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trading_size_pct'].to_list()[0])/100)))
-          st.write(' Commission Fee : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'commission_fee_pct'].to_list()[0]))
-          st.write('  ')
-          st.write("##### Train Result")
-          st.write(' Train Profit/Loss : {:+,.2f} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trained_result'].to_list()[0]))
-          st.write("Profit/Loss (%):  {:+,.2f}%".format(100*float(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trained_result'].values)/
-                                                         int(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'initial_balance'].values)))
-          st.write('  ')
-          st.write("##### Test Result")
-          st.write('Profit/Loss : {:+,.2f} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'test_result'].to_list()[0]))
-          st.write("Profit/Loss (%):  {:+,.2f}%".format(100*float(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'test_result'].values)/
-                                                         int(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'initial_balance'].values)))
+        ##################################
+        shuffle_col = ['model_name','stock_quote','trained_result','test_result','initial_balance','trading_size_pct','commission_fee_pct','start_date','end_date','episode_trained','saved']
+        model_grid = model_frame_u.loc[:,shuffle_col]
+        gb = GridOptionsBuilder.from_dataframe(model_grid)
+        gb.configure_selection('single', use_checkbox=True, pre_selected_rows=[0])
+        gridoptions = gb.build()
+        with st.spinner('Loading model database...'):
+          try:
+            grid_response = AgGrid(model_grid,
+                                   fit_columns_on_grid_load=False,
+                                   gridOptions=gridoptions)
+            selected_row = grid_response['selected_rows']
+          except:
+            st.warning('Loading model database...')
+        ##################################
+        #model_options = model_frame_u.loc[model_frame_u['saved']==True,'model_name']
+        #selected_advice_model = st.selectbox('Choose your model',options=model_options)
+        selected_advice_model = selected_row[0]['model_name']
+        see_advice_model_info = st.button('View More Information')
+        if see_advice_model_info:
+          with st.expander('Model Information:', expanded=True):
+            st.write("##### Model Parameters")
+            st.write(' Model Name : {}'.format(selected_advice_model))
+            st.write(' Stock Quote : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'stock_quote'].to_list()[0]))
+            st.write(' Start Date : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'start_date'].to_list()[0]))
+            st.write(' End Date : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'end_date'].to_list()[0]))
+            st.write(' Episode Trained : {}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'episode_trained'].to_list()[0]))
+            st.write(' Gamma : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'gamma'].to_list()[0]))
+            st.write(' Epsilon Start: {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_start'].to_list()[0]))
+            st.write(' Epsilon Decline rate : {:.6f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_decline'].to_list()[0]))
+            st.write(' Epsilon Minimum : {:.2f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'epsilon_min'].to_list()[0]))
+            st.write(' Learning Rate : {:.5f}'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'learning_rate'].to_list()[0]))
+            st.write('  ')
+            st.write("##### Trading Parameters")
+            st.write(' Initial Balance : {:,} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'initial_balance'].to_list()[0]))
+            st.write(' Trading Size (%): {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trading_size_pct'].to_list()[0]))
+            st.write(' Trading Size (THB): {:.2f} THB'.format( (model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'initial_balance'].to_list()[0])*
+                                                             ((model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trading_size_pct'].to_list()[0])/100)))
+            st.write(' Commission Fee : {:.2f}%'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'commission_fee_pct'].to_list()[0]))
+            st.write('  ')
+            st.write("##### Train Result")
+            st.write(' Train Profit/Loss : {:+,.2f} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trained_result'].to_list()[0]))
+            st.write("Profit/Loss (%):  {:+,.2f}%".format(100*float(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'trained_result'].values)/
+                                                           int(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'initial_balance'].values)))
+            st.write('  ')
+            st.write("##### Test Result")
+            st.write('Profit/Loss : {:+,.2f} THB'.format(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'test_result'].to_list()[0]))
+            st.write("Profit/Loss (%):  {:+,.2f}%".format(100*float(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'test_result'].values)/
+                                                           int(model_frame_u.loc[model_frame_u['model_name']==selected_advice_model,'initial_balance'].values)))
 
         generate_advice_button = st.button('Generate Advice')
 
