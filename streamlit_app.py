@@ -791,35 +791,35 @@ else:
             if nm_create_model:
               if len(nm_agent_name) <= 0:
                 st.warning('Please name your model')
-              elif len(model_frame_u) > 0:
+              elif len(model_frame_u) > 0 and len(model_frame_u) > 0:
                 if (nm_agent_name in model_frame_u['model_name'].to_list()) == True:
                   st.warning('Model name is already exist. Please type new model name')
-                else:
-                  st.session_state['sess_model_name'] = nm_agent_name
-                  model_param_dict = {'username': st.session_state['username'],
-                                      'model_name': nm_agent_name,
-                                      'stock_quote': stock_name,
-                                      'start_date': str(start_date),
-                                      'end_date': str(end_date),
-                                      'split_point': split_point,
-                                      'episode_trained': 0,
-                                      'trained_result': 0,
-                                      'test_result': 0,
-                                      'gamma': nm_agent_gamma,
-                                      'epsilon_start': nm_agent_epsilon,
-                                      'epsilon_decline': nm_agent_epsilon_dec,
-                                      'epsilon_min': nm_agent_epsilon_end,
-                                      'learning_rate': nm_agent_lr,
-                                      'initial_balance': nm_initial_balance,
-                                      'trading_size_pct': nm_trading_size_pct,
-                                      'commission_fee_pct': nm_commission_fee_pct,
-                                      'saved':False}
-                  model_db.put(model_param_dict)
-                  update_model_frame_u()
-                  st.success('Create Model Successful!')
-                  _info = 'You can set episodes and start training in a box below'
-                  st.info(_info, icon="ℹ️")
-                  st.session_state['train_allowed'] = True
+              else:
+                st.session_state['sess_model_name'] = nm_agent_name
+                model_param_dict = {'username': st.session_state['username'],
+                                    'model_name': nm_agent_name,
+                                    'stock_quote': stock_name,
+                                    'start_date': str(start_date),
+                                    'end_date': str(end_date),
+                                    'split_point': split_point,
+                                    'episode_trained': 0,
+                                    'trained_result': 0,
+                                    'test_result': 0,
+                                    'gamma': nm_agent_gamma,
+                                    'epsilon_start': nm_agent_epsilon,
+                                    'epsilon_decline': nm_agent_epsilon_dec,
+                                    'epsilon_min': nm_agent_epsilon_end,
+                                    'learning_rate': nm_agent_lr,
+                                    'initial_balance': nm_initial_balance,
+                                    'trading_size_pct': nm_trading_size_pct,
+                                    'commission_fee_pct': nm_commission_fee_pct,
+                                    'saved':False}
+                model_db.put(model_param_dict)
+                update_model_frame_u()
+                st.success('Create Model Successful!')
+                _info = 'You can set episodes and start training in a box below'
+                st.info(_info, icon="ℹ️")
+                st.session_state['train_allowed'] = True
 
           ######_RADIO_EXISTING_MODEL_######
           if select_model_radio == 'Existing Model':
