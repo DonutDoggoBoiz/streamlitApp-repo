@@ -583,6 +583,9 @@ else:
         ##################################
         shuffle_col = ['model_name','stock_quote','trained_result','test_result','initial_balance','trading_size_pct','commission_fee_pct','start_date','end_date','episode_trained','saved']
         model_grid = model_frame_u.loc[:,shuffle_col]
+        model_grid['initial_balance'] = model_grid['initial_balance'].map('{:,.2f}'.format)
+        model_grid['trained_result'] = model_grid['trained_result'].map('{:,.2f}'.format)
+        model_grid['test_result'] = model_grid['test_result'].map('{:,.2f}'.format)
         gb = GridOptionsBuilder.from_dataframe(model_grid)
         gb.configure_selection('single', use_checkbox=True, pre_selected_rows=[0])
         gridoptions = gb.build()
